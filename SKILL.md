@@ -50,6 +50,9 @@ Modeled on the heuristic-evaluation protocol (Nielsen): evaluators are independe
 3. **Merge**: deduplicate by defect + surface; genuine one-instance-two-defects cases use `also_matches`, one row.
 4. **Severity questionnaire**: the merged list goes back to every critic; each rates every finding 0–4 (0 = "not a defect" — the veto). Severity = mean; findings averaging < 1 with any 0 votes are dropped as false positives and logged.
 5. Findings whose verification another finding blocks get `unverifiable_due_to`, and appear under *Not assessed*, not as absent.
+6. **Before discarding a vetoed finding, ask what it was reaching for.** A false positive whose *reasoning* was sound often marks a real condition with no entry in the taxonomy — the reviewer saw something, and named the nearest thing available. `elided-series` exists precisely because of a wrong finding: the claim ("this chart is missing data") was false, but the condition it implied (a chart can show fewer categories than it holds, and the reader cannot tell) had no name. Log rejections with a one-line note on whether they imply a missing defect; that log is the taxonomy's backlog.
+
+**Verification is function-scoped, never file-scoped.** When checking whether a value, type, or branch is handled, ask whether *the specific consumer* handles it — not whether the file mentions it. A file-level grep is the single most reliable way to score a real defect as already-fixed, because the mentions that satisfy the grep are usually the halves somebody already corrected. See `eval/baseline.md` for the worked instance.
 
 ## Fixing (only when asked to fix)
 

@@ -20,6 +20,20 @@ The defect class this tool exists for: **everything rendered fine, nothing error
 2. **Report** — findings as data, never a grade: `{defect, surface, symptom, evidence, severity, fix}` plus an explicit *could-not-verify* section for what the input cannot support.
 3. **Fix, tiered by falsifiability** — mechanical fixes applied and re-verified by a full re-sweep of the touched surface; structural fixes proposed as diffs; judgment calls reported and routed into your project's declared conventions. Fixes apply to code; Figma and screenshot inputs get findings and proposals.
 
+## One line beats an opinion
+
+Most design-review output is argument. Where a deterministic check exists, Punchlist runs it instead — and these are not hypothetical, each one is here because eyeballing got it wrong first:
+
+| The question | The check |
+|---|---|
+| Is this text really truncated, or did the screenshot's edge cut it? | `scrollHeight > clientHeight`, or a live `-webkit-line-clamp` |
+| Is the chart showing all its data, or did the library drop labels that didn't fit? | rendered tick count vs series length |
+| Is this contrast actually passing? | compute against the composited background, not the flat token |
+| Did focus really move? | read `document.activeElement` after the transition, never the handler |
+| Is this type handled? | check the **consumer function**, never `grep` the file |
+
+Each of those replaced a confident wrong answer. The first two caught a reviewer reporting two defects that did not exist; the last one is how a real defect gets scored "already fixed", because the mentions that satisfy a file grep are usually the halves somebody already corrected.
+
 ## Honesty mechanisms
 
 - Each defect declares `detectable_from` — a screenshot run lists what it could not assess rather than guessing.
