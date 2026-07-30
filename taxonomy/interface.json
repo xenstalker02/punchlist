@@ -238,5 +238,35 @@
       "other": ["Material motion: one transition per event", "NN/g #8 Aesthetic and minimalist design (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
     },
     "example": "Compass announced one drop target with three simultaneous mechanisms — reading as a rendering bug — and coupled animation duration to correctness."
+  },
+  {
+    "id": "recall-tax",
+    "name": "Recall Tax",
+    "category": "interface",
+    "standard": "Discoverable",
+    "definition": "Present when the interface requires the user to remember information the system already holds and could display in place — structure, prior selections, contents, or the state of anything not currently on screen.",
+    "symptom": "Users keep notes beside the app, or open a second view to answer a question the first view could have answered.",
+    "detectable_from": ["screenshot", "interaction", "source+rendered"],
+    "fix_pattern": "Surface what the code already computes: if the component derives it, show it — a summary line, a peek, a count of contents beside the container.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #8 Reduce short-term memory load"]
+    },
+    "example": "Compass: collection section structure was computed (sections, hasMultipleSections) and never rendered — users had to remember what each collection held."
+  },
+  {
+    "id": "demolition-preview",
+    "name": "Demolition Preview",
+    "category": "interface",
+    "standard": "Discoverable",
+    "definition": "Present when the only path to inspect what something contains runs through a control whose primary purpose is destructive or otherwise consequential.",
+    "symptom": "To find out what you have, you must begin deleting it.",
+    "detectable_from": ["interaction", "source+rendered"],
+    "fix_pattern": "Give inspection its own non-destructive entry point; the removal flow may reuse the same view, never own it.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #5 Prevent errors"]
+    },
+    "example": "Compass: the manage-items entry point was wired but never invoked, leaving the remove picker as the only place to see a collection's saved sections."
   }
 ]
