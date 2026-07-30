@@ -34,8 +34,8 @@
     "symptom": { "type": "string", "description": "What a user experiences. One line." },
     "evidence": { "type": "string", "description": "The proof: file:line, measured value, computed style, DOM read. Not an opinion." },
     "verified_how": {
-      "enum": ["rendered", "source", "interaction", "content"],
-      "description": "Which claim is being made. Measured-in-browser and read-in-source are different claims."
+      "enum": ["rendered", "source", "interaction", "content", "frame-limited"],
+      "description": "Which claim is being made. Measured-in-browser, read-in-source, and seen-in-an-image are different epistemic objects. frame-limited means the only evidence is what an image showed — it cannot distinguish content the product truncated from content the frame cut, nor data the product omitted from labels a chart library elided. A frame-limited finding is a question, not a defect."
     },
     "manifestation": {
       "enum": ["consistent", "conditional", "coincidentally-correct"],

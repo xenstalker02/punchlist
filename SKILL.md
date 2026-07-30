@@ -10,8 +10,30 @@ You are running a punch-list inspection, not writing a review. The output is a l
 ## Inputs, in order of preference
 
 1. **Live rendered app** (browser/Playwright available) — full taxonomy. Source reading alone is FORBIDDEN for interface/behavior checks: dead CSS, cascade losses and unfired branches are invisible in source. Read computed styles and the live DOM.
-2. **Screenshot(s)** — run only defects whose `detectable_from` includes `screenshot` or `content-text`. List every skipped defect under *Not assessed*.
+2. **Screenshot(s)** — run only defects whose `detectable_from` includes `screenshot` or `content-text`. List every skipped defect under *Not assessed*. Obey the frame rules below; they are not optional.
 3. **Figma** (MCP available) — as screenshots, plus structural reads where the API provides them.
+
+### When the input is a screenshot, absence is not evidence
+
+A frame can manufacture every one of these: a sentence that stops mid-word, a chart missing most of its categories, a control that isn't there, a list that appears to end. **An image cannot distinguish content the product truncated from content the frame cut, nor data the product omitted from labels the chart library elided.** Both readings look identical in pixels — and the wrong one is always the more alarming one, so a screenshot auditor is biased toward false alarms rather than toward silence. That is the expensive direction: it spends the user's trust on the first run.
+
+Rules:
+
+- **Distrust your own edges.** If the evidence for a finding sits within ~24px of the image boundary, do not report it as a defect. Either exclude it or record it with `verified_how: frame-limited`, phrased as a question for a rendered pass to answer.
+- **Never infer omission from a screenshot.** Missing labels, absent controls, and short lists are `frame-limited` observations, never findings.
+- **Escalate rather than guess.** A frame-limited observation that matters is a reason to request a rendered pass, not a reason to lower the evidence bar.
+
+### Detection rules that beat eyeballing
+
+Where a cheap deterministic check exists, run it instead of judging by eye:
+
+| Question | Check |
+|---|---|
+| Is this text actually clamped? | `scrollHeight > clientHeight` on the element, or a live `-webkit-line-clamp`. No match means the sentence is complete and the *frame* cut it. |
+| Does the chart show all its data? | Rendered tick/label count vs series length. Fewer ticks than data means `elided-series`, not missing data. |
+| Is this row/list complete? | Rendered child count vs the source array length. |
+| Is the contrast real? | Compute against the composited background, not the flat token. |
+| Did focus actually move? | Read `document.activeElement` after the transition; never infer from the handler. |
 
 ## Before the sweep
 

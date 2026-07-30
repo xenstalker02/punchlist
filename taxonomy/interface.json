@@ -268,5 +268,20 @@
       "other": ["NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #5 Prevent errors"]
     },
     "example": "Compass: the manage-items entry point was wired but never invoked, leaving the remove picker as the only place to see a collection's saved sections."
+  },
+  {
+    "id": "elided-series",
+    "name": "Elided Series",
+    "category": "interface",
+    "standard": "Candid",
+    "definition": "Present when a chart, axis, list, or legend renders fewer items than its underlying series contains — through library-level label elision, fitting, or truncation — with nothing indicating that items were omitted.",
+    "symptom": "The chart looks like the whole picture; a reader cannot tell that seven of ten accounts were dropped because their labels did not fit.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Compare rendered tick/label count against series length; if they differ, either guarantee the space (rotate, wrap, paginate, switch orientation) or state the omission — 'showing 3 of 10'.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+    },
+    "example": "Compass: a Recharts axis painted 3 of 10 account labels because the rest did not fit; the summary text correctly cited a top account that appeared nowhere in the visible axis."
   }
 ]
