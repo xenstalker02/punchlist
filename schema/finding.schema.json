@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xenstalker02/punchlist/schema/finding.schema.json",
+  "title": "Punchlist finding (punch item)",
+  "description": "One audited instance of a named defect. Symptom and evidence are separate on purpose: the symptom is what a person experiences, the evidence is the proof — evidence cannot be filled with an opinion.",
+  "type": "object",
+  "required": ["defect", "surface", "symptom", "evidence", "verified_how", "severity", "fix"],
+  "properties": {
+    "defect": {
+      "type": "string",
+      "description": "Primary defect id from the taxonomy. Exactly one; use also_matches for genuine multi-classification. Counting happens on primaries only."
+    },
+    "also_matches": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other taxonomy ids this one instance genuinely satisfies. Never counted in headlines."
+    },
+    "standard": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Derived from the defect's taxonomy entry at write time. Never author-supplied — two sources drift."
+    },
+    "surface": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["a", "b"],
+          "properties": { "a": { "type": "string" }, "b": { "type": "string" } },
+          "description": "Comparison findings (the consistency family) exist only as a relationship between two surfaces."
+        }
+      ]
+    },
+    "symptom": { "type": "string", "description": "What a user experiences. One line." },
+    "evidence": { "type": "string", "description": "The proof: file:line, measured value, computed style, DOM read. Not an opinion." },
+    "verified_how": {
+      "enum": ["rendered", "source", "interaction", "content"],
+      "description": "Which claim is being made. Measured-in-browser and read-in-source are different claims."
+    },
+    "manifestation": {
+      "enum": ["consistent", "conditional", "coincidentally-correct"],
+      "description": "coincidentally-correct: the mechanism is wrong but the output is right at some sites — the worst case, because it is trusted and then wrong when it matters."
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "Mean of independent critic ratings on the 0-4 scale, rated post-merge on the full deduplicated list. 0 = 'not a problem' — the false-positive veto."
+    },
+    "severity_basis": {
+      "type": "string",
+      "description": "Which declared audit basis this severity scores against. Bases are declared per-audit, before the sweep — never invented per-finding."
+    },
+    "fix": { "type": "string", "description": "The remedy. Required — a finding without a remedy is a complaint." },
+    "fixed_how": {
+      "enum": ["mechanical", "proposed", "reported-only"],
+      "description": "mechanical = applied and re-verified by full re-sweep of the touched surface; proposed = diff offered; reported-only = judgment call."
+    },
+    "blocks_scope": {
+      "type": "string",
+      "description": "Scope this finding renders unverifiable (e.g. 'all keyboard checks below this nav'). Re-sweeps must report dependents as unverifiable, not absent."
+    },
+    "unverifiable_due_to": {
+      "type": "string",
+      "description": "Finding id whose presence blocked verification of this check."
+    },
+    "refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Standards hooks: WCAG SC, failure technique, HIG/GOV.UK/Material citation."
+    }
+  }
+}

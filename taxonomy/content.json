@@ -1,0 +1,242 @@
+[
+  {
+    "id": "backstage-bleed",
+    "name": "Backstage Bleed",
+    "category": "content",
+    "standard": "Plainspoken",
+    "definition": "Present when any user-facing string contains an internal identifier — a template key, variable name, enum value, or interpolation syntax — instead of the human-readable value it stands for.",
+    "symptom": "Machine vocabulary appears where a human word should be.",
+    "detectable_from": ["screenshot", "content-text", "source+rendered"],
+    "fix_pattern": "Map every internal key to a display label at the boundary; lint for interpolation syntax, snake_case, and known enum tokens in rendered copy.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #2 Match between system and the real world (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+    },
+    "example": "A template literal rendering 'No kbqs in this collection yet' — an internal filter key surfaced as user-facing copy."
+  },
+  {
+    "id": "counted-in-crates",
+    "name": "Counted in Crates",
+    "category": "content",
+    "standard": "Accurate",
+    "definition": "Present when a displayed count tallies a different unit than the one the surrounding copy or the user's task implies (containers counted, contents claimed, or vice versa).",
+    "symptom": "The number is technically true and humanly false.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Count in the unit the label names; if the unit must differ, change the label to name what is actually counted.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #2 Match between system and the real world (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "GOV.UK style guide A-Z: numbers"]
+    },
+    "example": "Compass: a count tallied parent groups while the user thinks in items saved — accurate arithmetic, wrong unit."
+  },
+  {
+    "id": "arithmetic-mirage",
+    "name": "Arithmetic Mirage",
+    "category": "content",
+    "standard": "Accurate",
+    "definition": "Present when numbers visible on one screen fail their own arithmetic — a '+N more' indicator, subtotal, or badge that contradicts the visible items or the stated total.",
+    "symptom": "The overflow badge and the visible items do not add up to the set.",
+    "detectable_from": ["screenshot", "source+rendered"],
+    "fix_pattern": "Derive overflow counts from the same source as the total (total minus visible), never from a second query or a hardcoded value.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #2 Match between system and the real world (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "GOV.UK style guide A-Z: numbers"]
+    },
+    "example": "Compass: '+7 more' shown under 2 visible cards in a 7-item set — 2 + 7 is not 7."
+  },
+  {
+    "id": "phantom-freshness",
+    "name": "Phantom Freshness",
+    "category": "content",
+    "standard": "Accurate",
+    "definition": "Present when metadata copy asserts a data-dependent fact (latest data, last updated, sync status) about an entity that contains no data, or when the assertion contradicts an adjacent zero-count on the same line.",
+    "symptom": "An empty thing claims to be fresh.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "Gate data-dependent metadata behind a data-exists check; empty states get empty-state copy, not vitals.",
+    "refs": {
+      "wcag": [],
+      "other": ["NN/g #2 Match between system and the real world (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+    },
+    "example": "Compass: '0 items · Created 7/30/2026 · Latest data: 7/30/26' on a brand-new empty collection — a freshness claim with nothing behind it, in two date formats."
+  },
+  {
+    "id": "scolding-machine",
+    "name": "Scolding Machine",
+    "category": "content",
+    "standard": "Constructive",
+    "definition": "Present when error copy blames the user, performs apology, or exposes machine internals — any of: 'you forgot', 'sorry', 'oops', 'please', 'valid'/'invalid', or a raw error code shown as the message.",
+    "symptom": "The error talks about fault or internals instead of the fix.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "State what happened and what to do next in neutral, specific terms; keep codes in logs, not copy.",
+    "refs": {
+      "wcag": ["3.3.1 Error Identification (A)", "3.3.3 Error Suggestion (AA)"],
+      "other": ["GOV.UK error message component: banned words documented verbatim", "Apple HIG alerts: never title an alert 'Error'", "NN/g #9 Help users recognize, diagnose, and recover from errors (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+    },
+    "example": "'error 0x0000000643' or 'you forgot to enter' — GOV.UK bans both patterns explicitly."
+  },
+  {
+    "id": "foghorn-error",
+    "name": "Foghorn Error",
+    "category": "content",
+    "standard": "Constructive",
+    "definition": "Present when an error message could be pasted onto any other error in the product without losing accuracy — it names neither the item in error, the cause, nor a next step.",
+    "symptom": "Loud that something is wrong, silent about what and where.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "One message per failure mode: name the field or object, the condition violated, and the corrective action.",
+    "refs": {
+      "wcag": ["3.3.1 Error Identification (A)", "3.3.3 Error Suggestion (AA)"],
+      "other": ["GOV.UK error message component: bans 'An error occurred' and 'This field is required'", "NN/g #9 Help users recognize, diagnose, and recover from errors (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #5 Prevent errors"]
+    },
+    "example": "'An error occurred' and 'This field is required' — both documented GOV.UK catch-all bans."
+  },
+  {
+    "id": "blindfold-link",
+    "name": "Blindfold Link",
+    "category": "content",
+    "standard": "Navigable",
+    "definition": "Present when a link's text, read alone out of context, does not identify its destination or purpose — e.g. 'click here', 'more', 'learn more', a bare 'here'.",
+    "symptom": "A list of the page's links reads as noise.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "Front-load the link with the destination's own terms; the link text should survive being read in isolation.",
+    "refs": {
+      "wcag": ["2.4.4 Link Purpose In Context (A)"],
+      "other": ["WCAG failure technique F84", "GOV.UK writing guidance: front-load links with relevant terms"]
+    },
+    "example": "'click here' / 'more' as link text — WCAG failure F84."
+  },
+  {
+    "id": "blank-doorplate",
+    "name": "Blank Doorplate",
+    "category": "content",
+    "standard": "Navigable",
+    "definition": "Present when a page title, dialog header, or section label is generic or hardcoded where a specific, contextual name is available — the title does not distinguish this page or state from its siblings.",
+    "symptom": "The header describes the category of the thing, not the thing.",
+    "detectable_from": ["screenshot", "source+rendered"],
+    "fix_pattern": "Compute the title from the same state the view renders; if the code knows the noun, the header uses it.",
+    "refs": {
+      "wcag": ["2.4.2 Page Titled (A)", "2.4.6 Headings and Labels (AA)"],
+      "other": ["WCAG failure technique F25", "Apple HIG: name the action, not the abstraction"]
+    },
+    "example": "Compass: a modal header hardcoded 'Choose visualizations' while line 388 of the same file computed the correct noun for the selection."
+  },
+  {
+    "id": "painted-on-headings",
+    "name": "Painted-On Headings",
+    "category": "content",
+    "standard": "Navigable",
+    "definition": "Present when text styled to look like a heading is not marked up as one, or when heading levels skip (an h2 followed by an h4) so the document outline no longer matches the visible structure.",
+    "symptom": "Looks structured to the eye, flat or scrambled to a screen reader.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Mark up every visual heading with the semantic level its position implies; style the tag, never fake the tag with styling.",
+    "refs": {
+      "wcag": ["1.3.1 Info and Relationships (A)", "2.4.6 Headings and Labels (AA)"],
+      "other": []
+    },
+    "example": "Compass: headings styled but not marked up; heading levels skipped — visible hierarchy with no programmatic equivalent."
+  },
+  {
+    "id": "corporate-fog",
+    "name": "Corporate Fog",
+    "category": "content",
+    "standard": "Plainspoken",
+    "definition": "Present when interface prose exceeds roughly a 25-word sentence, uses passive voice where an actor exists, or uses an abbreviation before explaining it.",
+    "symptom": "The user re-reads a sentence to find out what to do.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "One idea per sentence, active voice, age-9 reading level; expand every abbreviation on first use.",
+    "refs": {
+      "wcag": ["3.1.4 Abbreviations (AAA)", "3.1.5 Reading Level (AAA)"],
+      "other": ["GOV.UK writing guidelines: sentence length, reading age, active voice (note: WCAG 3.1.x cites are AAA, not a legal baseline)"]
+    },
+    "example": "Sentences past the ~25-word ceiling and unexplained abbreviations — both against GOV.UK writing guidance."
+  },
+  {
+    "id": "guessing-game-field",
+    "name": "Guessing-Game Field",
+    "category": "content",
+    "standard": "Navigable",
+    "definition": "Present when an input expects user data but provides no visible label or instruction stating what is expected, including any required format.",
+    "symptom": "The user's first attempt at the field is a guess.",
+    "detectable_from": ["screenshot", "source+rendered"],
+    "fix_pattern": "Every input gets a persistent visible label plus format hints where format matters; placeholder text is not a label.",
+    "refs": {
+      "wcag": ["3.3.2 Labels or Instructions (A)"],
+      "other": ["GOV.UK form design guidance"]
+    },
+    "example": "Input expected with no label or instruction — WCAG 3.3.2 failure."
+  },
+  {
+    "id": "echo-interrogation",
+    "name": "Echo Interrogation",
+    "category": "content",
+    "standard": "Considerate",
+    "definition": "Present when the same information is asked of the user more than once within a single process without being auto-populated or selectable from the earlier answer.",
+    "symptom": "The form asks a question the product was already told.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Carry earlier answers forward as prefilled or selectable values; re-ask only for security confirmation.",
+    "refs": {
+      "wcag": ["3.3.7 Redundant Entry (A)"],
+      "other": []
+    },
+    "example": "Asked twice for the same info in one process — WCAG 3.3.7 Redundant Entry, new in WCAG 2.2."
+  },
+  {
+    "id": "needless-census",
+    "name": "Needless Census",
+    "category": "content",
+    "standard": "Considerate",
+    "definition": "Present when a form collects identity data (gender, sex, title, ethnicity) that the service does not demonstrably need, or offers option sets too narrow for the people answering, or asks without explaining why.",
+    "symptom": "A personal question with no stated purpose and no room to answer truthfully.",
+    "detectable_from": ["screenshot", "content-text"],
+    "fix_pattern": "Only ask if genuinely needed, say why, offer inclusive options plus a self-describe or prefer-not-to-say path.",
+    "refs": {
+      "wcag": [],
+      "other": ["GOV.UK design system: 'Gender or sex' pattern — only ask if genuinely needed, explain why"]
+    },
+    "example": "Self-identification fields offering needless or narrow options — the case GOV.UK's gender/sex pattern exists to prevent."
+  },
+  {
+    "id": "silent-picture",
+    "name": "Silent Picture",
+    "category": "content",
+    "standard": "Considerate",
+    "definition": "Present when informative imagery has no text alternative or a noise alternative (filename, 'image'), when decorative imagery is announced instead of hidden, or when text is rendered as an image where real text would serve.",
+    "symptom": "What the image says is unavailable to anyone not looking at it.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Alt text states the image's function in context; decorative images get empty alt; text ships as text.",
+    "refs": {
+      "wcag": ["1.1.1 Non-text Content (A)", "1.4.5 Images of Text (AA)"],
+      "other": []
+    },
+    "example": "Alt text absent or decorative-noise (1.1.1); images of text where styled text was possible (1.4.5)."
+  },
+  {
+    "id": "patchwork-voice",
+    "name": "Patchwork Voice",
+    "category": "content",
+    "standard": "Accurate",
+    "definition": "Present when the same content fact or convention — a person's identity, a date format, a capitalization rule, a tone register — appears in two conflicting forms within one product surface.",
+    "symptom": "The product disagrees with itself about its own facts and style.",
+    "detectable_from": ["screenshot", "content-text", "source+rendered"],
+    "fix_pattern": "One source of truth per fact and per format convention; seed/mock data defined once and imported, never re-declared per component.",
+    "refs": {
+      "wcag": ["3.2.4 Consistent Identification (AA)"],
+      "other": ["GOV.UK style guide A-Z: dates"]
+    },
+    "example": "Compass: five components defining the same person differently; 'Brand Lead' (a job title) stored as user.name; avatar initials disagreeing with the menu below them; two date formats in one line."
+  },
+  {
+    "id": "yesterdays-signage",
+    "name": "Yesterday's Signage",
+    "category": "content",
+    "standard": "Accurate",
+    "definition": "Present when copy describes a feature, name, limit, or behavior that no longer matches the shipped product, or references a destination that no longer exists.",
+    "symptom": "The words describe the product as it used to be.",
+    "detectable_from": ["source+rendered"],
+    "fix_pattern": "Treat copy as code: every behavior change ships with a grep for prose that described the old behavior.",
+    "refs": {
+      "wcag": [],
+      "other": ["GOV.UK content guidance: review and retire outdated content", "NN/g #2 Match between system and the real world (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+    },
+    "example": "Outdated claims, dead references, and copy describing features that changed."
+  }
+]
