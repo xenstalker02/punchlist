@@ -6,11 +6,19 @@
     "standard": "Coherent",
     "definition": "Present when a single interaction state (selected, active, disabled) is encoded by more visual treatments than the app has genuine contexts for it, or when one element stacks three or more simultaneous signals for the same state.",
     "symptom": "Users must re-learn what 'selected' looks like on every screen; single rows shout the same fact four ways.",
-    "detectable_from": ["screenshot", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "source+rendered"
+    ],
     "fix_pattern": "Inventory every encoding of the state, collapse to one canonical treatment per component tier, delete the rest.",
     "refs": {
-      "wcag": ["3.2.4 Consistent Identification (AA)"],
-      "other": ["Shneiderman #1 Strive for consistency", "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        "3.2.4 Consistent Identification (AA)"
+      ],
+      "other": [
+        "Shneiderman #1 Strive for consistency",
+        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass encoded 'selected' 17 different ways across one app; one row stacked border, bar, fill, and shadow for a single selection."
   },
@@ -21,11 +29,18 @@
     "standard": "Coherent",
     "definition": "Present when one visual device (a color, bar, icon, or fill) carries two unrelated meanings anywhere the user can see both uses.",
     "symptom": "The same mark means 'category' here and 'selected' there, so neither reading is trustworthy.",
-    "detectable_from": ["screenshot"],
+    "detectable_from": [
+      "screenshot"
+    ],
     "fix_pattern": "Give each meaning its own device; the older or more widespread meaning keeps the existing one.",
     "refs": {
-      "wcag": ["3.2.4 Consistent Identification (AA)", "1.3.1 Info and Relationships (A)"],
-      "other": ["Shneiderman #1 Strive for consistency"]
+      "wcag": [
+        "3.2.4 Consistent Identification (AA)",
+        "1.3.1 Info and Relationships (A)"
+      ],
+      "other": [
+        "Shneiderman #1 Strive for consistency"
+      ]
     },
     "example": "Compass used a device that already meant 'category' to also mean 'selected' — one visual carrying two meanings."
   },
@@ -36,11 +51,16 @@
     "standard": "Coherent",
     "definition": "Present when a state change alters an element's geometry (border width, size, padding) such that the element or its neighbors move on screen.",
     "symptom": "Clicking down a list makes every row twitch; the layout flinches on each selection.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Encode state in color, opacity, or an inset overlay — never in dimensions; reserve the space if geometry must change.",
     "refs": {
       "wcag": [],
-      "other": ["Material state-layer model: state changes color/opacity, not bounds"]
+      "other": [
+        "Material state-layer model: state changes color/opacity, not bounds"
+      ]
     },
     "example": "Compass selection grew a 1px border to 3px, shifting rows 2px — every click rippled the list."
   },
@@ -51,11 +71,17 @@
     "standard": "Coherent",
     "definition": "Present when the same concept renders at materially different visual weight (more than 2x area or emphasis) in two surfaces with no stated hierarchy reason.",
     "symptom": "The same item feels critical on one screen and trivial on another; users misjudge importance.",
-    "detectable_from": ["screenshot"],
+    "detectable_from": [
+      "screenshot"
+    ],
     "fix_pattern": "Define a weight tier per concept; deviations require a documented reason (density context, drill-in detail).",
     "refs": {
-      "wcag": ["3.2.4 Consistent Identification (AA)"],
-      "other": ["NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        "3.2.4 Consistent Identification (AA)"
+      ],
+      "other": [
+        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass rendered one concept as an 82px bare row in one place and a 408px rich card in another — 5x weight, no reason."
   },
@@ -66,11 +92,18 @@
     "standard": "Coherent",
     "definition": "Present when the same set of items appears in different orders on different surfaces without a user-selected sort explaining the difference.",
     "symptom": "Users scan for an item where it was last time and it isn't there; spatial memory is worthless.",
-    "detectable_from": ["screenshot"],
+    "detectable_from": [
+      "screenshot"
+    ],
     "fix_pattern": "Pick one canonical sort per item set and apply it at the data layer, not per-view.",
     "refs": {
-      "wcag": ["3.2.3 Consistent Navigation (AA)"],
-      "other": ["Shneiderman #8 Reduce short-term memory load", "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        "3.2.3 Consistent Navigation (AA)"
+      ],
+      "other": [
+        "Shneiderman #8 Reduce short-term memory load",
+        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass showed the same three items in insertion order on one surface and createdAt-descending on another."
   },
@@ -81,11 +114,18 @@
     "standard": "Coherent",
     "definition": "Present when raw system chrome (browser confirm/alert/prompt, default scrollbars, native tooltips) appears inside an otherwise fully themed application that has an equivalent themed component in use elsewhere.",
     "symptom": "One dialog arrives in a different visual universe — light-mode chrome inside a dark app — and reads as an error or phishing.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Grep for window.confirm/alert/prompt and native fallbacks; route all of them through the design-system equivalent.",
     "refs": {
-      "wcag": ["3.2.4 Consistent Identification (AA)"],
-      "other": ["NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        "3.2.4 Consistent Identification (AA)"
+      ],
+      "other": [
+        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass fired a raw browser window.confirm in a fully themed dark app while the design-system modal existed and was used elsewhere."
   },
@@ -96,11 +136,18 @@
     "standard": "Legible",
     "definition": "Present when a label and the value it describes are separated by more empty distance than separates either from unrelated content, breaking the proximity that binds them.",
     "symptom": "A count floats at the far end of a header with nothing tying it to its label; users pair it with the wrong thing or nothing.",
-    "detectable_from": ["screenshot"],
+    "detectable_from": [
+      "screenshot"
+    ],
     "fix_pattern": "Co-locate label and value within one visual group; delete any duplicate rendering of the pair nearby.",
     "refs": {
-      "wcag": ["1.3.1 Info and Relationships (A)", "2.4.6 Headings and Labels (AA)"],
-      "other": ["Gestalt proximity principle"]
+      "wcag": [
+        "1.3.1 Info and Relationships (A)",
+        "2.4.6 Headings and Labels (AA)"
+      ],
+      "other": [
+        "Gestalt proximity principle"
+      ]
     },
     "example": "Compass rendered a label and its count 1001px apart in one header row, while duplicating the pairing in a pill 40px above."
   },
@@ -111,11 +158,19 @@
     "standard": "Legible",
     "definition": "Present when body text exceeds roughly 90 characters per line (target 65-75) at its rendered width and size.",
     "symptom": "Eyes lose the return path to the next line; reading long spans becomes effortful — a measurement, not an opinion.",
-    "detectable_from": ["screenshot", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "source+rendered"
+    ],
     "fix_pattern": "Cap the text column with a max-width in ch units (65-75ch) independent of container width.",
     "refs": {
-      "wcag": ["1.4.8 Visual Presentation (AAA, 80-character guideline)", "1.4.4 Resize Text (AA)"],
-      "other": ["Classical typographic measure: 45-75 characters per line"]
+      "wcag": [
+        "1.4.8 Visual Presentation (AAA, 80-character guideline)",
+        "1.4.4 Resize Text (AA)"
+      ],
+      "other": [
+        "Classical typographic measure: 45-75 characters per line"
+      ]
     },
     "example": "Compass ran 169 characters per line at 12px against a 65-75 target."
   },
@@ -126,11 +181,17 @@
     "standard": "Discoverable",
     "definition": "Present when scrollable content is clipped at a hard edge with no partial item, gradient, or indicator revealing that more exists beyond the clip.",
     "symptom": "Users treat the visible options as the complete set; hidden choices are effectively deleted.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Comparison sets wrap so all options are visible; navigation tabs may scroll but must show a peeking item or fade — the discriminator is whether items are compared or chosen-between.",
     "refs": {
       "wcag": [],
-      "other": ["Apple HIG: scrollable content must indicate it scrolls", "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        "Apple HIG: scrollable content must indicate it scrolls",
+        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass had a filter row scrolling behind a hard clip with no affordance — users could not discover the hidden filter options."
   },
@@ -141,11 +202,21 @@
     "standard": "Operable",
     "definition": "Present when any interactive element cannot be reached, operated, or understood via keyboard and assistive technology — missing focusability, role, name, or state.",
     "symptom": "Whole regions are mouse-only; screen readers hear silence where controls are; selection is announced by color alone.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Use native elements or add role, tabindex, accessible name, and state attributes (aria-pressed, aria-current); fix heading order to be sequential.",
     "refs": {
-      "wcag": ["2.1.1 Keyboard (A)", "2.4.7 Focus Visible (AA)", "1.3.1 Info and Relationships (A)", "2.4.6 Headings and Labels (AA)"],
-      "other": ["Material: visible focus for all interactive elements"]
+      "wcag": [
+        "2.1.1 Keyboard (A)",
+        "2.4.7 Focus Visible (AA)",
+        "1.3.1 Info and Relationships (A)",
+        "2.4.6 Headings and Labels (AA)"
+      ],
+      "other": [
+        "Material: visible focus for all interactive elements"
+      ]
     },
     "example": "Compass nav items were bare divs with cursor:pointer — no role, tabindex, or current-state — leaving a whole page unreachable by keyboard, plus H1>H2>H4 heading order and group labels as AT-invisible spans."
   },
@@ -156,11 +227,21 @@
     "standard": "Operable",
     "definition": "Present when an interactive target's hit area falls below 24px CSS in either dimension without an equivalent-function alternative, or below the platform norm for its context.",
     "symptom": "Users miss taps, hit neighbors, or slow down to aim; error rate climbs on touch.",
-    "detectable_from": ["screenshot", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "source+rendered"
+    ],
     "fix_pattern": "Expand the hit area (padding or pseudo-element) to the platform floor even if the glyph stays small; cite the three-tier delta when negotiating: WCAG 24px legal floor, Apple 44pt norm, Material 48dp + 8dp spacing.",
     "refs": {
-      "wcag": ["2.5.8 Target Size Minimum (AA)", "2.5.1 Pointer Gestures (A)", "2.5.7 Dragging Movements (AA)"],
-      "other": ["Apple HIG 44x44pt (28pt hard floor, 60pt visionOS)", "Material 48dp targets + 8dp spacing"]
+      "wcag": [
+        "2.5.8 Target Size Minimum (AA)",
+        "2.5.1 Pointer Gestures (A)",
+        "2.5.7 Dragging Movements (AA)"
+      ],
+      "other": [
+        "Apple HIG 44x44pt (28pt hard floor, 60pt visionOS)",
+        "Material 48dp targets + 8dp spacing"
+      ]
     },
     "example": "Audit standard applied at Compass: targets measured against the WCAG 24px / Apple 44pt / Material 48dp three-tier floor."
   },
@@ -171,10 +252,16 @@
     "standard": "Legible",
     "definition": "Present when any text fails WCAG AA contrast (4.5:1 body, 3:1 large) or any meaning-bearing non-text element fails 3:1 against its adjacent colors — measured, regardless of whether it 'looks fine'.",
     "symptom": "Severity and status colors read comfortably to the designer's calibrated eye and fail for everyone in sunlight, low brightness, or low vision.",
-    "detectable_from": ["screenshot", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "source+rendered"
+    ],
     "fix_pattern": "Measure every token pair programmatically; adjust lightness until the ratio passes, then lock the pair in the token system.",
     "refs": {
-      "wcag": ["1.4.3 Contrast Minimum (AA)", "1.4.11 Non-text Contrast (AA)"],
+      "wcag": [
+        "1.4.3 Contrast Minimum (AA)",
+        "1.4.11 Non-text Contrast (AA)"
+      ],
       "other": []
     },
     "example": "Compass severity colors failed AA at 4 of 5 levels while 'looking fine'."
@@ -186,10 +273,16 @@
     "standard": "Legible",
     "definition": "Present when a color token is used both as foreground and as a low-opacity tint of itself as background, and the contrast check was run against the flat swatch instead of the composited tint pair.",
     "symptom": "The badge passes on paper and fails in the UI — the token's self-tinted background, not the swatch, sets the binding contrast floor.",
-    "detectable_from": ["screenshot", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "source+rendered"
+    ],
     "fix_pattern": "Compute contrast against the composited rendered background (tint over surface) for every foreground/tint pair; darken the foreground or deepen the tint until the real pair passes.",
     "refs": {
-      "wcag": ["1.4.3 Contrast Minimum (AA)", "1.4.11 Non-text Contrast (AA)"],
+      "wcag": [
+        "1.4.3 Contrast Minimum (AA)",
+        "1.4.11 Non-text Contrast (AA)"
+      ],
       "other": []
     },
     "example": "Compass used a token as a 20%-tint of itself behind that same token as text — the self-tinted badge, not the flat swatch, was the binding contrast floor."
@@ -201,11 +294,15 @@
     "standard": "Candid",
     "definition": "Present when a designed UI state (empty, error, edge) is unreachable by any actual data or user path, or when a reachable condition (true empty, first-run) has no designed state at all.",
     "symptom": "Polished empty states that no user will ever see coexist with real conditions that render as blank or broken screens.",
-    "detectable_from": ["source+rendered"],
+    "detectable_from": [
+      "source+rendered"
+    ],
     "fix_pattern": "Trace each designed state to a reachable trigger and each reachable condition to a designed state; delete the unreachable, design the missing.",
     "refs": {
       "wcag": [],
-      "other": ["Dead-code principle applied to UI states"]
+      "other": [
+        "Dead-code principle applied to UI states"
+      ]
     },
     "example": "Compass shipped an empty state that could never fire."
   },
@@ -216,11 +313,17 @@
     "standard": "Candid",
     "definition": "Present when an operation that can exceed roughly one second renders no skeleton, spinner, or progress indication — or shows a stationary indicator — while work is in flight.",
     "symptom": "Slow responses read as frozen; users retry, double-submit, or abandon.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Add skeletons for known layouts and determinate or animated indeterminate progress for waits; never fake pacing, never let an indicator sit still.",
     "refs": {
       "wcag": [],
-      "other": ["Apple HIG: a stationary progress indicator reads as frozen; no artificial pacing", "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        "Apple HIG: a stationary progress indicator reads as frozen; no artificial pacing",
+        "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass had skeletons and progress absent entirely, so slow responses read as a frozen app."
   },
@@ -231,11 +334,16 @@
     "standard": "Candid",
     "definition": "Present when a single event triggers two or more simultaneous animated signals for the same meaning, or when an animation's duration gates the correctness of the interaction rather than merely describing it.",
     "symptom": "Redundant overlapping motion reads as a rendering bug, not affordance; interactions break if the animation is interrupted.",
-    "detectable_from": ["interaction"],
+    "detectable_from": [
+      "interaction"
+    ],
     "fix_pattern": "One motion signal per event, chosen for the meaning; decouple interaction correctness from animation completion so instant and reduced-motion paths still work.",
     "refs": {
       "wcag": [],
-      "other": ["Material motion: one transition per event", "NN/g #8 Aesthetic and minimalist design (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        "Material motion: one transition per event",
+        "NN/g #8 Aesthetic and minimalist design (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass announced one drop target with three simultaneous mechanisms — reading as a rendering bug — and coupled animation duration to correctness."
   },
@@ -246,11 +354,18 @@
     "standard": "Discoverable",
     "definition": "Present when the interface requires the user to remember information the system already holds and could display in place — structure, prior selections, contents, or the state of anything not currently on screen.",
     "symptom": "Users keep notes beside the app, or open a second view to answer a question the first view could have answered.",
-    "detectable_from": ["screenshot", "interaction", "source+rendered"],
+    "detectable_from": [
+      "screenshot",
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Surface what the code already computes: if the component derives it, show it — a summary line, a peek, a count of contents beside the container.",
     "refs": {
       "wcag": [],
-      "other": ["NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #8 Reduce short-term memory load"]
+      "other": [
+        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)",
+        "Shneiderman #8 Reduce short-term memory load"
+      ]
     },
     "example": "Compass: collection section structure was computed (sections, hasMultipleSections) and never rendered — users had to remember what each collection held."
   },
@@ -261,11 +376,17 @@
     "standard": "Discoverable",
     "definition": "Present when the only path to inspect what something contains runs through a control whose primary purpose is destructive or otherwise consequential.",
     "symptom": "To find out what you have, you must begin deleting it.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Give inspection its own non-destructive entry point; the removal flow may reuse the same view, never own it.",
     "refs": {
       "wcag": [],
-      "other": ["NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #5 Prevent errors"]
+      "other": [
+        "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)",
+        "Shneiderman #5 Prevent errors"
+      ]
     },
     "example": "Compass: the manage-items entry point was wired but never invoked, leaving the remove picker as the only place to see a collection's saved sections."
   },
@@ -276,12 +397,36 @@
     "standard": "Candid",
     "definition": "Present when a chart, axis, list, or legend renders fewer items than its underlying series contains — through library-level label elision, fitting, or truncation — with nothing indicating that items were omitted.",
     "symptom": "The chart looks like the whole picture; a reader cannot tell that seven of ten accounts were dropped because their labels did not fit.",
-    "detectable_from": ["source+rendered"],
+    "detectable_from": [
+      "source+rendered"
+    ],
     "fix_pattern": "Compare rendered tick/label count against series length; if they differ, either guarantee the space (rotate, wrap, paginate, switch orientation) or state the omission — 'showing 3 of 10'.",
     "refs": {
       "wcag": [],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+      ]
     },
     "example": "Compass: a Recharts axis painted 3 of 10 account labels because the rest did not fit; the summary text correctly cited a top account that appeared nowhere in the visible axis."
+  },
+  {
+    "id": "swallowed-rule",
+    "name": "Swallowed Rule",
+    "category": "interface",
+    "standard": "Coherent",
+    "definition": "Present when a style declaration is authored on an element but never reaches it in computed style — the class is never emitted, the value is invalid, a duplicate attribute silently overrides it, or another cascade layer wins — so a distinction the design encodes is absent from the rendered product.",
+    "symptom": "The element renders as though it had never been styled, and the result looks deliberate: a callout with no tint, a selected row with no leading bar, a label at the wrong weight. Nothing throws, no test fails, and the source still reads as correct.",
+    "detectable_from": [
+      "source+rendered"
+    ],
+    "fix_pattern": "Resolve the element against the CSSOM and compare computed style with the authored declaration. Always assert a CONTROL element whose equivalent rule does match, so a zero-match result is distinguishable from a broken query. Then re-author in a form the engine actually emits: no spaces inside an arbitrary value, a real surface as the color-mix base rather than transparent, one attribute per prop, correct layer.",
+    "refs": {
+      "wcag": [],
+      "other": [
+        "Tailwind CSS arbitrary values (whitespace is not permitted inside the bracket)",
+        "CSS Cascading and Inheritance Level 5 § Cascade Layers (W3C)"
+      ]
+    },
+    "example": "Compass: bg-[color-mix(in srgb, var(--sev-opportunity) 10%, transparent)] contained spaces, so Tailwind emitted no such class and the callout painted no background at all (CSSOM: 0 rules matched; control siblings matched 6 and 10). Separately, border-l-3 is not a class Tailwind emits, so a rail's left bar only ever painted from a duplicate inline rule; and two labelStyle attributes on one Recharts Tooltip silently discarded the token-based one — a build WARNING that never failed the build, found in three components."
   }
 ]
