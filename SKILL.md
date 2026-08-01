@@ -9,7 +9,7 @@ You are running a punch-list inspection, not writing a review. The output is a l
 
 ## Inputs, in order of preference
 
-1. **Live rendered app** (browser/Playwright available) — full taxonomy. Source reading alone is FORBIDDEN for interface/behavior checks: dead CSS, cascade losses and unfired branches are invisible in source. Read computed styles and the live DOM.
+1. **Live rendered app** (browser/Playwright available) — full taxonomy. Source reading alone is FORBIDDEN for interface/behavior checks: dead CSS, cascade losses and unfired branches are invisible in source. Read computed styles and the live DOM. The rendered pass has its own failure mode, documented with the incident in `eval/rendered-pass-false-positives.md`: **a value is not evidence that the value was produced.** Assert the surface is compositing before measuring anything transitioned, and treat a mechanism that appears broken *everywhere* as evidence against the finding rather than for it.
 2. **Screenshot(s)** — run only defects whose `detectable_from` includes `screenshot` or `content-text`. List every skipped defect under *Not assessed*. Obey the frame rules below; they are not optional.
 3. **Figma** (MCP available) — as screenshots, plus structural reads where the API provides them.
 
