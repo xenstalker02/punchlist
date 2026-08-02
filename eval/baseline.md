@@ -30,7 +30,7 @@ That is not an eval quirk — it is the same shape as the defect. The fix that p
 1. **Function-scoped verification.** Every ground-truth check names the consumer it must hold in. No file-level greps.
 2. **Blind detection.** The detecting critics must not see `compass-coverage.md`. A detector shown its answer key measures nothing.
 3. **Count primaries.** A finding matching two defects is one hit, scored on its primary.
-4. **Score false positives separately and loudly.** Precision matters more than recall here: the category's public benchmark is roughly 80% noise, and a tool that cries wolf gets uninstalled faster than one that misses. A false positive at the frame edge (see `screenshot-false-positives.md`) is a distinct failure mode and should be reported as its own rate.
+4. **Score false positives separately and loudly.** Precision matters more than recall here: a tool that cries wolf gets uninstalled faster than one that misses. A false positive at the frame edge (see `screenshot-false-positives.md`) is a distinct failure mode and should be reported as its own rate.
 5. **Report per-input-mode.** A screenshot run and a rendered run are different detectors and must never be pooled into one number.
 6. **Publish the misses.** The defects the pipeline did not find are the honest part of the number, and the roadmap.
 

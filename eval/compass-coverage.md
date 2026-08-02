@@ -34,6 +34,6 @@
 
 ## What this test does not show
 
-- **Nothing about detection.** Every finding here was located by a human-directed audit. Whether Punchlist's own pipeline finds them, and at what false-positive rate, is the open question — and the one that matters, since generic screenshot audits have been measured at roughly 80% noise elsewhere in this category.
+- **Nothing about detection.** Every finding here was located by a human-directed audit. Whether Punchlist's own pipeline finds them, and at what false-positive rate, is the open question, and the one that matters.
 - **Nothing about one-corpus generalization.** One app, one IA, one team's conventions. A second corpus with a different stack is needed before any claim about the taxonomy's completeness.
 - **Behavior coverage is under-tested.** The audit was read-only and mostly static, so most `behavior` entries — which need interaction — were never exercised against it. Their grounding is the documented defect record from the same product's build sessions, not this run.

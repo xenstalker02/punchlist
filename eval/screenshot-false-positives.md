@@ -6,7 +6,7 @@
 
 An audit run from six screenshots of a live product returned two defects on one screen. Both were wrong, and both were checked against the DOM afterwards.
 
-**Claim 1 — "summaries truncate mid-sentence."** Evidence offered was two quoted fragments ending mid-clause: `"…with Ridgeline Cancer Institute at"` and `"…now representing 34% of"`. Reality: both summaries render complete, with terminal punctuation. A search for `-webkit-line-clamp` with `scrollHeight > clientHeight` returned **zero** elements — there is no clamp anywhere in the app. **The screenshot frame had cut the card off.**
+**Claim 1 — "summaries truncate mid-sentence."** Evidence offered was two quoted fragments ending mid-clause: `"…with [account name] at"` and `"…now representing 34% of"`. Reality: both summaries render complete, with terminal punctuation. A search for `-webkit-line-clamp` with `scrollHeight > clientHeight` returned **zero** elements — there is no clamp anywhere in the app. **The screenshot frame had cut the card off.**
 
 **Claim 2 — "the summary cites an account that doesn't appear in its own chart."** The visible bars read three account names; the summary named a fourth. Reality: that account **is** in the chart — the top bar. The series has ten accounts, and the chart library elides axis labels that do not fit, so only three were painted. **The data was complete; the labels were not.**
 

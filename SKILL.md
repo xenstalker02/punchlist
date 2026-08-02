@@ -46,7 +46,7 @@ Where a cheap deterministic check exists, run it instead of judging by eye:
 Modeled on the heuristic-evaluation protocol (Nielsen): evaluators are independent, severity comes after merge.
 
 1. **3–5 independent critics** (subagents), each briefed with: the taxonomy, the product/domain context, the conventions file, and a distinct lens (e.g. first-use walkthrough · state/persistence prober · content reader · keyboard-only operator). Critics never see each other's findings. Critics never saw the code they'd be grading being written (maker ≠ checker).
-2. Each critic returns findings in `schema/finding.schema.json` shape: primary `defect`, `surface`, `symptom`, `evidence`, `verified_how`. No severity yet.
+2. Each critic returns findings as the pre-merge subset of `schema/finding.schema.json`: primary `defect`, `surface`, `symptom`, `evidence`, `verified_how`. No severity yet, so this stage does not validate against that schema and is not meant to. Findings validate once step 4 has assigned severity.
 3. **Merge**: deduplicate by defect + surface; genuine one-instance-two-defects cases use `also_matches`, one row.
 4. **Severity questionnaire**: the merged list goes back to every critic; each rates every finding 0–4 (0 = "not a defect" — the veto). Severity = mean; findings averaging < 1 with any 0 votes are dropped as false positives and logged.
 5. Findings whose verification another finding blocks get `unverifiable_due_to`, and appear under *Not assessed*, not as absent.
