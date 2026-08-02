@@ -1,12 +1,12 @@
 # Punchlist
 
-**A design review that finds specific, named problems in an interface, and refuses to report anything it cannot point at.**
+**A set of instructions an AI coding agent loads before it inspects a build: 50 named interface defects, and one question asked of each. Is this one present here, and where.**
 
-In construction, a building does not hand over until the punch list is cleared. An inspector walks the site and writes down every defect with a location and a required fix. Not "the lobby feels unfinished," but *outlet plate missing, east wall, second floor*. Punchlist is that instrument for software interfaces: 50 named defects, and one question asked of each of them. Is this one present here, and where.
-
-Concretely it is a set of instructions an AI coding agent loads before it inspects a build. The agent does the walking. The list decides what counts as a defect and what evidence it has to produce.
+The agent does the walking. The list decides what counts as a defect and what evidence it has to produce, and it refuses to report anything it cannot point at.
 
 That constraint is the whole design. Ask an AI to "review this screen" and you get a plausible essay nobody can act on or dispute. Ask it which of 50 named defects are present, with the location and the proof for each and the rest left out entirely, and it has to commit to something checkable.
+
+The name comes from construction, where a building does not hand over until the punch list is cleared. An inspector walks the site and writes down every defect with a location and a required fix. Not "the lobby feels unfinished," but *outlet plate missing, east wall, second floor*.
 
 > **Status: pre-release.** The taxonomy, the review pipeline, and the evaluation are all still moving. Don't build anything on the schemas yet.
 
@@ -19,6 +19,8 @@ Fifty defects in three categories, each filed under one of fifteen single-word s
 | **Interface** | 20 | Coherent · Legible · Discoverable · Operable · Candid |
 | **Content** | 16 | Plainspoken · Accurate · Constructive · Navigable · Considerate |
 | **Behavior** | 14 | Truthful · Lossless · Reachable · Convergent · Reversible |
+
+Three of them, to show what a file looks like rather than just the filing system. `swallowed-rule`: a style declaration that was authored but never reached computed style. `recall-tax`: structure the system computed and then made the user remember. `elided-series`: a chart rendering fewer categories than its data contains, with no way for the reader to tell.
 
 Every definition is written as a presence test beginning *"Present when…"*, answerable yes or no against a real product. If an auditor can't answer yes or no, the definition is what's broken. All 50 entries carry at least one public-standard reference and a documented real instance; that is the bar for an entry shipping at all.
 
@@ -33,7 +35,7 @@ git clone https://github.com/xenstalker02/punchlist.git ~/.claude/skills/punchli
 Then ask it to audit a screen, a flow, or a build. Three things make the result better:
 
 1. **Give it the running app if you can.** A live browser pass sees computed styles, focus, and cascade losses; source alone cannot. Both examples in the next section are invisible in source, which reads as correct in each case.
-2. **Declare the severity basis before the sweep**, whether that's absolute usability, demo readiness, or something else. Reviewers who pick the lens afterwards rationalise their ranking to fit it. One run ranked keyboard-unreachable navigation below two cosmetic issues, which was correct under a screen-recording lens and would have been badly misleading without that lens stated.
+2. **Declare the severity basis before the sweep**, whether that's absolute usability, demo readiness, or something else. Reviewers who pick the lens afterwards rationalize their ranking to fit it. One run ranked keyboard-unreachable navigation below two cosmetic issues, which was correct under a screen-recording lens and would have been badly misleading without that lens stated.
 3. **Write a `conventions.md`.** Copy `conventions.example.md` into your project and record the decisions that are deliberate, each with an owner and a reason. Those stop being re-flagged on every run. An entry with no stated reason is how an accident hides as a convention.
 
 Screenshots work too, and Figma works where the API exposes structure. Both see less, and both say so.
@@ -44,9 +46,9 @@ Two real examples, from one production React app, both shipped past a build that
 
 **A callout with no background.** The element was styled `bg-[color-mix(in srgb, var(--sev-opportunity) 10%, transparent)]`. Tailwind doesn't emit a class for an arbitrary value containing spaces, so that rule was never generated at all. Nothing threw. The source still read as correct, and the callout looked like an ordinary paragraph of text, which is exactly what a designer reviewing a screenshot would take it for.
 
-**A colour that lost an argument with itself.** Three components each had two `labelStyle` attributes on one element. JSX keeps the last one, so the design token was silently discarded in favour of a hardcoded `rgba`. `vite build` reports this as a warning and exits 0, which means it scrolls past in a green build. Fixing the first instance is what surfaced the other two.
+**A color that lost an argument with itself.** Three components each had two `labelStyle` attributes on one element. JSX keeps the last one, so the design token was silently discarded in favor of a hardcoded `rgba`. `vite build` reports this as a warning and exits 0, which means it scrolls past in a green build. Fixing the first instance is what surfaced the other two.
 
-Neither produced an error, a failed test, or a red build. That is the class Punchlist exists for. A button that looks fine and does nothing outlives every bug that crashes, because a crash recruits the whole team and a quiet wrong colour recruits nobody. Both are named in the taxonomy as `swallowed-rule`, an entry that exists *because* of them.
+Neither produced an error, a failed test, or a red build. That is the class Punchlist exists for. A button that looks fine and does nothing outlives every bug that crashes, because a crash recruits the whole team and a quiet wrong color recruits nobody. Both are named in the taxonomy as `swallowed-rule`, an entry that exists *because* of them.
 
 ## Why a named defect beats a review
 
@@ -56,9 +58,11 @@ It's also countable, so two audits of the same screen a month apart can be diffe
 
 ## Where the method comes from
 
-This matters more than the tool does, so it goes early. **Punchlist is grounded in inspection methodology that predates the current wave of AI design tools by about thirty years.** It is not a ruleset produced by asking a model what makes a good interface.
+Punchlist is grounded in inspection methodology that predates the current wave of AI design tools by about thirty years. It is not a ruleset produced by asking a model what makes a good interface.
 
 Two traditions do the work. The first is **heuristic evaluation**, the inspection protocol behind the Nielsen Norman [ten usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/), in practice since the early 1990s. Two of its rules carry most of the weight: evaluators inspect independently and never see each other's findings, and severity gets rated *after* findings are merged, by all of them, rather than by whoever found the problem and is now attached to it. Punchlist's pipeline is that protocol with AI agents in the evaluator seats.
+
+One caveat belongs right here, because it is the first thing an informed reader will raise. Heuristic evaluation gets its power from evaluators who are independent in a strong sense: different training, different blind spots, uncorrelated errors. Several agents run from one model are not independent in that sense, and giving each a distinct lens is a partial substitute rather than an equivalent. The rendered-pass failure below is what that looks like when it bites, and it is one more reason the detection eval matters more than the taxonomy does.
 
 The second is the **tenets-and-traps tradition**, the practice of giving interface defects proper names instead of describing them in adjectives. It runs from software defect classification, through UI Tenets & Traps (Medlock and Herbst), to the deceptive-pattern catalogs (Brignull, and the FTC's 2022 staff report). A name ends the argument about whether the thing is real. What's left is whether it's present here.
 
@@ -76,12 +80,10 @@ Here is one as a critic writes it, before severity is assigned: the callout from
 | **symptom** | The callout paints no background and reads as ordinary body text, so the severity distinction the design encodes is invisible. |
 | **evidence** | CSSOM: 0 rules matched the authored class. Control siblings on the same page matched 6 and 10, so the query works. Tailwind emits nothing for an arbitrary value containing spaces. |
 | **verified_how** | `rendered` |
-| **fix** | Re-author without whitespace inside the bracket; composite over a real surface colour rather than `transparent`. |
+| **fix** | Re-author without whitespace inside the bracket; composite over a real surface color rather than `transparent`. |
 | **fixed_how** | `mechanical`, applied and then re-verified by re-sweeping the whole surface, not just the one defect. |
 
-Four things in that row are doing deliberate work.
-
-**Symptom and evidence are separate fields**, because a symptom is what a person experiences and evidence is proof. Keeping them apart is what stops the evidence field quietly filling up with opinion. **`verified_how` records what kind of claim this is**, since measured in a live browser, read in source, and seen in an image are three different things, and collapsing them is how an audit gets trusted for the wrong reasons.
+Symptom and evidence are separate fields, because a symptom is what a person experiences and evidence is proof. Keeping them apart is what stops the evidence field quietly filling up with opinion. `verified_how` records what kind of claim is being made, since measured in a live browser, read in source, and seen in an image are three different things, and collapsing them is how an audit gets trusted for the wrong reasons.
 
 **The evidence names a control.** Zero matches and a broken query look identical, so a zero-match finding has to prove the query could have matched something. This rule is here because a run once reported a real defect class across an entire app when the browser surface simply wasn't compositing.
 
@@ -89,7 +91,7 @@ Four things in that row are doing deliberate work.
 
 ## What it can see, and what it says instead of guessing
 
-Every defect declares `detectable_from`, so a run knows which checks its input can actually support. A screenshot run executes a subset and lists the rest under **Not assessed** rather than guessing at them. Findings whose verification is blocked by another finding are reported as unverifiable, never as absent.
+Every defect declares `detectable_from`, so a run knows which checks its input can support. A screenshot run executes a subset and lists the rest under **Not assessed** rather than guessing. Where one finding blocks the verification of another, the blocked one is reported as unverifiable, never as absent.
 
 Where a cheap deterministic check exists, Punchlist runs the check instead of judging by eye. Each of these is in the repo because eyeballing got it wrong first:
 
@@ -101,13 +103,13 @@ Where a cheap deterministic check exists, Punchlist runs the check instead of ju
 | Did focus really move? | read `document.activeElement` after the transition, never the handler |
 | Is this type handled? | check the consumer function, never `grep` the file |
 
-The last one deserves its own sentence. A file-level grep is the most reliable way to score a real defect as already fixed, because the mentions that satisfy the grep are usually the halves somebody already corrected. `eval/baseline.md` has the worked case: six matches in the file, none in the function that renders.
+A file-level grep is the most reliable way to score a real defect as already fixed, because the mentions that satisfy the grep are usually the halves somebody already corrected. `eval/baseline.md` has the worked case: six matches in the file, none in the function that renders.
 
 ## Where the instrument has been wrong
 
 Two failure records ship with this repo, because a tool that documents only its successes is asking to be taken on faith.
 
-**`eval/screenshot-false-positives.md`** covers an audit from six screenshots that reported two defects which did not exist. It read "summaries truncate mid-sentence" off text the photograph's edge had cut, and "the summary cites an account missing from its own chart" off a chart whose library had dropped the labels that didn't fit. Both wrong readings were pixel-identical to the true one. Both were also the more alarming reading, which is the part that matters: a screenshot auditor fails toward false alarm rather than toward silence, and false alarms are the expensive direction. They spend the user's trust on the first run and send someone to fix working code.
+**`eval/screenshot-false-positives.md`** covers an audit from six screenshots that reported two defects which did not exist. It read "summaries truncate mid-sentence" off text the photograph's edge had cut, and "the summary cites an account missing from its own chart" off a chart whose library had dropped the labels that didn't fit. Both wrong readings were pixel-identical to the true one, and both were the more alarming reading. A screenshot auditor fails toward false alarm rather than toward silence, and false alarms are the expensive direction. They spend the user's trust on the first run and send someone to fix working code.
 
 **`eval/rendered-pass-false-positives.md`** is the same shape, in the path meant to fix the first one. A live-browser run reported a hover-reveal mechanism broken across an entire app. The browser surface wasn't compositing, so CSS transitions never advanced and `getComputedStyle` returned every transitioned property's start value, permanently. There's no error and no null for that condition. A frozen page and a live page return the same kind of number.
 
