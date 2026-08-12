@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title description">
+  <title id="title">Punchlist social preview</title>
+  <desc id="description">A construction punch-list layout showing a named interface defect, its location, evidence, and required fix.</desc>
+  <style>
+    .sans { font-family: "Space Grotesk", "Arial", sans-serif; }
+    .editorial { font-family: "Editorial New", "Times New Roman", serif; }
+    .label { font-size: 14px; font-weight: 700; letter-spacing: 2.2px; }
+    .field { font-size: 24px; font-weight: 600; }
+    .detail { font-size: 20px; font-weight: 400; }
+  </style>
+
+  <rect width="1280" height="640" fill="#FAFAFA"/>
+  <rect x="0" y="0" width="20" height="640" fill="#FBA91E"/>
+  <path d="M64 64H1216M64 560H1216M720 64V560" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+
+  <g fill="#1A1A1A">
+    <text x="64" y="100" class="sans label">DESIGN REVIEW INSTRUMENT</text>
+    <text x="64" y="238" class="editorial" font-size="112" font-weight="400">Punchlist</text>
+    <text x="64" y="326" class="sans" font-size="42" font-weight="700" letter-spacing="-1">NAME THE DEFECT.</text>
+    <text x="64" y="376" class="sans" font-size="42" font-weight="700" letter-spacing="-1">POINT TO THE PROOF.</text>
+
+    <rect x="64" y="448" width="344" height="48" fill="#1A1A1A"/>
+    <text x="82" y="479" class="sans label" fill="#FAFAFA">50 NAMED DEFECTS</text>
+    <text x="438" y="479" class="sans label">EVIDENCE REQUIRED</text>
+  </g>
+
+  <g transform="translate(760 64)" fill="#1A1A1A">
+    <text x="0" y="36" class="sans label">INSPECTION ITEM</text>
+    <rect x="0" y="64" width="456" height="92" fill="#FBA91E"/>
+    <text x="24" y="122" class="sans" font-size="34" font-weight="700" letter-spacing="-.5">FOREIGN FRAME</text>
+
+    <text x="0" y="204" class="sans label">LOCATION</text>
+    <text x="0" y="238" class="sans field">Collections / delete confirmation</text>
+    <path d="M0 264H456" stroke="#1A1A1A" stroke-width="1"/>
+
+    <text x="0" y="308" class="sans label">OBSERVED</text>
+    <text x="0" y="342" class="sans detail">Browser-native dialog interrupts</text>
+    <text x="0" y="370" class="sans detail">the themed interface.</text>
+    <path d="M0 396H456" stroke="#1A1A1A" stroke-width="1"/>
+
+    <text x="0" y="440" class="sans label">REQUIRED FIX</text>
+    <text x="0" y="474" class="sans detail">Use the existing ConfirmationModal.</text>
+  </g>
+
+  <rect x="20" y="560" width="1260" height="80" fill="#1A1A1A"/>
+  <text x="64" y="610" class="sans" font-size="25" font-weight="600" fill="#FAFAFA">A design review that has to show its work.</text>
+  <text x="1216" y="610" class="sans label" text-anchor="end" fill="#FBA91E">github.com/xenstalker02/punchlist</text>
+</svg>

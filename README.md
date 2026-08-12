@@ -1,5 +1,7 @@
 # Punchlist
 
+[![Validate](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml/badge.svg)](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml)
+
 **A set of instructions an AI coding agent loads before it inspects a build: 50 named interface defects, and one question asked of each. Is this one present here, and where.**
 
 The agent does the walking. The list decides what counts as a defect and what evidence it has to produce, and it refuses to report anything it cannot point at.
@@ -26,7 +28,13 @@ Every definition is written as a presence test beginning *"Present when…"*, an
 
 ## Running it
 
-A "skill" here is a folder an AI coding agent reads before it starts a task: one markdown file of instructions plus the taxonomy as JSON data. There's no app, and nothing to install beyond putting the folder where your agent looks for skills. With Claude Code:
+A "skill" here is a folder an AI coding agent reads before it starts a task: one markdown file of instructions plus the taxonomy as JSON data. Install it with the `skills` CLI:
+
+```
+npx skills add xenstalker02/punchlist
+```
+
+Or clone it directly for Claude Code:
 
 ```
 git clone https://github.com/xenstalker02/punchlist.git ~/.claude/skills/punchlist
@@ -35,10 +43,18 @@ git clone https://github.com/xenstalker02/punchlist.git ~/.claude/skills/punchli
 Then ask it to audit a screen, a flow, or a build. Three things make the result better:
 
 1. **Give it the running app if you can.** A live browser pass sees computed styles, focus, and cascade losses; source alone cannot. Both examples in the next section are invisible in source, which reads as correct in each case.
-2. **Declare the severity basis before the sweep**, whether that's absolute usability, demo readiness, or something else. Reviewers who pick the lens afterwards rationalize their ranking to fit it. One run ranked keyboard-unreachable navigation below two cosmetic issues, which was correct under a screen-recording lens and would have been badly misleading without that lens stated.
+2. **Declare the severity basis before the sweep**, whether that's absolute usability, demo readiness, or something else. One run that did not state the lens first ranked keyboard-unreachable navigation below two cosmetic issues. That ranking made sense for screen-recording readiness and would have been misleading as a general usability judgment.
 3. **Write a `conventions.md`.** Copy `conventions.example.md` into your project and record the decisions that are deliberate, each with an owner and a reason. Those stop being re-flagged on every run. An entry with no stated reason is how an accident hides as a convention.
 
 Screenshots work too, and Figma works where the API exposes structure. Both see less, and both say so.
+
+To validate the repository itself, run:
+
+```
+python scripts/validate.py
+```
+
+The validator enforces the schema and evidence requirements, including category counts of 20 interface, 16 content, and 14 behavior defects. It also validates the JSON examples and internal file references in this README and `SKILL.md`, and exits non-zero on failure. CI runs regression tests against deliberately broken copies of the taxonomy.
 
 ## The defects that survive longest are the ones that produce no error
 
@@ -48,7 +64,7 @@ Two real examples, from one production React app, both shipped past a build that
 
 **A color that lost an argument with itself.** Three components each had two `labelStyle` attributes on one element. JSX keeps the last one, so the design token was silently discarded in favor of a hardcoded `rgba`. `vite build` reports this as a warning and exits 0, which means it scrolls past in a green build. Fixing the first instance is what surfaced the other two.
 
-Neither produced an error, a failed test, or a red build. That is the class Punchlist exists for. A button that looks fine and does nothing outlives every bug that crashes, because a crash recruits the whole team and a quiet wrong color recruits nobody. Both are named in the taxonomy as `swallowed-rule`, an entry that exists *because* of them.
+Neither produced an error, a failed test, or a red build. That is the class Punchlist exists for. A button that looks fine and does nothing can outlive a bug that crashes, because a crash recruits the whole team and a quiet wrong color recruits nobody. Both are named in the taxonomy as `swallowed-rule`, an entry that exists *because* of them.
 
 ## Why a named defect beats a review
 
@@ -64,7 +80,7 @@ Two traditions do the work. The first is **heuristic evaluation**, the inspectio
 
 One caveat belongs right here, because it is the first thing an informed reader will raise. Heuristic evaluation gets its power from evaluators who are independent in a strong sense: different training, different blind spots, uncorrelated errors. Several agents run from one model are not independent in that sense, and giving each a distinct lens is a partial substitute rather than an equivalent. The rendered-pass failure below is what that looks like when it bites, and it is one more reason the detection eval matters more than the taxonomy does.
 
-The second is the **tenets-and-traps tradition**, the practice of giving interface defects proper names instead of describing them in adjectives. It runs from software defect classification, through UI Tenets & Traps (Medlock and Herbst), to the deceptive-pattern catalogs (Brignull, and the FTC's 2022 staff report). A name ends the argument about whether the thing is real. What's left is whether it's present here.
+The second is the **tenets-and-traps tradition**, the practice of giving interface defects proper names instead of describing them in adjectives. It runs from software defect classification, through UI Tenets & Traps (Medlock and Herbst), to the deceptive-pattern catalogs (Brignull, and the FTC's 2022 staff report). A name makes the disagreement specific. What's left is whether it's present here.
 
 **The taxonomy in this repo is an original derivation and reproduces no prior deck.** Its names, definitions, groupings, and the selection of what counts as a defect at all were written from a documented record of production defects and from public standards: WCAG 2.2, the GOV.UK Design System and style guide, Apple's Human Interface Guidelines, Material, and the Nielsen and Shneiderman heuristics.
 
@@ -87,7 +103,9 @@ Symptom and evidence are separate fields, because a symptom is what a person exp
 
 **The evidence names a control.** Zero matches and a broken query look identical, so a zero-match finding has to prove the query could have matched something. This rule is here because a run once reported a real defect class across an entire app when the browser surface simply wasn't compositing.
 
-**Severity is absent when the finding is written.** It gets assigned afterwards by every critic on the merged list, 0 to 4, where a 0 is a veto meaning "this is not a defect." Findings averaging under 1 with any 0 vote are dropped and logged. A reviewer rating the severity of their own discovery rates it too high, reliably.
+**Severity is absent when the finding is written.** It gets assigned afterwards by every critic on the merged list, 0 to 4, where a 0 is a veto meaning "this is not a defect." Findings averaging under 1 with any 0 vote are dropped and logged. Delaying the rating keeps the discoverer's first judgment from becoming the only one.
+
+[`examples/compass-collections.json`](examples/compass-collections.json) is the machine-readable final state of a finding from the Compass Collections audit after severity assignment and repair.
 
 ## What it can see, and what it says instead of guessing
 
@@ -103,13 +121,13 @@ Where a cheap deterministic check exists, Punchlist runs the check instead of ju
 | Did focus really move? | read `document.activeElement` after the transition, never the handler |
 | Is this type handled? | check the consumer function, never `grep` the file |
 
-A file-level grep is the most reliable way to score a real defect as already fixed, because the mentions that satisfy the grep are usually the halves somebody already corrected. `eval/baseline.md` has the worked case: six matches in the file, none in the function that renders.
+A file-level grep can wrongly score a real defect as already fixed because the matches may be the instances somebody already corrected. `eval/baseline.md` has the worked case: six matches in the file, none in the function that renders.
 
 ## Where the instrument has been wrong
 
 Two failure records ship with this repo, because a tool that documents only its successes is asking to be taken on faith.
 
-**`eval/screenshot-false-positives.md`** covers an audit from six screenshots that reported two defects which did not exist. It read "summaries truncate mid-sentence" off text the photograph's edge had cut, and "the summary cites an account missing from its own chart" off a chart whose library had dropped the labels that didn't fit. Both wrong readings were pixel-identical to the true one, and both were the more alarming reading. A screenshot auditor fails toward false alarm rather than toward silence, and false alarms are the expensive direction. They spend the user's trust on the first run and send someone to fix working code.
+**`eval/screenshot-false-positives.md`** covers an audit from six screenshots that reported two defects which did not exist. It read "summaries truncate mid-sentence" off text the photograph's edge had cut, and "the summary cites an account missing from its own chart" off a chart whose library had dropped the labels that didn't fit. Both wrong readings were pixel-identical to the true one, and both were the more alarming reading. In this audit, both errors skewed toward false alarms. That is the expensive direction: it spends the user's trust and sends someone to fix working code.
 
 **`eval/rendered-pass-false-positives.md`** is the same shape, in the path meant to fix the first one. A live-browser run reported a hover-reveal mechanism broken across an entire app. The browser surface wasn't compositing, so CSS transitions never advanced and `getComputedStyle` returned every transitioned property's start value, permanently. There's no error and no null for that condition. A frozen page and a live page return the same kind of number.
 
@@ -131,6 +149,8 @@ And there is no score. Counts describe a sweep, they don't rank screens, and a s
 
 ```
 SKILL.md                  the instructions an agent reads: inputs, evaluator pipeline, fix tiers
+scripts/validate.py        dependency-free validation for taxonomy, examples, counts, and references
+tests/test_validate.py     pass and deliberate-failure fixtures for the validator
 taxonomy/                 50 named defects, 3 categories, 15 standards
   interface.json  (20)
   content.json    (16)
@@ -139,7 +159,10 @@ schema/
   defect.schema.json      what a taxonomy entry must contain
   finding.schema.json     what one audited instance must contain
 conventions.example.md    copy into your project; records the decisions that are deliberate
+examples/                  schema-valid output from a real audit
+assets/social-preview.*    editable source and exported GitHub preview
 eval/                     the coverage test, the pinned detection baseline, both failure records
+.github/                   continuous validation and contribution templates
 ```
 
 ## License

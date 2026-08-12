@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/xenstalker02/punchlist/security/advisories/new
+    about: Report credentials, private identifiers, or confidential audit output privately.

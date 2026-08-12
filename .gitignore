@@ -3,6 +3,8 @@ conventions.md
 punchlist-*.md
 out/
 tmp/
+__pycache__/
+*.py[cod]
 
 # Editor / OS
 .DS_Store
