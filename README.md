@@ -1,5 +1,7 @@
 # Punchlist
 
+![Punchlist — named-defect design audit](assets/social-preview.png)
+
 [![Validate](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml/badge.svg)](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml)
 
 **A set of instructions an AI coding agent loads before it inspects a build: 50 named interface defects, and one question asked of each. Is this one present here, and where.**
