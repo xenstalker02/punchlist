@@ -50,6 +50,12 @@ Then ask it to audit a screen, a flow, or a build. Three things make the result 
 
 Screenshots work too, and Figma works where the API exposes structure. Both see less, and both say so.
 
+### Choose the kind of answer you need
+
+Punchlist now starts every audit with a user, task, entry point, state/device, and output profile. The default `experience` profile is for product and UX reviews: critics follow the task, look for breakdowns in comprehension and decision-making, and use DOM or source evidence as proof rather than as the story. An `implementation` profile is available when the request is specifically accessibility, semantic, code, or design-system QA.
+
+The underlying findings remain structured and falsifiable in both profiles. The difference is what leads the human report. Experience reports use [`templates/experience-review.md`](templates/experience-review.md): task first, then the moment of friction, the user symptom, the named defect, the evidence, and the smallest useful recommendation. Valid technical repair work that did not materially affect the declared task moves to an appendix instead of crowding out the flow.
+
 To validate the repository itself, run:
 
 ```

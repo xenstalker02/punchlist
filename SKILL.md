@@ -5,7 +5,7 @@ description: Named-defect design audit. Use when asked to review, audit, or crit
 
 # Punchlist — the named-defect design audit
 
-You are running a punch-list inspection, not writing a review. The output is a list of **named defects, each with a location, evidence, and a required fix** — never prose impressions. If a defect from the taxonomy is not present, it does not appear. If the input cannot support a check, say so in *Not assessed* — never guess.
+You are running a punch-list inspection, not writing a review. The canonical output is a list of **named defects, each with a location, evidence, and a required fix** — never unsupported impressions. A human-facing report may tell the story of a task, but every problem it presents must trace back to a verified finding or an explicitly labeled taxonomy gap. If a defect from the taxonomy is not present, it does not appear. If the input cannot support a check, say so in *Not assessed* — never guess.
 
 ## Inputs, in order of preference
 
@@ -38,19 +38,32 @@ Where a cheap deterministic check exists, run it instead of judging by eye:
 ## Before the sweep
 
 1. Read the project's `conventions.md` if present. A finding that contradicts a declared convention is recorded under *Convention overrides*, not as a defect.
-2. Declare the audit's **severity basis** (e.g. "absolute usability", "demo readiness") — before any finding exists. All severity ratings score against the declared bases only.
-3. **Orientation pass**: walk the surface once to understand what it is for. No flagging during orientation.
+2. Write a one-sentence **evaluation brief** before inspecting. It must name the user, task, entry point, state/device, and output profile. Example: "A first-time vinyl buyer, signed out on desktop, starts from a known album and tries to choose one edition to buy; experience profile."
+3. Choose an **output profile**:
+   - `experience` — the default for a screen, flow, product, or unspecified UX audit. Prioritize task progress, mental models, decision support, feedback, trust, and recovery. Implementation evidence supports the finding; it does not become the story by itself.
+   - `implementation` — use for an explicit accessibility, code, conformance, or design-system QA request. Prioritize operability, semantics, rendered measurements, and source-to-output failures.
+4. Declare the audit's **severity basis** (e.g. "absolute usability", "first-time purchase", "demo readiness") — before any finding exists. All severity ratings score against the declared bases only.
+5. **Orientation pass**: complete the declared task once to understand the product's model and note what already supports the task. No flagging during orientation. Positive evidence may appear in the human report, but it is not scored and does not cancel a defect.
 
 ## The sweep (evaluator pipeline)
 
 Modeled on the heuristic-evaluation protocol (Nielsen): evaluators are independent, severity comes after merge.
 
-1. **3–5 independent critics** (subagents), each briefed with: the taxonomy, the product/domain context, the conventions file, and a distinct lens (e.g. first-use walkthrough · state/persistence prober · content reader · keyboard-only operator). Critics never see each other's findings. Critics never saw the code they'd be grading being written (maker ≠ checker).
+1. **3–5 independent critics** (subagents), each briefed with: the evaluation brief, output profile, taxonomy, product/domain context, conventions file, and a distinct lens. For an experience profile, choose from first-use task walkthrough · mental model and language · comparison and decision support · trust, state, and recovery · keyboard/accessibility. For an implementation profile, choose from rendered integrity · state/persistence · content accuracy · keyboard-only operation · semantic structure. Critics never see each other's findings. Critics never saw the code they'd be grading being written (maker ≠ checker).
 2. Each critic returns findings as the pre-merge subset of `schema/finding.schema.json`: primary `defect`, `surface`, `symptom`, `evidence`, `verified_how`. No severity yet, so this stage does not validate against that schema and is not meant to. Findings validate once step 4 has assigned severity.
 3. **Merge**: deduplicate by defect + surface; genuine one-instance-two-defects cases use `also_matches`, one row.
 4. **Severity questionnaire**: the merged list goes back to every critic; each rates every finding 0–4 (0 = "not a defect" — the veto). Severity = mean; findings averaging < 1 with any 0 votes are dropped as false positives and logged.
 5. Findings whose verification another finding blocks get `unverifiable_due_to`, and appear under *Not assessed*, not as absent.
 6. **Before discarding a vetoed finding, ask what it was reaching for.** A false positive whose *reasoning* was sound often marks a real condition with no entry in the taxonomy — the reviewer saw something, and named the nearest thing available. `elided-series` exists precisely because of a wrong finding: the claim ("this chart is missing data") was false, but the condition it implied (a chart can show fewer categories than it holds, and the reader cannot tell) had no name. Log rejections with a one-line note on whether they imply a missing defect; that log is the taxonomy's backlog.
+
+### Experience-profile eligibility gate
+
+Before rating severity, test every merged observation against the declared task:
+
+- Name the **moment in the journey** and the **user-visible symptom**. If neither can be stated, it is not a lead experience finding.
+- A task-independent standards failure may still qualify when it creates meaningful access, comprehension, control, or trust harm. State that harm plainly.
+- Source, DOM, or semantic evidence proves a finding; it does not automatically make the finding important to this task. Put useful repair work without a material task effect in a secondary implementation appendix.
+- If the user-visible condition is real but no taxonomy definition fits precisely, label it **Taxonomy gap**. Do not force-map it to the nearest defect. A taxonomy gap can appear in a human report as an observed opportunity, but it is not counted as a Punchlist defect until a new entry satisfies the repository's evidence rules.
 
 **Verification is function-scoped, never file-scoped.** When checking whether a value, type, or branch is handled, ask whether *the specific consumer* handles it — not whether the file mentions it. A file-level grep is the single most reliable way to score a real defect as already-fixed, because the mentions that satisfy the grep are usually the halves somebody already corrected. See `eval/baseline.md` for the worked instance.
 
@@ -65,6 +78,11 @@ Tier every confirmed finding:
 The critic that found a defect never applies its fix; the agent that applied a fix never verifies it alone.
 
 ## Output
+
+Punchlist produces two compatible layers:
+
+1. **Canonical finding data** — the checkable record used for merge, severity, fixes, and re-sweeps.
+2. **Audience-facing report** — an optional human view of that record. For an experience profile, use `templates/experience-review.md`. Lead with the task and the decision that became difficult; translate named defects into plain-language headlines; keep technical proof adjacent but subordinate. Include what held up, limits, and the next user test. Do not present a raw defect count as a product verdict.
 
 ```
 # Punch list — <surface> — <date>
