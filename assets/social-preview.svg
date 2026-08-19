@@ -1,13 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title description">
-  <title id="title">Punchlist social preview</title>
-  <desc id="description">A construction punch-list layout showing a named interface defect, its location, evidence, and required fix.</desc>
+  <title id="title">Punchlist task-led UX audit</title>
+  <desc id="description">A user journey breaks at comparison, where Punchlist identifies Recall Tax and requires evidence and a fix.</desc>
   <!-- Export depends on locally installed Space Grotesk and Editorial New; browser fallbacks materially change the composition. -->
   <style>
     .sans { font-family: "Space Grotesk", "Arial", sans-serif; }
     .editorial { font-family: "Editorial New", "Times New Roman", serif; }
-    .label { font-size: 14px; font-weight: 700; letter-spacing: 2.2px; }
-    .field { font-size: 26px; font-weight: 600; }
-    .detail { font-size: 23px; font-weight: 400; }
+    .label { font-size: 13px; font-weight: 700; letter-spacing: 2px; }
+    .detail { font-size: 20px; font-weight: 400; }
   </style>
 
   <rect width="1280" height="640" fill="#FAFAFA"/>
@@ -15,33 +14,45 @@
   <path d="M64 64H1216M720 64V560" fill="none" stroke="#1A1A1A" stroke-width="2"/>
 
   <g fill="#1A1A1A">
-    <text x="64" y="100" class="sans label">DESIGN REVIEW INSTRUMENT</text>
-    <text x="64" y="238" class="editorial" font-size="112" font-weight="400">Punchlist</text>
-    <text x="64" y="326" class="sans" font-size="42" font-weight="700" letter-spacing="-1">NAME THE DEFECT.</text>
-    <text x="64" y="376" class="sans" font-size="42" font-weight="700" letter-spacing="-1">POINT TO THE PROOF.</text>
+    <text x="64" y="100" class="sans label">TASK-LED UX REVIEW</text>
+    <text x="64" y="224" class="editorial" font-size="108" font-weight="400">Punchlist</text>
+    <text x="64" y="310" class="sans" font-size="40" font-weight="700" letter-spacing="-1">FOLLOW THE TASK.</text>
+    <text x="64" y="360" class="sans" font-size="40" font-weight="700" letter-spacing="-1">NAME THE BREAK.</text>
+    <text x="64" y="414" class="sans label">50 NAMED DEFECTS / EVIDENCE REQUIRED</text>
 
-    <text x="64" y="479" class="sans label">50 NAMED DEFECTS</text>
-    <text x="330" y="479" class="sans label">EVIDENCE REQUIRED</text>
+    <path d="M80 472H620" fill="none" stroke="#B8B5AD" stroke-width="2"/>
+    <circle cx="80" cy="472" r="9" fill="#1A1A1A"/>
+    <circle cx="260" cy="472" r="9" fill="#1A1A1A"/>
+    <circle cx="440" cy="472" r="14" fill="#FBA91E" stroke="#1A1A1A" stroke-width="2"/>
+    <circle cx="620" cy="472" r="9" fill="#1A1A1A"/>
+    <text x="80" y="514" class="sans label" text-anchor="middle">01 FIND</text>
+    <text x="260" y="514" class="sans label" text-anchor="middle">02 CHOOSE</text>
+    <text x="440" y="514" class="sans label" text-anchor="middle">03 COMPARE</text>
+    <text x="620" y="514" class="sans label" text-anchor="middle">04 DECIDE</text>
   </g>
 
   <g transform="translate(760 64)" fill="#1A1A1A">
-    <text x="0" y="36" class="sans label">DEFECT</text>
-    <rect x="0" y="64" width="456" height="76" fill="#FBA91E"/>
-    <text x="24" y="114" class="sans" font-size="34" font-weight="700" letter-spacing="-.5">FOREIGN FRAME</text>
+    <text x="0" y="36" class="sans label">JOURNEY MOMENT</text>
+    <rect x="0" y="58" width="456" height="54" fill="#FBA91E"/>
+    <text x="22" y="94" class="sans" font-size="25" font-weight="700">03 / COMPARE EDITIONS</text>
 
-    <text x="0" y="188" class="sans label">LOCATION</text>
-    <text x="0" y="224" class="sans field">Collections / delete confirmation</text>
-    <path d="M0 252H456" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="0" y="154" class="sans label">USER SYMPTOM</text>
+    <text x="0" y="188" class="sans detail">The details are present, but the buyer</text>
+    <text x="0" y="216" class="sans detail">must carry them across pages.</text>
+    <path d="M0 242H456" stroke="#1A1A1A" stroke-width="1"/>
 
-    <text x="0" y="296" class="sans label">OBSERVED</text>
-    <text x="0" y="332" class="sans detail">Browser-native dialog, not the themed one.</text>
-    <path d="M0 360H456" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="0" y="278" class="sans label">PUNCHLIST</text>
+    <text x="0" y="320" class="sans" font-size="34" font-weight="700" letter-spacing="-.5">RECALL TAX</text>
 
-    <text x="0" y="404" class="sans label">REQUIRED FIX</text>
-    <text x="0" y="440" class="sans detail">Use the existing ConfirmationModal.</text>
+    <text x="0" y="364" class="sans label">EVIDENCE</text>
+    <text x="0" y="398" class="sans detail">Version details live on separate pages.</text>
+    <path d="M0 414H456" stroke="#1A1A1A" stroke-width="1"/>
+
+    <text x="0" y="438" class="sans label">REQUIRED FIX</text>
+    <text x="0" y="470" class="sans detail">Bring key differences into a comparison state.</text>
   </g>
 
   <rect x="20" y="560" width="1260" height="80" fill="#1A1A1A"/>
-  <text x="64" y="610" class="sans" font-size="25" font-weight="600" fill="#FAFAFA">A design review that has to show its work.</text>
+  <text x="64" y="610" class="sans" font-size="25" font-weight="600" fill="#FAFAFA">Product judgment first. Evidence required.</text>
   <text x="1216" y="610" class="sans label" text-anchor="end" fill="#FBA91E">github.com/xenstalker02/punchlist</text>
 </svg>

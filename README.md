@@ -1,14 +1,14 @@
 # Punchlist
 
-![Punchlist — named-defect design audit](assets/social-preview.png)
+![Punchlist — task-led UX audit with named defects and evidence](assets/social-preview.png)
 
 [![Validate](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml/badge.svg)](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml)
 
-**A set of instructions an AI coding agent loads before it inspects a build: 50 named interface defects, and one question asked of each. Is this one present here, and where.**
+**Punchlist is a task-led UX audit for AI coding agents. It follows a real user journey, checks that journey against 50 named defects across interface, content, and behavior, and reports only the breakdowns it can prove.**
 
-The agent does the walking. The list decides what counts as a defect and what evidence it has to produce, and it refuses to report anything it cannot point at.
+The default `experience` profile starts with a user, a task, an entry point, and a device or state. It looks for the moments where comprehension, decision-making, trust, or recovery break down. Use `implementation` when the request is specifically about accessibility, semantics, code, or design-system QA.
 
-That constraint is the whole design. Ask an AI to "review this screen" and you get a plausible essay nobody can act on or dispute. Ask it which of 50 named defects are present, with the location and the proof for each and the rest left out entirely, and it has to commit to something checkable.
+Both profiles keep the same finding data: defect, surface, symptom, evidence, severity, and fix. The `experience` profile turns that record into a task-first report, with technical proof beside it but not leading it.
 
 The name comes from construction, where a building does not hand over until the punch list is cleared. An inspector walks the site and writes down every defect with a location and a required fix. Not "the lobby feels unfinished," but *outlet plate missing, east wall, second floor*.
 
@@ -42,7 +42,7 @@ Or clone it directly for Claude Code:
 git clone https://github.com/xenstalker02/punchlist.git ~/.claude/skills/punchlist
 ```
 
-Then ask it to audit a screen, a flow, or a build. Three things make the result better:
+Then describe the user, task, entry point, state or device, and the output profile you need. If you do not name a profile, Punchlist uses `experience`. Three things make the result better:
 
 1. **Give it the running app if you can.** A live browser pass sees computed styles, focus, and cascade losses; source alone cannot. Both examples in the next section are invisible in source, which reads as correct in each case.
 2. **Declare the severity basis before the sweep**, whether that's absolute usability, demo readiness, or something else. One run that did not state the lens first ranked keyboard-unreachable navigation below two cosmetic issues. That ranking made sense for screen-recording readiness and would have been misleading as a general usability judgment.
