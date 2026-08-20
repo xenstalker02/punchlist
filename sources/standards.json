@@ -1,0 +1,76 @@
+{
+  "sources": [
+    {
+      "source_id": "wcag-2.2",
+      "publisher": "World Wide Web Consortium",
+      "title": "Web Content Accessibility Guidelines (WCAG) 2.2",
+      "canonical_url": "https://www.w3.org/TR/WCAG22/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^(?:[1-4]\\.[0-9]+\\.[0-9]+ .+|WCAG failure technique F[0-9]+)$"]
+    },
+    {
+      "source_id": "apple-hig",
+      "publisher": "Apple",
+      "title": "Human Interface Guidelines",
+      "canonical_url": "https://developer.apple.com/design/human-interface-guidelines/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^Apple HIG(?: |:).+$"]
+    },
+    {
+      "source_id": "w3c-css",
+      "publisher": "World Wide Web Consortium",
+      "title": "CSS Cascading and Inheritance Level 5",
+      "canonical_url": "https://www.w3.org/TR/css-cascade-5/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^CSS Cascading and Inheritance Level 5 .+$"]
+    },
+    {
+      "source_id": "gov-uk",
+      "publisher": "GOV.UK",
+      "title": "Content design guidance",
+      "canonical_url": "https://www.gov.uk/guidance/content-design",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^GOV\\.UK .+$"]
+    },
+    {
+      "source_id": "material-design",
+      "publisher": "Google",
+      "title": "Material Design",
+      "canonical_url": "https://m3.material.io/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^Material(?: |:).+$"]
+    },
+    {
+      "source_id": "nielsen-norman-group",
+      "publisher": "Nielsen Norman Group",
+      "title": "10 Usability Heuristics for User Interface Design",
+      "canonical_url": "https://www.nngroup.com/articles/ten-usability-heuristics/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^NN/g #[0-9]+ .+$"]
+    },
+    {
+      "source_id": "shneiderman",
+      "publisher": "Ben Shneiderman",
+      "title": "Eight Golden Rules of Interface Design",
+      "canonical_url": "https://www.cs.umd.edu/users/ben/goldenrules.html",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^Shneiderman #[0-9]+ .+$"]
+    },
+    {
+      "source_id": "tailwind-css",
+      "publisher": "Tailwind Labs",
+      "title": "Using arbitrary values",
+      "canonical_url": "https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^Tailwind CSS .+$"]
+    },
+    {
+      "source_id": "general-design-references",
+      "publisher": "General design reference (explicitly labeled)",
+      "title": "General design references",
+      "canonical_url": "https://www.w3.org/WAI/fundamentals/accessibility-intro/",
+      "accessed_on": "2026-08-20",
+      "citation_patterns": ["^(?:Classical typographic measure|Dead-code principle|Gestalt proximity principle).*$"]
+    }
+  ]
+}

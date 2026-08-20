@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Platform experience review</title>
+<style>
+:root {
+  --color-canvas: #FFFFFF;
+  --color-ink: #10233D;
+  --color-muted: #526273;
+  --color-accent: #2457D6;
+  --color-supporting: #7353BA;
+  --color-evidence-background: #F1F5F9;
+  --color-evidence-label: #16324F;
+  --font-display: Editorial New, Georgia, serif;
+  --font-body: Space Grotesk, Arial, sans-serif;
+  --report-footer: "Sample Platform · Independent experience review · Punchlist contributors";
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 96px;
+  --page-margin: 48px;
+  --page-columns: 12;
+  --page-gutter: 16px;
+}
+@page {
+  size: Letter portrait;
+  margin: 0.55in;
+  @bottom-center { content: var(--report-footer); font: 8pt var(--font-body); color: var(--color-muted); }
+}
+
+* { box-sizing: border-box; }
+html { background: var(--color-canvas); color: var(--color-ink); }
+body { margin: 0; font: 10pt/1.5 var(--font-body); }
+h1, h2, h3, p, ol, ul, dl { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.05; }
+h1 { font-size: 34pt; max-width: 9.5in; }
+h2 { font-size: 21pt; }
+h3 { font-family: var(--font-body); font-size: 11pt; font-weight: 700; }
+
+.report-page { border-top: 2px solid var(--color-ink); padding: var(--space-7) 0; }
+.report-page[data-section="cover"] { min-height: 9.4in; break-after: page; }
+.report-page[data-section="lead-findings"], .report-page[data-section="recommendations"], .report-page[data-section="appendix"] { break-before: page; }
+.eyebrow, .metadata, .finding-id, .count-list, .journey-step, .recommendation-label, .evidence-label, .evidence-meta, .cover-facts dt, .trace-list dt { color: var(--color-muted); font: 10.667px/1.35 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--color-accent); font-weight: 700; margin-bottom: var(--space-3); }
+.cover-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--page-gutter); align-items: end; }
+.cover-grid > *:first-child { grid-column: span 8; }
+.cover-grid > *:last-child { grid-column: span 4; }
+.task, .metadata, .byline, .platform-reference { margin-top: var(--space-5); }
+.metadata { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.byline { border-left: 3px solid var(--color-supporting); font-weight: 700; padding-left: var(--space-3); }
+.byline a, .platform-reference a { color: var(--color-accent); }
+.cover-facts, .trace-list { display: grid; gap: var(--space-3); margin-top: var(--space-7); }
+.cover-facts { grid-template-columns: repeat(3, 1fr); }
+.cover-facts div, .trace-list div { display: grid; gap: var(--space-1); }
+.cover-facts dd, .trace-list dd { margin: 0; }
+.journey-list, .finding-list, .recommendation-list, .appendix-list { display: grid; gap: var(--space-4); margin-top: var(--space-5); padding: 0; list-style: none; }
+.journey-list { grid-template-columns: repeat(3, 1fr); }
+.journey-item, .finding-card, .recommendation, .evidence-summary, .appendix-item { border: 1px solid var(--color-ink); border-radius: 0; padding: var(--space-4); }
+.journey-item, .recommendation { break-inside: avoid; }
+.journey-step { display: block; margin-bottom: var(--space-2); color: var(--color-accent); font-weight: 700; }
+.finding-card { display: grid; gap: var(--space-3); background: var(--color-evidence-background); }
+.finding-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.finding-id { color: var(--color-evidence-label); }
+.evidence-summary { display: grid; gap: var(--space-2); background: var(--color-canvas); border-color: var(--color-evidence-label); }
+.evidence-label, .evidence-meta { color: var(--color-evidence-label); }
+.evidence-alt { font-style: italic; }
+.strength-list { margin-top: var(--space-5); padding-left: var(--space-5); }
+.strength-list li + li { margin-top: var(--space-3); }
+.recommendation { display: grid; gap: var(--space-3); border-left: 4px solid var(--color-accent); }
+.next-test { margin-top: var(--space-5); border-top: 1px solid var(--color-ink); padding-top: var(--space-4); }
+.count-list { display: grid; grid-template-columns: repeat(2, max-content); gap: var(--space-2) var(--space-3); margin-top: var(--space-5); }
+.count-list dd { color: var(--color-ink); margin: 0; }
+.appendix-item p + p { margin-top: var(--space-2); }
+.appendix-group { break-inside: avoid-page; }
+.appendix-group + .appendix-group { margin-top: var(--space-5); }
+.trace-list { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-4); }
+.evidence-list { margin: var(--space-3) 0 0; padding-left: var(--space-5); }
+
+@media screen {
+  .report { max-width: 8.5in; margin: 0 auto; padding: 0 var(--space-5); }
+}
+
+@media screen and (max-width: 42rem) {
+  body { font-size: 11pt; }
+  h1 { font-size: 27pt; }
+  .report { padding: 0 var(--space-4); }
+  .report-page[data-section="cover"] { min-height: 0; }
+  .cover-grid { grid-template-columns: 1fr; align-items: start; }
+  .cover-grid > *:first-child, .cover-grid > *:last-child { grid-column: auto; }
+  .cover-grid > *:last-child { margin-top: var(--space-6); }
+  .cover-facts, .journey-list, .trace-list { grid-template-columns: 1fr; }
+  .finding-heading { align-items: flex-start; flex-direction: column; }
+}
+
+@media print {
+  .report-page { min-height: 0; }
+}
+
+</style>
+</head>
+<body>
+<main class="report" aria-label="Experience review report">
+<article class="report-page" data-section="cover"><div class="cover-grid"><div><p class="eyebrow">Independent experience review</p><h1>A first-time evaluator needs clearer support while comparing options.</h1><p class="task">Compare options before starting a core workflow.</p></div><div><p class="eyebrow">Prepared for</p><p>Sample Platform team</p><p class="metadata">Sample Platform · synthetic · 2026-08-20</p></div></div><dl class="cover-facts"><div><dt>User</dt><dd>A first-time evaluator</dd></div><div><dt>Context</dt><dd>First visit · Desktop · experience</dd></div><div><dt>Entry point</dt><dd>Synthetic evaluation start page</dd></div><div><dt>Method</dt><dd>rendered</dd></div><div><dt>Evidence scope</dt><dd>rendered</dd></div><div><dt>Severity basis</dt><dd>Ability to choose an option with confidence</dd></div></dl><p class="byline">Punchlist contributors · Product Designer · <a href="https://github.com/xenstalker02/punchlist">github.com/xenstalker02/punchlist</a></p><p class="metadata">sample-platform-first-workflow-report</p></article>
+<article class="report-page" data-section="journey"><p class="eyebrow">Journey</p><h2>From arrival to action</h2><ol class="journey-list"><li class="journey-item"><span class="journey-step">01 · arrive</span><p>The evaluator opens the synthetic start page.</p></li><li class="journey-item"><span class="journey-step">02 · compare</span><p>The evaluator compares options before committing.</p></li><li class="journey-item"><span class="journey-step">03 · start</span><p>The evaluator chooses an option and starts the core workflow.</p></li></ol></article>
+<article class="report-page" data-section="lead-findings"><p class="eyebrow">Lead findings</p><h2>What most affects the journey</h2><ol class="finding-list"><li class="finding-card"><div class="finding-heading"><h3>Details are hard to read while comparing options.</h3><span class="finding-id">f-fc11114007df</span></div><p>The option detail text is hard to distinguish from its card background.</p><p><strong>vanishing-ink</strong> · decision screen</p><aside class="evidence-summary"><p class="evidence-label">rendered evidence note</p><p>A rendered comparison probe confirms that the detail text remains visually indistinct from its card background.</p><p class="evidence-meta">rendered · synthetic · prov-synthetic-surface</p></aside></li><li class="finding-card"><div class="finding-heading"><h3>Selection details disappear during comparison.</h3><span class="finding-id">f-6231265220ac</span></div><p>The evaluator must remember a selected option while comparing it elsewhere.</p><p><strong>recall-tax</strong> · option list → comparison view</p><aside class="evidence-summary"><p class="evidence-label">rendered evidence note</p><p>A rendered comparison probe confirms that the selected option summary is absent from the comparison view.</p><p class="evidence-meta">rendered · synthetic · prov-synthetic-surface</p></aside></li></ol><dl class="count-list"><dt>recall-tax</dt><dd>1</dd><dt>vanishing-ink</dt><dd>1</dd></dl></article>
+<article class="report-page" data-section="strengths"><p class="eyebrow">Strengths</p><h2>What supports progress</h2><ul class="strength-list"><li>The synthetic entry point names the next step clearly.</li></ul></article>
+<article class="report-page" data-section="recommendations"><p class="eyebrow">Recommendations</p><h2>Make the next comparison easier</h2><ol class="recommendation-list"><li class="recommendation"><p class="recommendation-label">recommendation-contrast · vanishing-ink</p><p>Increase detail-text contrast on comparison cards.</p></li><li class="recommendation"><p class="recommendation-label">recommendation-memory · recall-tax</p><p>Persist the selected option summary through comparison.</p></li></ol><div class="next-test"><p class="eyebrow">Next test</p><p>Observe first-time evaluators comparing two synthetic options.</p><p class="metadata">Covers: vanishing-ink, recall-tax</p></div></article>
+<article class="report-page" data-section="appendix"><p class="eyebrow">Appendix</p><h2>Canonical records and limits</h2><section class="appendix-group"><h3>Findings</h3><ul class="appendix-list"><li class="appendix-item"><div class="finding-heading"><h3>vanishing-ink</h3><span class="finding-id">f-fc11114007df</span></div><dl class="trace-list"><div><dt>Symptom</dt><dd>The option detail text is hard to distinguish from its card background.</dd></div><div><dt>Surface</dt><dd>decision screen</dd></div><div><dt>Locator</dt><dd>primary comparison card</dd></div><div><dt>Verified</dt><dd>rendered</dd></div><div><dt>Standard</dt><dd>Legible</dd></div><div><dt>References</dt><dd>1.4.3 Contrast Minimum (AA); 1.4.11 Non-text Contrast (AA)</dd></div></dl><p class="evidence-label">Evidence</p><ul class="evidence-list"><li><span class="evidence-label">rendered</span>: A rendered comparison probe confirms that the detail text remains visually indistinct from its card background. <span class="evidence-meta">synthetic rendered probe</span></li></ul></li><li class="appendix-item"><div class="finding-heading"><h3>recall-tax</h3><span class="finding-id">f-6231265220ac</span></div><dl class="trace-list"><div><dt>Symptom</dt><dd>The evaluator must remember a selected option while comparing it elsewhere.</dd></div><div><dt>Surface</dt><dd>option list → comparison view</dd></div><div><dt>Locator</dt><dd>selected option summary</dd></div><div><dt>Verified</dt><dd>rendered</dd></div><div><dt>Standard</dt><dd>Discoverable</dd></div><div><dt>References</dt><dd>NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/); Shneiderman #8 Reduce short-term memory load</dd></div></dl><p class="evidence-label">Evidence</p><ul class="evidence-list"><li><span class="evidence-label">rendered</span>: A rendered comparison probe confirms that the selected option summary is absent from the comparison view. <span class="evidence-meta">synthetic rendered probe</span></li></ul></li></ul></section><section class="appendix-group"><h3>Evidence gaps</h3><ul class="appendix-list"><li class="appendix-item"><h3>g-synthetic-recovery</h3><p>Synthetic evidence does not cover recovery after an interrupted comparison.</p></li></ul></section><section class="appendix-group"><h3>Not assessed</h3><ul class="appendix-list"><li class="appendix-item"><h3>tint-on-tint-trap</h3><p>The synthetic fixture omits the rendered token values required for this eligible comparison.</p><p>Capture the rendered foreground and background token values.</p></li></ul></section></article>
+</main>
+</body>
+</html>

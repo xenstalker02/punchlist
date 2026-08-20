@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xenstalker02/punchlist/schema/theme.schema.json",
+  "title": "Punchlist report theme or bounded platform accent adapter",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["theme_id", "platform_name", "accent", "supporting", "evidence_background", "evidence_label", "colors", "typography", "spacing", "page", "attribution"],
+      "additionalProperties": false,
+      "properties": {
+        "theme_id": {"type": "string", "minLength": 1}, "platform_name": {"type": "string", "minLength": 1}, "source_url": {"type": "string", "pattern": "^https://"},
+        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "supporting": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_label": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"},
+        "colors": {"type": "object", "required": ["ink", "canvas", "muted"], "additionalProperties": false, "properties": {"ink": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "canvas": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "muted": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}}},
+        "typography": {"type": "object", "required": ["display_family", "body_family"], "additionalProperties": false, "properties": {"display_family": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 .-]{0,79}\\Z"}, "body_family": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 .-]{0,79}\\Z"}}},
+        "spacing": {"type": "array", "minItems": 1, "items": {"type": "number", "minimum": 0}},
+        "page": {"type": "object", "required": ["size", "margin", "grid"], "additionalProperties": false, "properties": {"size": {"enum": ["letter"]}, "margin": {"type": "number", "minimum": 0}, "grid": {"type": "object", "required": ["columns", "gutter"], "additionalProperties": false, "properties": {"columns": {"type": "integer", "minimum": 1}, "gutter": {"type": "number", "minimum": 0}}}}},
+        "attribution": {"type": "object", "required": ["label"], "additionalProperties": false, "properties": {"label": {"type": "string", "minLength": 1}}}
+      }
+    },
+    {
+      "type": "object",
+      "required": ["platform_name", "source_url", "accent", "supporting", "evidence_background", "evidence_label"],
+      "additionalProperties": false,
+      "properties": {
+        "platform_name": {"type": "string", "minLength": 1}, "source_url": {"type": "string", "pattern": "^https://"},
+        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "supporting": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_label": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}
+      }
+    }
+  ]
+}

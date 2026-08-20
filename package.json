@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "test": "playwright test tests/report-visual.spec.mjs",
+    "test:report": "playwright test tests/report-visual.spec.mjs",
+    "report:pdf": "node scripts/print_report.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

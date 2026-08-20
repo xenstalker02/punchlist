@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xenstalker02/punchlist/schema/audit.schema.json",
+  "title": "Punchlist canonical audit bundle",
+  "type": "object",
+  "required": ["audit_id", "created_at", "punchlist_version", "taxonomy_version", "schema_version", "brief", "target", "provenance", "capabilities", "critics", "ledger", "findings", "rejections", "gaps", "overrides", "not_assessed", "strengths", "redaction"],
+  "properties": {
+    "audit_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "punchlist_version": { "type": "string", "minLength": 1 },
+    "taxonomy_version": { "type": "string", "minLength": 1 },
+    "schema_version": { "type": "string", "minLength": 1 },
+    "brief": { "type": "object", "required": ["user", "task", "entry_point", "state", "device", "profile", "severity_basis"], "additionalProperties": false, "properties": { "user": { "type": "string", "minLength": 1 }, "task": { "type": "string", "minLength": 1 }, "entry_point": { "type": "string", "minLength": 1 }, "state": { "type": "string", "minLength": 1 }, "device": { "type": "string", "minLength": 1 }, "profile": { "type": "string", "minLength": 1 }, "severity_basis": { "type": "string", "minLength": 1 } } },
+    "target": { "type": "object", "required": ["classification"], "additionalProperties": false, "properties": { "classification": { "enum": ["public", "authorized-restricted", "synthetic"] }, "authorization": { "type": "object", "required": ["authorization_id", "basis", "scope", "recipients", "publication_approved"], "additionalProperties": false, "properties": { "authorization_id": { "type": "string", "minLength": 1 }, "basis": { "type": "string", "minLength": 1 }, "scope": { "type": "string", "minLength": 1 }, "recipients": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }, "publication_approved": { "type": "boolean" } } } } },
+    "provenance": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["provenance_id", "classification", "source", "summary", "publication_approved"], "additionalProperties": false, "properties": { "provenance_id": { "type": "string", "pattern": "^prov-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "classification": { "enum": ["public", "authorized-restricted", "synthetic"] }, "source": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 }, "publication_approved": { "type": "boolean" }, "authorization_id": { "type": "string", "minLength": 1 } } } },
+    "capabilities": { "type": "object", "required": ["rendered_surface_proven_live", "supported_inputs"], "properties": { "rendered_surface_proven_live": { "type": "boolean" }, "supported_inputs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } } } },
+    "critics": { "type": "array", "items": { "type": "object", "required": ["critic_id", "ledger_ids"], "properties": { "critic_id": { "type": "string", "minLength": 1 }, "ledger_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } } } } },
+    "ledger": { "type": "array", "items": { "type": "object", "required": ["ledger_id", "defect", "disposition", "eligibility_evidence", "probe", "closure_evidence"], "additionalProperties": false, "properties": { "ledger_id": { "type": "string", "minLength": 1 }, "defect": { "type": "string", "minLength": 1 }, "disposition": { "enum": ["found", "checked_absent", "not_assessed"] }, "eligibility_evidence": { "type": "string", "minLength": 1 }, "probe": { "type": "string", "minLength": 1 }, "closure_evidence": { "type": "string", "minLength": 1 }, "not_assessed_id": { "type": "string", "pattern": "^na-[a-z0-9]+(?:-[a-z0-9]+)*$" } } } },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding_id", "defect", "surface", "locator", "fingerprint", "manifestation", "symptom", "evidence", "verified_how", "severity_basis", "severity_votes", "severity", "decision", "fix", "fix_tier", "fixed_how", "lifecycle"],
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" },
+          "defect": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "also_matches": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" } },
+          "surface": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "object", "required": ["a", "b"], "additionalProperties": false, "properties": { "a": { "type": "string", "minLength": 1 }, "b": { "type": "string", "minLength": 1 } } }] },
+          "locator": { "type": "string", "minLength": 1 },
+          "fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "manifestation": { "enum": ["consistent", "conditional", "coincidentally-correct"] },
+          "symptom": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "evidence": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["type", "provenance_id", "classification", "source", "summary", "verified_how", "publication_approved"], "additionalProperties": false, "properties": { "type": { "enum": ["screenshot", "rendered", "source", "interaction", "content"] }, "provenance_id": { "type": "string", "pattern": "^prov-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "classification": { "enum": ["public", "authorized-restricted", "synthetic"] }, "source": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 }, "verified_how": { "enum": ["screenshot", "rendered", "source", "interaction", "content"] }, "publication_approved": { "type": "boolean" }, "authorization_id": { "type": "string", "minLength": 1 }, "alt": { "type": "string", "minLength": 1 } } } },
+          "verified_how": { "enum": ["screenshot", "rendered", "source", "interaction", "content"] },
+          "severity_basis": { "type": "string", "minLength": 1 },
+          "severity_votes": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["critic_id", "severity"], "additionalProperties": false, "properties": { "critic_id": { "type": "string", "minLength": 1 }, "severity": { "type": "number", "minimum": 0, "maximum": 4 } } } },
+          "severity": { "type": "number", "minimum": 0.000001, "maximum": 4 },
+          "decision": { "enum": ["confirmed"] },
+          "fix": { "type": "string", "minLength": 1 },
+          "fix_tier": { "enum": ["mechanical", "proposed", "reported-only"] },
+          "fixed_how": { "enum": ["mechanical", "proposed", "reported-only"] },
+          "lifecycle": { "enum": ["open", "fixed", "superseded"] },
+          "resweep": { "type": "object", "additionalProperties": false, "properties": { "status": { "enum": ["verified-fixed"] }, "superseded_by": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" }, "verified_how": { "enum": ["screenshot", "rendered", "source", "interaction", "content"] }, "verified_at": { "type": "string", "minLength": 1 }, "verified_by": { "type": "string", "minLength": 1 }, "evidence": { "type": "string", "minLength": 1 } } },
+          "standard": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "items": { "type": "object" } },
+          "blocks_scope": { "type": "string", "minLength": 1 },
+          "unverifiable_due_to": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" }
+        }
+      }
+    },
+    "rejections": { "type": "array", "items": { "type": "object", "required": ["observation", "reason"], "properties": { "observation": { "type": "string", "minLength": 1 }, "reason": { "type": "string", "minLength": 1 } } } },
+    "gaps": { "type": "array", "items": { "type": "object", "required": ["gap_id", "summary"], "properties": { "gap_id": { "type": "string", "pattern": "^g-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "summary": { "type": "string", "minLength": 1 } } } },
+    "overrides": { "type": "array", "items": { "type": "object" } },
+    "not_assessed": { "type": "array", "items": { "type": "object", "required": ["not_assessed_id", "check_id", "blocker", "probe", "escalation_required"], "additionalProperties": false, "properties": { "not_assessed_id": { "type": "string", "pattern": "^na-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "check_id": { "type": "string", "minLength": 1 }, "blocker": { "type": "string", "minLength": 1 }, "probe": { "type": "string", "minLength": 1 }, "escalation_required": { "enum": [true] } } } },
+    "strengths": { "type": "array", "items": { "type": "object", "required": ["strength_id", "summary", "evidence"], "additionalProperties": false, "properties": { "strength_id": { "type": "string", "pattern": "^s-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "summary": { "type": "string", "minLength": 1 }, "evidence": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["provenance_id", "classification", "source", "summary", "verified_how", "publication_approved"], "additionalProperties": false, "properties": { "provenance_id": { "type": "string", "pattern": "^prov-[a-z0-9]+(?:-[a-z0-9]+)*$" }, "classification": { "enum": ["public", "authorized-restricted", "synthetic"] }, "source": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 }, "verified_how": { "enum": ["screenshot", "rendered", "source", "interaction", "content"] }, "publication_approved": { "type": "boolean" }, "authorization_id": { "type": "string", "minLength": 1 }, "alt": { "type": "string", "minLength": 1 } } } } } } },
+    "redaction": { "type": "object", "required": ["status", "reviewer", "attested"], "additionalProperties": false, "properties": { "status": { "enum": ["complete", "not-required"] }, "reviewer": { "type": "string", "minLength": 1 }, "attested": { "type": "boolean" } } },
+    "resweep": { "type": "object" },
+    "supersession": { "type": "object" }
+  }
+}

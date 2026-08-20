@@ -3,7 +3,7 @@
   "$id": "https://github.com/xenstalker02/punchlist/schema/defect.schema.json",
   "title": "Punchlist taxonomy entry (named defect)",
   "type": "object",
-  "required": ["id", "name", "category", "standard", "definition", "symptom", "detectable_from", "fix_pattern"],
+  "required": ["id", "name", "category", "standard", "definition", "symptom", "detectable_from", "fix_pattern", "refs", "illustration"],
   "properties": {
     "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
     "name": { "type": "string", "description": "Original noun phrase. Never borrowed from prior decks." },
@@ -23,11 +23,35 @@
     "fix_pattern": { "type": "string" },
     "refs": {
       "type": "object",
+      "required": ["wcag", "other"],
+      "additionalProperties": false,
       "properties": {
-        "wcag": { "type": "array", "items": { "type": "string" } },
-        "other": { "type": "array", "items": { "type": "string" } }
+        "wcag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source_id", "citation"],
+            "additionalProperties": false,
+            "properties": {
+              "source_id": { "type": "string", "minLength": 1 },
+              "citation": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "other": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source_id", "citation"],
+            "additionalProperties": false,
+            "properties": {
+              "source_id": { "type": "string", "minLength": 1 },
+              "citation": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
       }
     },
-    "example": { "type": "string", "description": "A documented real instance. Entries without a real instance or a standards hook do not ship." }
+    "illustration": { "type": "string", "pattern": "^Non-evidentiary illustration: .+", "description": "A generic explanatory scenario, explicitly not evidence that the defect occurred in a real product." }
   }
 }

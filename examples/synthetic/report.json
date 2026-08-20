@@ -1,0 +1,26 @@
+{
+  "report_id": "sample-platform-first-workflow-report",
+  "audit_id": "sample-platform-first-workflow",
+  "audience": "Sample Platform team",
+  "author": "Synthetic evaluator",
+  "publication": "synthetic",
+  "publication_approval": {"approved":true,"approved_by":"Synthetic reviewer","scope":"Committed synthetic example"},
+  "theme": {"theme_id":"punchlist-default"},
+  "cover": {"statement":"A first-time evaluator needs clearer support while comparing options.","task":"Compare options before starting a core workflow."},
+  "journey": [
+    {"moment_id":"arrive","summary":"The evaluator opens the synthetic start page."},
+    {"moment_id":"compare","summary":"The evaluator compares options before committing."},
+    {"moment_id":"start","summary":"The evaluator chooses an option and starts the core workflow."}
+  ],
+  "lead_findings": ["f-fc11114007df","f-6231265220ac"],
+  "lead_headlines": {"f-fc11114007df":"Details are hard to read while comparing options.","f-6231265220ac":"Selection details disappear during comparison."},
+  "strengths": ["s-clear-entry-point"],
+  "recommendations": [
+    {"recommendation_id":"recommendation-contrast","canonical_ids":["f-fc11114007df"],"summary":"Increase detail-text contrast on comparison cards."},
+    {"recommendation_id":"recommendation-memory","canonical_ids":["f-6231265220ac"],"summary":"Persist the selected option summary through comparison."}
+  ],
+  "next_test": {"summary":"Observe first-time evaluators comparing two synthetic options.","canonical_ids":["f-fc11114007df","f-6231265220ac"]},
+  "appendix": {"finding_ids":["f-fc11114007df","f-6231265220ac"],"gap_ids":["g-synthetic-recovery"],"not_assessed_ids":["na-tint-on-tint-trap"]},
+  "redaction": {"attested": true},
+  "review": {"status":"approved","reviewer":"Synthetic reviewer"}
+}

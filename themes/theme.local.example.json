@@ -1,0 +1,13 @@
+{
+  "theme_id": "punchlist-default-local-example",
+  "platform_name": "Sample Platform",
+  "accent": "#2457D6",
+  "supporting": "#7353BA",
+  "evidence_background": "#F1F5F9",
+  "evidence_label": "#16324F",
+  "colors": {"ink":"#10233D","canvas":"#FFFFFF","muted":"#526273"},
+  "typography": {"display_family":"Editorial New","body_family":"Space Grotesk"},
+  "spacing": [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96],
+  "page": {"size":"letter","margin":48,"grid":{"columns":12,"gutter":16}},
+  "attribution": {"label":"Copy to theme.local.json for an untracked local theme"}
+}

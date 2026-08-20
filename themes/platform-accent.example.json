@@ -1,0 +1,8 @@
+{
+  "platform_name": "Sample Platform",
+  "source_url": "https://sample-platform.example",
+  "accent": "#2457D6",
+  "supporting": "#7353BA",
+  "evidence_background": "#F1F5F9",
+  "evidence_label": "#16324F"
+}

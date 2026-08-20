@@ -1,0 +1,344 @@
+{
+  "audit_id": "sample-platform-first-workflow",
+  "created_at": "2026-08-20T00:00:00Z",
+  "punchlist_version": "0.1.0",
+  "taxonomy_version": "0.1.0",
+  "schema_version": "1.0",
+  "brief": {
+    "user": "A first-time evaluator",
+    "task": "Compare options before starting a core workflow.",
+    "entry_point": "Synthetic evaluation start page",
+    "state": "First visit",
+    "device": "Desktop",
+    "profile": "experience",
+    "severity_basis": "Ability to choose an option with confidence"
+  },
+  "target": {
+    "classification": "synthetic"
+  },
+  "provenance": [
+    {
+      "provenance_id": "prov-synthetic-surface",
+      "classification": "synthetic",
+      "source": "Synthetic Sample Platform fixture",
+      "summary": "Invented Sample Platform evidence.",
+      "publication_approved": true
+    }
+  ],
+  "capabilities": {
+    "rendered_surface_proven_live": true,
+    "supported_inputs": [
+      "rendered"
+    ]
+  },
+  "critics": [
+    {
+      "critic_id": "synthetic-critic",
+      "ledger_ids": [
+        "ledger-01",
+        "ledger-02",
+        "ledger-04",
+        "ledger-05",
+        "ledger-07",
+        "ledger-08",
+        "ledger-11",
+        "ledger-12",
+        "ledger-13",
+        "ledger-17",
+        "ledger-21",
+        "ledger-23",
+        "ledger-24",
+        "ledger-25",
+        "ledger-26",
+        "ledger-27",
+        "ledger-28",
+        "ledger-30",
+        "ledger-31",
+        "ledger-33",
+        "ledger-35"
+      ]
+    }
+  ],
+  "ledger": [
+    {
+      "ledger_id": "ledger-01",
+      "defect": "state-babel",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-02",
+      "defect": "double-booked-signal",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-04",
+      "defect": "weight-whiplash",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-05",
+      "defect": "order-drift",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-07",
+      "defect": "long-distance-label",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-08",
+      "defect": "marathon-measure",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-11",
+      "defect": "sub-floor-target",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-12",
+      "defect": "vanishing-ink",
+      "disposition": "found",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic rendered comparison.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-13",
+      "defect": "tint-on-tint-trap",
+      "disposition": "not_assessed",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Compare the rendered foreground and background token values.",
+      "closure_evidence": "The synthetic rendered probe omits the token values required to distinguish a tint relationship from a flat color.",
+      "not_assessed_id": "na-tint-on-tint-trap"
+    },
+    {
+      "ledger_id": "ledger-17",
+      "defect": "recall-tax",
+      "disposition": "found",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic interaction check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-21",
+      "defect": "backstage-bleed",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-23",
+      "defect": "arithmetic-mirage",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-24",
+      "defect": "phantom-freshness",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-25",
+      "defect": "scolding-machine",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-26",
+      "defect": "foghorn-error",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-27",
+      "defect": "blindfold-link",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-28",
+      "defect": "blank-doorplate",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-30",
+      "defect": "corporate-fog",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-31",
+      "defect": "guessing-game-field",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-33",
+      "defect": "needless-census",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    },
+    {
+      "ledger_id": "ledger-35",
+      "defect": "patchwork-voice",
+      "disposition": "checked_absent",
+      "eligibility_evidence": "The proven-live synthetic surface supports a rendered visual check.",
+      "probe": "Synthetic evaluator check.",
+      "closure_evidence": "A synthetic rendered probe closed this eligible check."
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "f-fc11114007df",
+      "defect": "vanishing-ink",
+      "surface": "decision screen",
+      "locator": "primary comparison card",
+      "fingerprint": "fc11114007df9a0d46fedb868288ef9820cba2f67d1526ed9b20bdde1e04fe25",
+      "manifestation": "consistent",
+      "symptom": "The option detail text is hard to distinguish from its card background.",
+      "evidence": [
+        {
+          "type": "rendered",
+          "provenance_id": "prov-synthetic-surface",
+          "classification": "synthetic",
+          "source": "synthetic rendered probe",
+          "summary": "A rendered comparison probe confirms that the detail text remains visually indistinct from its card background.",
+          "verified_how": "rendered",
+          "publication_approved": true
+        }
+      ],
+      "verified_how": "rendered",
+      "severity_basis": "Ability to choose an option with confidence",
+      "severity_votes": [
+        {
+          "critic_id": "synthetic-critic",
+          "severity": 3
+        }
+      ],
+      "severity": 3,
+      "decision": "confirmed",
+      "fix": "Increase the contrast between detail text and the comparison card.",
+      "fix_tier": "proposed",
+      "fixed_how": "proposed",
+      "lifecycle": "open"
+    },
+    {
+      "finding_id": "f-6231265220ac",
+      "defect": "recall-tax",
+      "surface": {
+        "a": "option list",
+        "b": "comparison view"
+      },
+      "locator": "selected option summary",
+      "fingerprint": "6231265220ac1033993216a316ebf972b6249c1b23040c2e38b7398b24397e2e",
+      "manifestation": "conditional",
+      "symptom": "The evaluator must remember a selected option while comparing it elsewhere.",
+      "evidence": [
+        {
+          "type": "rendered",
+          "provenance_id": "prov-synthetic-surface",
+          "classification": "synthetic",
+          "source": "synthetic rendered probe",
+          "summary": "A rendered comparison probe confirms that the selected option summary is absent from the comparison view.",
+          "verified_how": "rendered",
+          "publication_approved": true
+        }
+      ],
+      "verified_how": "rendered",
+      "severity_basis": "Ability to choose an option with confidence",
+      "severity_votes": [
+        {
+          "critic_id": "synthetic-critic",
+          "severity": 2
+        }
+      ],
+      "severity": 2,
+      "decision": "confirmed",
+      "fix": "Keep the selected option summary visible during comparison.",
+      "fix_tier": "proposed",
+      "fixed_how": "proposed",
+      "lifecycle": "open"
+    }
+  ],
+  "rejections": [],
+  "gaps": [
+    {
+      "gap_id": "g-synthetic-recovery",
+      "summary": "Synthetic evidence does not cover recovery after an interrupted comparison."
+    }
+  ],
+  "overrides": [],
+  "not_assessed": [
+    {
+      "not_assessed_id": "na-tint-on-tint-trap",
+      "check_id": "tint-on-tint-trap",
+      "blocker": "The synthetic fixture omits the rendered token values required for this eligible comparison.",
+      "probe": "Capture the rendered foreground and background token values.",
+      "escalation_required": true
+    }
+  ],
+  "strengths": [
+    {
+      "strength_id": "s-clear-entry-point",
+      "summary": "The synthetic entry point names the next step clearly.",
+      "evidence": [
+        {
+          "provenance_id": "prov-synthetic-surface",
+          "classification": "synthetic",
+          "source": "synthetic rendered probe",
+          "summary": "A rendered probe confirms that the primary entry point uses a clear action label.",
+          "verified_how": "rendered",
+          "publication_approved": true
+        }
+      ]
+    }
+  ],
+  "redaction": {
+    "status": "not-required",
+    "reviewer": "Synthetic reviewer",
+    "attested": true
+  }
+}

@@ -13,14 +13,23 @@
     "fix_pattern": "Inventory every encoding of the state, collapse to one canonical treatment per component tier, delete the rest.",
     "refs": {
       "wcag": [
-        "3.2.4 Consistent Identification (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.4 Consistent Identification (AA)"
+        }
       ],
       "other": [
-        "Shneiderman #1 Strive for consistency",
-        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #1 Strive for consistency"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass encoded 'selected' 17 different ways across one app; one row stacked border, bar, fill, and shadow for a single selection."
+    "illustration": "Non-evidentiary illustration: one selection row stacked border, bar, fill, and shadow while adjacent rows encoded the same state differently."
   },
   {
     "id": "double-booked-signal",
@@ -35,14 +44,23 @@
     "fix_pattern": "Give each meaning its own device; the older or more widespread meaning keeps the existing one.",
     "refs": {
       "wcag": [
-        "3.2.4 Consistent Identification (AA)",
-        "1.3.1 Info and Relationships (A)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.4 Consistent Identification (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.3.1 Info and Relationships (A)"
+        }
       ],
       "other": [
-        "Shneiderman #1 Strive for consistency"
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #1 Strive for consistency"
+        }
       ]
     },
-    "example": "Compass used a device that already meant 'category' to also mean 'selected' — one visual carrying two meanings."
+    "illustration": "Non-evidentiary illustration: one visual device represented both category and selection, leaving its meaning ambiguous."
   },
   {
     "id": "load-bearing-border",
@@ -59,10 +77,13 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Material state-layer model: state changes color/opacity, not bounds"
+        {
+          "source_id": "material-design",
+          "citation": "Material state-layer model: state changes color/opacity, not bounds"
+        }
       ]
     },
-    "example": "Compass selection grew a 1px border to 3px, shifting rows 2px — every click rippled the list."
+    "illustration": "Non-evidentiary illustration: a selected row increased its border width and shifted neighboring rows on every click."
   },
   {
     "id": "weight-whiplash",
@@ -77,13 +98,19 @@
     "fix_pattern": "Define a weight tier per concept; deviations require a documented reason (density context, drill-in detail).",
     "refs": {
       "wcag": [
-        "3.2.4 Consistent Identification (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.4 Consistent Identification (AA)"
+        }
       ],
       "other": [
-        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass rendered one concept as an 82px bare row in one place and a 408px rich card in another — 5x weight, no reason."
+    "illustration": "Non-evidentiary illustration: the same concept appeared as a compact row on one surface and an oversized rich card on another without a task-based reason."
   },
   {
     "id": "order-drift",
@@ -98,14 +125,23 @@
     "fix_pattern": "Pick one canonical sort per item set and apply it at the data layer, not per-view.",
     "refs": {
       "wcag": [
-        "3.2.3 Consistent Navigation (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.3 Consistent Navigation (AA)"
+        }
       ],
       "other": [
-        "Shneiderman #8 Reduce short-term memory load",
-        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #8 Reduce short-term memory load"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass showed the same three items in insertion order on one surface and createdAt-descending on another."
+    "illustration": "Non-evidentiary illustration: the same items appeared in insertion order on one surface and newest-first order on another."
   },
   {
     "id": "foreign-frame",
@@ -121,13 +157,19 @@
     "fix_pattern": "Grep for window.confirm/alert/prompt and native fallbacks; route all of them through the design-system equivalent.",
     "refs": {
       "wcag": [
-        "3.2.4 Consistent Identification (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.4 Consistent Identification (AA)"
+        }
       ],
       "other": [
-        "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #4 Consistency and standards (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass fired a raw browser window.confirm in a fully themed dark app while the design-system modal existed and was used elsewhere."
+    "illustration": "Non-evidentiary illustration: one destructive action used a raw browser prompt while adjacent actions used the product modal."
   },
   {
     "id": "long-distance-label",
@@ -142,14 +184,23 @@
     "fix_pattern": "Co-locate label and value within one visual group; delete any duplicate rendering of the pair nearby.",
     "refs": {
       "wcag": [
-        "1.3.1 Info and Relationships (A)",
-        "2.4.6 Headings and Labels (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.3.1 Info and Relationships (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.4.6 Headings and Labels (AA)"
+        }
       ],
       "other": [
-        "Gestalt proximity principle"
+        {
+          "source_id": "general-design-references",
+          "citation": "Gestalt proximity principle"
+        }
       ]
     },
-    "example": "Compass rendered a label and its count 1001px apart in one header row, while duplicating the pairing in a pill 40px above."
+    "illustration": "Non-evidentiary illustration: a label and its count sat at opposite ends of a wide row while a nearby chip repeated the pair."
   },
   {
     "id": "marathon-measure",
@@ -165,14 +216,23 @@
     "fix_pattern": "Cap the text column with a max-width in ch units (65-75ch) independent of container width.",
     "refs": {
       "wcag": [
-        "1.4.8 Visual Presentation (AAA, 80-character guideline)",
-        "1.4.4 Resize Text (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.8 Visual Presentation (AAA, 80-character guideline)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.4 Resize Text (AA)"
+        }
       ],
       "other": [
-        "Classical typographic measure: 45-75 characters per line"
+        {
+          "source_id": "general-design-references",
+          "citation": "Classical typographic measure: 45-75 characters per line"
+        }
       ]
     },
-    "example": "Compass ran 169 characters per line at 12px against a 65-75 target."
+    "illustration": "Non-evidentiary illustration: dense body copy used very long lines and a small text size, making scanning difficult."
   },
   {
     "id": "hidden-shelf",
@@ -189,11 +249,17 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Apple HIG: scrollable content must indicate it scrolls",
-        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: scrollable content must indicate it scrolls"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass had a filter row scrolling behind a hard clip with no affordance — users could not discover the hidden filter options."
+    "illustration": "Non-evidentiary illustration: a filter row clipped additional options without any scroll or overflow affordance."
   },
   {
     "id": "keyboard-dead-zone",
@@ -209,16 +275,31 @@
     "fix_pattern": "Use native elements or add role, tabindex, accessible name, and state attributes (aria-pressed, aria-current); fix heading order to be sequential.",
     "refs": {
       "wcag": [
-        "2.1.1 Keyboard (A)",
-        "2.4.7 Focus Visible (AA)",
-        "1.3.1 Info and Relationships (A)",
-        "2.4.6 Headings and Labels (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.1.1 Keyboard (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.4.7 Focus Visible (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.3.1 Info and Relationships (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.4.6 Headings and Labels (AA)"
+        }
       ],
       "other": [
-        "Material: visible focus for all interactive elements"
+        {
+          "source_id": "material-design",
+          "citation": "Material: visible focus for all interactive elements"
+        }
       ]
     },
-    "example": "Compass nav items were bare divs with cursor:pointer — no role, tabindex, or current-state — leaving a whole page unreachable by keyboard, plus H1>H2>H4 heading order and group labels as AT-invisible spans."
+    "illustration": "Non-evidentiary illustration: clickable navigation containers lacked roles, focusability, and current-state semantics, while visual group labels had no programmatic equivalent."
   },
   {
     "id": "sub-floor-target",
@@ -234,16 +315,31 @@
     "fix_pattern": "Expand the hit area (padding or pseudo-element) to the platform floor even if the glyph stays small; cite the three-tier delta when negotiating: WCAG 24px legal floor, Apple 44pt norm, Material 48dp + 8dp spacing.",
     "refs": {
       "wcag": [
-        "2.5.8 Target Size Minimum (AA)",
-        "2.5.1 Pointer Gestures (A)",
-        "2.5.7 Dragging Movements (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.5.8 Target Size Minimum (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.5.1 Pointer Gestures (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.5.7 Dragging Movements (AA)"
+        }
       ],
       "other": [
-        "Apple HIG 44x44pt (28pt hard floor, 60pt visionOS)",
-        "Material 48dp targets + 8dp spacing"
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG 44x44pt (28pt hard floor, 60pt visionOS)"
+        },
+        {
+          "source_id": "material-design",
+          "citation": "Material 48dp targets + 8dp spacing"
+        }
       ]
     },
-    "example": "Audit standard applied at Compass: targets measured against the WCAG 24px / Apple 44pt / Material 48dp three-tier floor."
+    "illustration": "Non-evidentiary illustration: compact icon controls fell below the declared WCAG, Apple, and Material target-size floors."
   },
   {
     "id": "vanishing-ink",
@@ -259,12 +355,18 @@
     "fix_pattern": "Measure every token pair programmatically; adjust lightness until the ratio passes, then lock the pair in the token system.",
     "refs": {
       "wcag": [
-        "1.4.3 Contrast Minimum (AA)",
-        "1.4.11 Non-text Contrast (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.3 Contrast Minimum (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.11 Non-text Contrast (AA)"
+        }
       ],
       "other": []
     },
-    "example": "Compass severity colors failed AA at 4 of 5 levels while 'looking fine'."
+    "illustration": "Non-evidentiary illustration: several severity-label colors appeared distinct but did not meet the declared contrast requirement."
   },
   {
     "id": "tint-on-tint-trap",
@@ -280,12 +382,18 @@
     "fix_pattern": "Compute contrast against the composited rendered background (tint over surface) for every foreground/tint pair; darken the foreground or deepen the tint until the real pair passes.",
     "refs": {
       "wcag": [
-        "1.4.3 Contrast Minimum (AA)",
-        "1.4.11 Non-text Contrast (AA)"
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.3 Contrast Minimum (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "1.4.11 Non-text Contrast (AA)"
+        }
       ],
       "other": []
     },
-    "example": "Compass used a token as a 20%-tint of itself behind that same token as text — the self-tinted badge, not the flat swatch, was the binding contrast floor."
+    "illustration": "Non-evidentiary illustration: a text token was reused as a translucent tint behind itself, producing insufficient badge contrast."
   },
   {
     "id": "phantom-state",
@@ -301,10 +409,13 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Dead-code principle applied to UI states"
+        {
+          "source_id": "general-design-references",
+          "citation": "Dead-code principle applied to UI states"
+        }
       ]
     },
-    "example": "Compass shipped an empty state that could never fire."
+    "illustration": "Non-evidentiary illustration: an empty-state component existed but its render condition could never become true."
   },
   {
     "id": "silent-stall",
@@ -321,11 +432,17 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Apple HIG: a stationary progress indicator reads as frozen; no artificial pacing",
-        "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: a stationary progress indicator reads as frozen; no artificial pacing"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass had skeletons and progress absent entirely, so slow responses read as a frozen app."
+    "illustration": "Non-evidentiary illustration: a delayed response showed neither progress nor a loading placeholder, so the surface appeared frozen."
   },
   {
     "id": "motion-pileup",
@@ -341,11 +458,17 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Material motion: one transition per event",
-        "NN/g #8 Aesthetic and minimalist design (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "material-design",
+          "citation": "Material motion: one transition per event"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #8 Aesthetic and minimalist design (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass announced one drop target with three simultaneous mechanisms — reading as a rendering bug — and coupled animation duration to correctness."
+    "illustration": "Non-evidentiary illustration: one drop target combined several simultaneous motion cues, making a valid state resemble a rendering failure."
   },
   {
     "id": "recall-tax",
@@ -363,11 +486,17 @@
     "refs": {
       "wcag": [],
       "other": [
-        "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)",
-        "Shneiderman #8 Reduce short-term memory load"
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #6 Recognition rather than recall (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #8 Reduce short-term memory load"
+        }
       ]
     },
-    "example": "Compass: collection section structure was computed (sections, hasMultipleSections) and never rendered — users had to remember what each collection held."
+    "illustration": "Non-evidentiary illustration: grouping structure was computed but never rendered, forcing users to remember the contents of each group."
   },
   {
     "id": "demolition-preview",
@@ -384,11 +513,17 @@
     "refs": {
       "wcag": [],
       "other": [
-        "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)",
-        "Shneiderman #5 Prevent errors"
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #5 Prevent errors"
+        }
       ]
     },
-    "example": "Compass: the manage-items entry point was wired but never invoked, leaving the remove picker as the only place to see a collection's saved sections."
+    "illustration": "Non-evidentiary illustration: a management entry point was wired but unreachable, leaving a removal flow as the only place to inspect saved sections."
   },
   {
     "id": "elided-series",
@@ -404,10 +539,13 @@
     "refs": {
       "wcag": [],
       "other": [
-        "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
       ]
     },
-    "example": "Compass: a Recharts axis painted 3 of 10 account labels because the rest did not fit; the summary text correctly cited a top account that appeared nowhere in the visible axis."
+    "illustration": "Non-evidentiary illustration: a chart omitted most category labels while adjacent summary copy referenced a category absent from the visible axis."
   },
   {
     "id": "swallowed-rule",
@@ -423,10 +561,16 @@
     "refs": {
       "wcag": [],
       "other": [
-        "Tailwind CSS arbitrary values (whitespace is not permitted inside the bracket)",
-        "CSS Cascading and Inheritance Level 5 § Cascade Layers (W3C)"
+        {
+          "source_id": "tailwind-css",
+          "citation": "Tailwind CSS arbitrary values (whitespace is not permitted inside the bracket)"
+        },
+        {
+          "source_id": "w3c-css",
+          "citation": "CSS Cascading and Inheritance Level 5 § Cascade Layers (W3C)"
+        }
       ]
     },
-    "example": "Compass: bg-[color-mix(in srgb, var(--sev-opportunity) 10%, transparent)] contained spaces, so Tailwind emitted no such class and the callout painted no background at all (CSSOM: 0 rules matched; control siblings matched 6 and 10). Separately, border-l-3 is not a class Tailwind emits, so a rail's left bar only ever painted from a duplicate inline rule; and two labelStyle attributes on one Recharts Tooltip silently discarded the token-based one — a build WARNING that never failed the build, found in three components."
+    "illustration": "Non-evidentiary illustration: malformed generated utility classes emitted no matching CSS, and duplicate component properties silently discarded the token-based styling path."
   }
 ]

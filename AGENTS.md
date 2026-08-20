@@ -5,7 +5,7 @@ Punchlist is a named-defect taxonomy and an evaluator protocol. Keep changes nar
 ## Taxonomy entries
 
 - Write every definition as a presence test beginning `Present when`.
-- Add a public-standard reference and a documented real instance to every entry.
+- Add a public-standard reference and a clearly labelled non-evidentiary illustration to every entry. Evidence and real-instance provenance belong in an audit bundle, not in the reusable taxonomy.
 - Keep defect ids unique, lowercase, and hyphen-separated.
 - Put each defect in the category and standard that own it. Do not duplicate an entry to increase coverage.
 - Do not add accuracy, prevalence, time-saved, or other numerical claims without a reproducible measurement committed alongside the claim.

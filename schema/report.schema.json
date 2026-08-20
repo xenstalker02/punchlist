@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xenstalker02/punchlist/schema/report.schema.json",
+  "title": "Punchlist recipient-facing report projection",
+  "type": "object",
+  "required": ["report_id", "audit_id", "audience", "author", "publication", "publication_approval", "theme", "cover", "journey", "lead_findings", "lead_headlines", "strengths", "recommendations", "next_test", "appendix", "redaction", "review"],
+  "additionalProperties": false,
+  "properties": {
+    "report_id": { "type": "string", "minLength": 1 },
+    "audit_id": { "type": "string", "minLength": 1 },
+    "audience": { "type": "string", "minLength": 1 },
+    "author": { "type": "string", "minLength": 1 },
+    "publication": { "enum": ["public", "authorized-restricted", "synthetic"] },
+    "publication_approval": { "type": "object", "required": ["approved", "approved_by", "scope"], "additionalProperties": false, "properties": { "approved": { "type": "boolean" }, "approved_by": { "type": "string", "minLength": 1 }, "scope": { "type": "string", "minLength": 1 } } },
+    "theme": { "type": "object", "required": ["theme_id"], "additionalProperties": false, "properties": { "theme_id": { "type": "string", "minLength": 1 } } },
+    "cover": { "type": "object", "required": ["statement", "task"], "properties": { "statement": { "type": "string", "minLength": 1 }, "task": { "type": "string", "minLength": 1 } } },
+    "journey": { "type": "array", "minItems": 3, "maxItems": 5, "items": { "type": "object", "required": ["moment_id", "summary"], "properties": { "moment_id": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 } } } },
+    "lead_findings": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" } },
+    "lead_headlines": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },
+    "strengths": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^s-[a-z0-9]+(?:-[a-z0-9]+)*$" } },
+    "recommendations": { "type": "array", "items": { "type": "object", "required": ["recommendation_id", "canonical_ids", "summary"], "properties": { "recommendation_id": { "type": "string", "minLength": 1 }, "canonical_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" } }, "summary": { "type": "string", "minLength": 1 } } } },
+    "next_test": { "type": "object", "required": ["summary", "canonical_ids"], "properties": { "summary": { "type": "string", "minLength": 1 }, "canonical_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } } } },
+    "appendix": { "type": "object", "required": ["finding_ids", "gap_ids", "not_assessed_ids"], "properties": { "finding_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^f-[a-f0-9]{12}$" } }, "gap_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^g-[a-z0-9]+(?:-[a-z0-9]+)*$" } }, "not_assessed_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^na-[a-z0-9]+(?:-[a-z0-9]+)*$" } } } },
+    "redaction": { "type": "object", "required": ["attested"], "properties": { "attested": { "type": "boolean" } } },
+    "review": { "type": "object", "required": ["status", "reviewer"], "properties": { "status": { "enum": ["pending", "approved"] }, "reviewer": { "type": "string", "minLength": 1 } } }
+  }
+}

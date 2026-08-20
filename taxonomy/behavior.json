@@ -6,13 +6,34 @@
     "standard": "Truthful",
     "definition": "Present when a success message is emitted by the code path that requested a change rather than by the code path that verifiably committed it, so the confirmation can fire even if the change never happens.",
     "symptom": "User sees 'Saved', reloads, and the work is gone — the toast was the only thing that ever happened.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Emit confirmation only from the store/persistence layer's success callback; the requester never announces on its own behalf.",
     "refs": {
-      "wcag": ["4.1.3 Status Messages (AA)"],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #3 Offer informative feedback", "Apple HIG: feedback must reflect whether the command was actually carried out"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "4.1.3 Status Messages (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #3 Offer informative feedback"
+        },
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: feedback must reflect whether the command was actually carried out"
+        }
+      ]
     },
-    "example": "Compass: 'Home layout saved' toast fired from the click handler while persistence was never wired — the toast was the entire save."
+    "illustration": "Non-evidentiary illustration: a success toast fired from a click handler even though persistence was never invoked."
   },
   {
     "id": "forked-tally",
@@ -21,13 +42,30 @@
     "standard": "Truthful",
     "definition": "Present when a number announced to the user (toast, badge, summary) is computed at a different granularity or from a different unit than the number then displayed at the destination.",
     "symptom": "Told '2 added', arrives to find '(1)' — the system appears to have lost something it didn't.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Both surfaces derive their count from one shared selector at one declared granularity; the announcement quotes the destination's own count.",
     "refs": {
-      "wcag": ["4.1.3 Status Messages (AA)"],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #4 Design dialogs to yield closure"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "4.1.3 Status Messages (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #4 Design dialogs to yield closure"
+        }
+      ]
     },
-    "example": "Compass: '2 visualizations added' counted leaf items; the destination row counted groups and read '(1)'."
+    "illustration": "Non-evidentiary illustration: success feedback counted leaf items while the destination summarized parent groups."
   },
   {
     "id": "celebrated-no-op",
@@ -36,13 +74,30 @@
     "standard": "Truthful",
     "definition": "Present when an action the system silently declines or dedupes (already present, at limit, invalid) still plays the full success feedback path.",
     "symptom": "Success toast and animation over an operation that changed nothing; the user believes a duplicate now exists.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Branch feedback on the store's actual outcome enum (added / already-present / rejected), never on the fact that a handler ran.",
     "refs": {
-      "wcag": ["4.1.3 Status Messages (AA)"],
-      "other": ["Apple HIG: show feedback when a command can't be carried out", "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "4.1.3 Status Messages (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: show feedback when a command can't be carried out"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: adding an already-present item — store deduped silently while success toast and animations played over a no-op."
+    "illustration": "Non-evidentiary illustration: adding an existing item produced success feedback even though deduplication made the operation a no-op."
   },
   {
     "id": "twin-cap-trapdoor",
@@ -51,13 +106,30 @@
     "standard": "Lossless",
     "definition": "Present when a limit on a collection is enforced in two or more places with different values, such that an item can be accepted by one layer and discarded by another with no notice.",
     "symptom": "Adding an Nth item silently deletes it — accepted by the store, never rendered, gone on next look.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "One cap constant owned by the store, imported everywhere; reject at the single gate with visible feedback instead of truncating downstream.",
     "refs": {
-      "wcag": ["3.3.4 Error Prevention (AA)"],
-      "other": ["NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #6 Permit easy reversal of actions"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.3.4 Error Prevention (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #6 Permit easy reversal of actions"
+        }
+      ]
     },
-    "example": "Compass: store capped pins at 4, view sliced to 3 — the 4th pin landed nowhere and undo was impossible."
+    "illustration": "Non-evidentiary illustration: storage accepted more pinned items than the view rendered, leaving the final accepted item invisible."
   },
   {
     "id": "parallax-count",
@@ -66,13 +138,30 @@
     "standard": "Truthful",
     "definition": "Present when a count and the collection it summarizes are read from different selectors or data paths, so they can disagree under any filter, type, or timing condition.",
     "symptom": "'Insights (3)' floating above a list that says 'No insights yet'.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "The count is derived from the exact array the list renders — count = list.length by construction, not by parallel query.",
     "refs": {
-      "wcag": ["4.1.3 Status Messages (AA)"],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #3 Offer informative feedback"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "4.1.3 Status Messages (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #3 Offer informative feedback"
+        }
+      ]
     },
-    "example": "Compass: count pill 'Insights (3)' over an empty-reading list — pill and list read different selectors."
+    "illustration": "Non-evidentiary illustration: a count chip showed populated results while the adjacent list rendered an empty state from a different selector."
   },
   {
     "id": "coincidental-concord",
@@ -81,13 +170,25 @@
     "standard": "Truthful",
     "definition": "Present when two independently-derived readouts of the same state happen to agree in the tested configuration but are computed by paths that can diverge in other configurations.",
     "symptom": "Everything checks out in the demo collection, then the same screen lies in the collection that matters — and the earlier agreement bought it trust.",
-    "detectable_from": ["source+rendered"],
+    "detectable_from": [
+      "source+rendered"
+    ],
     "fix_pattern": "Audit for shared derivation, not displayed agreement: any two surfaces showing one fact must trace to one selector, verified in source, across all type/collection variants.",
     "refs": {
-      "wcag": ["4.1.3 Status Messages (AA)"],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "4.1.3 Status Messages (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: the count/list mismatch was correct by coincidence in 1 of 3 collections — trusted there, wrong where it mattered."
+    "illustration": "Non-evidentiary illustration: two mismatched selectors happened to agree in one state but diverged in the other tested states."
   },
   {
     "id": "day-one-deadbolt",
@@ -96,13 +197,25 @@
     "standard": "Reachable",
     "definition": "Present when a feature's only entry point renders behind a condition that is false in the fresh/default state, leaving the feature unreachable for a new user with no error emitted.",
     "symptom": "A shipped feature that no first-time user can find or trigger; nothing crashes, nothing explains.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Test every entry point against the empty/fresh state; an entry point's render condition must be satisfiable before the feature has ever been used.",
     "refs": {
       "wcag": [],
-      "other": ["Shneiderman #7 Support internal locus of control", "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #7 Support internal locus of control"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: the feature's only entry point rendered under a condition false on fresh load — unreachable on day one, no error."
+    "illustration": "Non-evidentiary illustration: the only entry point rendered behind a condition that was false for every new user."
   },
   {
     "id": "manifest-gap",
@@ -111,13 +224,24 @@
     "standard": "Lossless",
     "definition": "Present when a rendering or lookup switch has explicit branches for some item types but no branch (or a null-returning default) for others, so items of the unhandled type persist in state yet never appear.",
     "symptom": "Saved items exist but are invisible everywhere; the empty state can't even fire because the list is technically non-empty.",
-    "detectable_from": ["source+rendered"],
+    "detectable_from": [
+      "source+rendered"
+    ],
     "fix_pattern": "Exhaustive type handling with a loud fallback: an unmatched type renders a visible error card or throws in development, never null.",
     "refs": {
       "wcag": [],
-      "other": ["NN/g #9 Help users recognize, diagnose, and recover from errors (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Apple HIG: show feedback when a command can't be carried out"]
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #9 Help users recognize, diagnose, and recover from errors (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: show feedback when a command can't be carried out"
+        }
+      ]
     },
-    "example": "Compass: a lookup had branches for 3 types, none for the 4th — null returned, card silently dropped, items invisible in every collection."
+    "illustration": "Non-evidentiary illustration: a lookup omitted one supported type, returned null, and silently dropped those cards from every group."
   },
   {
     "id": "dropped-baton",
@@ -126,13 +250,33 @@
     "standard": "Reachable",
     "definition": "Present when closing or completing an overlay leaves document.activeElement on body (or a stale node) instead of returning focus to a live, correct successor element.",
     "symptom": "Keyboard and screen-reader users are dumped to the top of the page after every dialog; sighted mouse users never notice.",
-    "detectable_from": ["interaction"],
+    "detectable_from": [
+      "interaction"
+    ],
     "fix_pattern": "Capture the restore target by stable identity before the overlay opens, and re-resolve it against the live DOM at close time — never trust a remembered node across re-render.",
     "refs": {
-      "wcag": ["2.4.3 Focus Order (A)", "2.4.7 Focus Visible (AA)", "3.2.1 On Focus (A)"],
-      "other": ["NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.4.3 Focus Order (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.4.7 Focus Visible (AA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.2.1 On Focus (A)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: dialog close/save destroyed focus — restore target captured after the previous DOM was gone; only document.activeElement reads revealed it."
+    "illustration": "Non-evidentiary illustration: closing a dialog removed its opener before the restore target was captured, leaving focus on the document body."
   },
   {
     "id": "ouroboros-trigger",
@@ -141,13 +285,25 @@
     "standard": "Convergent",
     "definition": "Present when a decision (reorder, threshold, snap, layout choice) reads a value that the decision's own effect or animation mutates, allowing one input to produce repeated re-triggering instead of one settled outcome.",
     "symptom": "One drag produces flickering oscillation, rubber-banding, or dozens of state commits before (or without) settling.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Decide from a stable model snapshot (logical positions), never from rendered geometry the effect animates; commit once per gesture.",
     "refs": {
       "wcag": [],
-      "other": ["Shneiderman #4 Design dialogs to yield closure", "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "other": [
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #4 Design dialogs to yield closure"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: drag reorder read rendered geometry that its own animation mutated — 33 commits from one drag, endless oscillation."
+    "illustration": "Non-evidentiary illustration: drag reordering measured geometry that its own animation changed, causing repeated commits and oscillation."
   },
   {
     "id": "undead-understudy",
@@ -156,13 +312,25 @@
     "standard": "Convergent",
     "definition": "Present when a placeholder or interim mechanism (fake animation, optimistic stub, temporary signal) still runs after the real mechanism it stood in for has shipped, producing multiple signals for one state change.",
     "symptom": "Two or three animations announce one event; the redundancy reads as glitching, not polish.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Every stand-in ships with a removal condition tied to its replacement's landing; retiring the stub is part of the real feature's definition of done.",
     "refs": {
       "wcag": [],
-      "other": ["NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #3 Offer informative feedback"]
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #1 Visibility of system status (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #3 Offer informative feedback"
+        }
+      ]
     },
-    "example": "Compass: an old nudge animation survived after real reflow landed — three things signalling one state read as breakage."
+    "illustration": "Non-evidentiary illustration: a legacy nudge animation remained after real reflow was added, so multiple cues competed for one state change."
   },
   {
     "id": "amnesiac-relaunch",
@@ -171,13 +339,33 @@
     "standard": "Lossless",
     "definition": "Present when in-progress user work or configuration survives neither reload nor relaunch, and no warning precedes the loss.",
     "symptom": "Accidental refresh, crash, or tab close erases everything since the last explicit save — silently.",
-    "detectable_from": ["interaction"],
+    "detectable_from": [
+      "interaction"
+    ],
     "fix_pattern": "Persist session state continuously (draft autosave, restoration on launch); if restoration is genuinely impossible, warn before unload.",
     "refs": {
-      "wcag": ["3.3.7 Redundant Entry (A)", "2.2.5 Re-authenticating (AAA)"],
-      "other": ["Apple HIG: restore state on launch", "NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.3.7 Redundant Entry (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.2.5 Re-authenticating (AAA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: restore state on launch"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        }
+      ]
     },
-    "example": "Compass: session/state restoration absent — work lost on reload with no warning."
+    "illustration": "Non-evidentiary illustration: an in-progress configuration disappeared on reload without a warning or recovery route."
   },
   {
     "id": "evaporated-undo",
@@ -186,13 +374,34 @@
     "standard": "Reversible",
     "definition": "Present when the only affordance that could reverse an action unmounts, disables, or disappears as a consequence of that same action.",
     "symptom": "The mistake removes the very control that would fix the mistake; recovery requires support or re-creation from scratch.",
-    "detectable_from": ["interaction", "source+rendered"],
+    "detectable_from": [
+      "interaction",
+      "source+rendered"
+    ],
     "fix_pattern": "Undo lives above the mutated scope (global toast with undo, command stack), never inside the component the action destroys.",
     "refs": {
-      "wcag": ["3.3.4 Error Prevention (AA)"],
-      "other": ["Shneiderman #6 Permit easy reversal of actions", "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Apple HIG: undoability, not destructiveness, gates confirmation"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.3.4 Error Prevention (AA)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #6 Permit easy reversal of actions"
+        },
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #3 User control and freedom (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "apple-hig",
+          "citation": "Apple HIG: undoability, not destructiveness, gates confirmation"
+        }
+      ]
     },
-    "example": "Compass: the silently-deleted 4th pin could not be undone because the control that would undo it had unmounted with the item."
+    "illustration": "Non-evidentiary illustration: a removed item could not be restored because its undo control unmounted with the item."
   },
   {
     "id": "silent-curfew",
@@ -201,12 +410,40 @@
     "standard": "Lossless",
     "definition": "Present when a session, hold, or edit window expires on a timer the user was not warned about and cannot extend, and expiry discards entered data or context.",
     "symptom": "User returns from a brief interruption to find the form cleared or the session dead, work gone.",
-    "detectable_from": ["interaction"],
+    "detectable_from": [
+      "interaction"
+    ],
     "fix_pattern": "Warn before expiry, offer extension, and preserve entered data across re-authentication so nothing must be retyped.",
     "refs": {
-      "wcag": ["2.2.1 Timing Adjustable (A)", "2.2.6 Timeouts (AAA)", "2.2.5 Re-authenticating (AAA)", "3.3.7 Redundant Entry (A)"],
-      "other": ["NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)", "Shneiderman #7 Support internal locus of control"]
+      "wcag": [
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.2.1 Timing Adjustable (A)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.2.6 Timeouts (AAA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "2.2.5 Re-authenticating (AAA)"
+        },
+        {
+          "source_id": "wcag-2.2",
+          "citation": "3.3.7 Redundant Entry (A)"
+        }
+      ],
+      "other": [
+        {
+          "source_id": "nielsen-norman-group",
+          "citation": "NN/g #5 Error prevention (Jakob Nielsen, nngroup.com/articles/ten-usability-heuristics/)"
+        },
+        {
+          "source_id": "shneiderman",
+          "citation": "Shneiderman #7 Support internal locus of control"
+        }
+      ]
     },
-    "example": "Standards-documented: WCAG 2.2.6 names data loss after an unwarned timeout as the failure; the fix is warning, extension, and preserved entry."
+    "illustration": "Non-evidentiary illustration: Standards-documented: WCAG 2.2.6 names data loss after an unwarned timeout as the failure; the fix is warning, extension, and preserved entry."
   }
 ]

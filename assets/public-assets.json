@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "path": "assets/social-preview.png",
+      "sha256": "c62eb6cc985b02fe5bdff14eed3b024d27bff3d23598ca1e55e3cfc76f8de557",
+      "purpose": "Repository social preview",
+      "alt": "Punchlist social preview artwork.",
+      "provenance": "User-approved export from the current public cover frame.",
+      "publication_approved": true
+    },
+    {
+      "path": "assets/social-preview.svg",
+      "sha256": "61ca311a3d32987bb461a743ca1621923536b9aa094120012778af33a5e915fb",
+      "purpose": "Editable social preview source",
+      "alt": "Punchlist social preview artwork.",
+      "provenance": "User-approved export from the current public cover frame.",
+      "publication_approved": true
+    }
+  ]
+}

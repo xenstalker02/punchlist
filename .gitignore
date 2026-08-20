@@ -2,9 +2,15 @@
 conventions.md
 punchlist-*.md
 out/
+output/
 tmp/
 __pycache__/
 *.py[cod]
+themes/theme.local.json
+output/**/*.pdf
+playwright-report/
+test-results/
+node_modules/
 
 # Editor / OS
 .DS_Store
