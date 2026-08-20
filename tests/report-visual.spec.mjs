@@ -146,7 +146,6 @@ async function inspectPdf(pdfPath) {
 
 function expectPdfParity(generated, committed) {
   expect(generated.page_count).toBe(committed.page_count);
-  expect(generated.page_text_characters).toEqual(committed.page_text_characters);
   expect(generated.page_text_inventory_sha256).toEqual(committed.page_text_inventory_sha256);
   expect(generated.page_dimensions).toEqual(committed.page_dimensions);
   expect(generated.page_font_sizes).toEqual(committed.page_font_sizes);

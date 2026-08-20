@@ -51,7 +51,7 @@ class InspectPdfTests(unittest.TestCase):
             self.skipTest("PyMuPDF unavailable")
         with tempfile.TemporaryDirectory() as directory:
             paths = [Path(directory) / "first.pdf", Path(directory) / "second.pdf"]
-            for path, lines in zip(paths, (("Alpha", "Beta"), ("Beta", "Alpha")), strict=True):
+            for path, lines in zip(paths, (("Alpha ·", "Beta"), ("Beta", "Alpha")), strict=True):
                 document = fitz.open()
                 page = document.new_page(width=612, height=792)
                 for index, line in enumerate(lines):

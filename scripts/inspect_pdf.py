@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -105,7 +106,7 @@ def inspect_pdf(input_path: Path) -> dict[str, object]:
         page_text_characters = [len(text) for text in page_text]
         page_text_sha256 = [hashlib.sha256(text.encode("utf-8")).hexdigest() for text in page_text]
         page_text_inventory_sha256 = [
-            hashlib.sha256("\n".join(sorted(text.split())).encode("utf-8")).hexdigest()
+            hashlib.sha256("\n".join(sorted(re.findall(r"\w+", text, flags=re.UNICODE))).encode("utf-8")).hexdigest()
             for text in page_text
         ]
         layouts = [_page_layout(page) for page in pages]
