@@ -221,7 +221,7 @@ def _render_lead_findings(audit: dict[str, Any], report: dict[str, Any], finding
     cards = "".join(
         f'<li class="finding-card"><div class="finding-heading"><h3>{_text(headlines[finding["finding_id"]])}</h3>'
         f'<span class="finding-id">{_text(finding["finding_id"])}</span></div>'
-        f'<p>{_text(finding["symptom"])}</p><p><strong>{_text(finding["defect"])}</strong> · {_text(finding["surface"] if isinstance(finding["surface"], str) else f"{finding["surface"]["a"]} → {finding["surface"]["b"]}")}</p>'
+        f'<p>{_text(finding["symptom"])}</p><p><strong>{_text(finding["defect"])}</strong> · {_text(finding["surface"] if isinstance(finding["surface"], str) else "{} → {}".format(finding["surface"]["a"], finding["surface"]["b"]))}</p>'
         f"{_render_evidence(finding)}</li>"
         for finding in _ids(findings, report["lead_findings"])
     )
