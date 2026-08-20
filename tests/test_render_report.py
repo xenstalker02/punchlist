@@ -54,12 +54,12 @@ class RenderReportTests(unittest.TestCase):
         self.assertNotIn('role="img"', html)
         self.assertNotIn("<img", html)
 
-    def test_cover_is_standalone_and_uses_immutable_public_attribution(self) -> None:
+    def test_cover_is_standalone_and_uses_immutable_project_attribution(self) -> None:
         report = copy.deepcopy(self.report)
         report["author"] = "Untrusted author label"
         html = render_report(self.audit, report, self.theme)
-        self.assertIn("Punchlist contributors · Product Designer ·", html)
-        self.assertIn('<a href="https://github.com/xenstalker02/punchlist">github.com/xenstalker02/punchlist</a>', html)
+        self.assertIn('<p class="byline">Punchlist · Independent experience review</p>', html)
+        self.assertNotIn('<a href=', html)
         self.assertIn("Independent experience review", html)
         self.assertIn("2026-08-20", html)
         self.assertIn("First visit", html)
@@ -130,7 +130,7 @@ class RenderReportTests(unittest.TestCase):
 
     def test_running_footer_uses_css_text_instead_of_a_literal_unicode_escape(self) -> None:
         html = render_report(self.audit, self.report, self.theme)
-        self.assertIn('Sample Platform · Independent experience review · Punchlist contributors', html)
+        self.assertIn('Sample Platform · Punchlist · Independent experience review', html)
         self.assertNotIn(r"\u00b7", html)
 
     def test_cli_applies_only_a_safe_contrasting_platform_accent_adapter(self) -> None:
@@ -154,15 +154,16 @@ class RenderReportTests(unittest.TestCase):
             self.assertIn("Adapted Platform", html)
             self.assertIn("--font-display: Editorial New", html)
             self.assertIn("--page-columns: 12", html)
-            self.assertIn("Punchlist contributors · Product Designer", html)
+            self.assertIn("Punchlist · Independent experience review", html)
             self.assertIn('<a href="https://sample-platform.example">Platform design reference</a>', html)
             self.assertIn(".byline { border-left: 3px solid var(--color-supporting);", html)
-            self.assertEqual(1, html.count("Punchlist contributors · Product Designer"))
+            self.assertEqual(1, html.count('<p class="byline">Punchlist · Independent experience review</p>'))
 
     def test_default_theme_has_no_platform_reference_and_adapter_cannot_replace_attribution(self) -> None:
         default_html = render_report(self.audit, self.report, self.theme)
         self.assertNotIn("Platform design reference", default_html)
-        self.assertIn("Punchlist contributors · Product Designer ·", default_html)
+        self.assertIn('<p class="byline">Punchlist · Independent experience review</p>', default_html)
+        self.assertNotIn('<a href=', default_html)
 
     def test_renderer_rejects_nonpublic_platform_source_url_without_echoing_it(self) -> None:
         unsafe_theme = copy.deepcopy(self.theme)

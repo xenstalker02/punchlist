@@ -80,7 +80,10 @@ class PrintReportBoundaryTests(unittest.TestCase):
             self.assertTrue(output.read_bytes().startswith(b"%PDF"))
             inspection = inspect_pdf(output)
             self.assertGreaterEqual(inspection["page_count"], 4)
-            self.assertIn("https://github.com/xenstalker02/punchlist/", [link["target"] for link in inspection["link_annotations"]])
+            self.assertEqual(
+                ["https://sample-platform.example/"],
+                [link["target"] for link in inspection["link_annotations"]],
+            )
         after = {path.name for path in TEMP_ROOT.glob("punchlist-pdf-*")}
         self.assertEqual(before, after)
 

@@ -16,12 +16,12 @@ class InspectPdfTests(unittest.TestCase):
             self.skipTest("PyMuPDF unavailable")
         document = fitz.open()
         page = document.new_page(width=612, height=792)
-        page.insert_text((72, 72), "Punchlist contributors synthetic report", fontsize=12, color=(0.06, 0.14, 0.24))
-        page.insert_link({"kind": fitz.LINK_URI, "from": fitz.Rect(72, 80, 180, 100), "uri": "https://github.com/xenstalker02/punchlist"})
+        page.insert_text((72, 72), "Punchlist synthetic report", fontsize=12, color=(0.06, 0.14, 0.24))
+        page.insert_link({"kind": fitz.LINK_URI, "from": fitz.Rect(72, 80, 180, 100), "uri": "https://example.com"})
         if image:
             pixel = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")
             page.insert_image(fitz.Rect(200, 72, 220, 92), stream=pixel)
-        document.set_metadata({"title": metadata_title, "author": "Punchlist contributors"})
+        document.set_metadata({"title": metadata_title, "author": "Punchlist"})
         if attachment is not None:
             document.embfile_add("notes.txt", attachment, filename="notes.txt", ufilename="notes.txt", desc="Synthetic note")
         document.save(path)
@@ -40,7 +40,7 @@ class InspectPdfTests(unittest.TestCase):
         self.assertTrue(inspection["page_text_colors"][0])
         self.assertEqual(0, inspection["image_count"])
         self.assertEqual([0], inspection["page_image_count"])
-        self.assertEqual("https://github.com/xenstalker02/punchlist", inspection["link_annotations"][0]["target"])
+        self.assertEqual("https://example.com", inspection["link_annotations"][0]["target"])
         self.assertEqual("Synthetic report", inspection["metadata"]["title"])
         self.assertEqual(["notes.txt"], inspection["attachment_names"])
 

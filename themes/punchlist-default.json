@@ -9,5 +9,5 @@
   "typography": {"display_family":"Editorial New","body_family":"Space Grotesk"},
   "spacing": [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96],
   "page": {"size":"letter","margin":48,"grid":{"columns":12,"gutter":16}},
-  "attribution": {"label":"Punchlist contributors · Product Designer · github.com/xenstalker02/punchlist"}
+  "attribution": {"label":"Punchlist · Independent experience review"}
 }

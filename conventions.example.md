@@ -8,6 +8,6 @@ Copy to your project as `conventions.md`. Each entry records a **deliberate** de
 
 ## Examples
 
-- **Dark-only theme, no light mode** — product is a signal-viewing tool; verified domain convention. (the project owner, 2026-07-28)
-- **Filter pills wrap; collection tabs scroll** — pills are compared as a set, tabs are navigation. (the project owner, 2026-07-29)
-- **Half-step vertical padding (`py-2.5`) stays** — it determines the 40px data-row height matching the reference build. (the project owner, 2026-07-28)
+- **Dark-only theme, no light mode** — product is a signal-viewing tool; verified domain convention. (Project team, 2026-07-28)
+- **Filter pills wrap; collection tabs scroll** — pills are compared as a set, tabs are navigation. (Project team, 2026-07-29)
+- **Half-step vertical padding (`py-2.5`) stays** — it determines the 40px data-row height matching the reference build. (Project team, 2026-07-28)

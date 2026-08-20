@@ -162,7 +162,7 @@ test("renders six readable information sections without overflow, empty image se
   await expect(page.locator(".evidence-summary")).toHaveCount(2);
   for (const summary of await page.locator(".evidence-summary").all()) await expect(summary).not.toBeEmpty();
   const links = await expectSupportedLinksToResolve(page);
-  expect(links).toContainEqual({ href: "https://github.com/xenstalker02/punchlist", target: "https://github.com/xenstalker02/punchlist/", kind: "external", found: true });
+  expect(links).toEqual([]);
   const unresolvedMarkers = await page.content().then((html) => html.match(/{{[^{}]+}}/g) ?? []);
   expect(unresolvedMarkers).toEqual([]);
   const typography = await page.evaluate(() => ({
@@ -217,7 +217,7 @@ test("maintains every visible secondary role and emits an inspectable print PDF"
   expect(generated.image_count).toBe(0);
   expect(generated.link_annotations).toHaveLength(links.length);
   expect(generated.link_annotations.map((link) => link.target)).toEqual(links.map((link) => link.target));
-  expect(generated.link_annotations.map((link) => link.target)).toContain("https://github.com/xenstalker02/punchlist/");
+  expect(generated.link_annotations).toEqual([]);
   expect(generated.page_layout_sha256).toHaveLength(generated.page_count);
   expect(committed.page_layout_sha256).toHaveLength(committed.page_count);
   expect(() => expectPdfParity(

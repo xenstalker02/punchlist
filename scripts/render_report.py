@@ -135,7 +135,7 @@ def _root_tokens(theme: dict[str, Any]) -> str:
         ("--color-evidence-label", theme["evidence_label"]),
         ("--font-display", f"{typography['display_family']}, Georgia, serif"),
         ("--font-body", f"{typography['body_family']}, Arial, sans-serif"),
-        ("--report-footer", _css_string(f"{theme['platform_name']} · Independent experience review · Punchlist contributors")),
+        ("--report-footer", _css_string(f"{theme['platform_name']} · {theme['attribution']['label']}")),
     ]
     tokens.extend((f"--space-{index}", f"{value}px") for index, value in enumerate(spacing, start=1))
     tokens.extend(
@@ -182,7 +182,7 @@ def _render_cover(audit: dict[str, Any], report: dict[str, Any], theme: dict[str
         f"<div><dt>Method</dt><dd>{_text(method)}</dd></div>"
         f"<div><dt>Evidence scope</dt><dd>{_text(evidence_scope)}</dd></div>"
         f"<div><dt>Severity basis</dt><dd>{_text(brief['severity_basis'])}</dd></div></dl>"
-        f'<p class="byline">Punchlist contributors · Product Designer · <a href="https://github.com/xenstalker02/punchlist">github.com/xenstalker02/punchlist</a></p>'
+        f'<p class="byline">{_text(theme["attribution"]["label"])}</p>'
         f"<p class=\"metadata\">{_text(report['report_id'])}</p>",
     )
 

@@ -55,7 +55,7 @@ The PDF command validates and renders the data again into a unique ignored tempo
 npm run report:pdf -- --input examples/synthetic/report.html --output output/synthetic-report.pdf
 ```
 
-To apply a bounded platform accent, pass the same optional adapter to both data commands. In v0.1 the generated report may change the platform name, primary accent, supporting tone, evidence treatment, and visible source reference. It cannot change the project owner's typography, grid, spacing, report anatomy, or attribution:
+To apply a bounded platform accent, pass the same optional adapter to both data commands. In v0.1 the generated report may change the platform name, primary accent, supporting tone, evidence treatment, and visible source reference. It cannot change the default typography, grid, spacing, report anatomy, or project attribution:
 
 ```sh
 python scripts/render_report.py --audit path/to/audit.json --report path/to/report.json --theme themes/platform-accent.example.json --output output/report.html
@@ -81,9 +81,9 @@ Before critics receive material, record the authorized surfaces, permitted recip
 
 ## Report appearance
 
-The default `punchlist-default` theme carries the project owner’s portfolio system into a report: editorial hierarchy, evidence frames, square geometry, restrained deep-sapphire emphasis, and accessible public font fallbacks. In v0.1, a `platform-accent` adapter may change the generated report’s platform name, primary accent, supporting tone, evidence treatment, and visible source reference. It cannot replace the report’s typography, grid, spacing, page anatomy, attribution, evidence hierarchy, severity language, or accessibility requirements. Generated reports do not render platform logos in v0.1; an approved public logo is only a Figma/social-cover capability when the project owner separately directs that visual work.
+The default `punchlist-default` theme gives every report a consistent editorial hierarchy, evidence frames, square geometry, restrained deep-sapphire emphasis, and accessible public font fallbacks. In v0.1, a `platform-accent` adapter may change the generated report’s platform name, primary accent, supporting tone, evidence treatment, and visible source reference. It cannot replace the report’s typography, grid, spacing, page anatomy, project attribution, evidence hierarchy, severity language, or accessibility requirements. Generated reports do not render platform logos in v0.1; an approved public logo is only a separately directed Figma/social-cover capability.
 
-Every report credits Punchlist contributors, Product Designer, and [github.com/xenstalker02/punchlist](https://github.com/xenstalker02/punchlist).
+Every report uses the project attribution `Punchlist · Independent experience review`; the default report contains no personal byline or portfolio link.
 
 ## Validation
 

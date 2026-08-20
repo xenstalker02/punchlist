@@ -30,7 +30,7 @@ class PdfToolingTests(unittest.TestCase):
                 path.unlink(missing_ok=True)
         self.assertEqual(self.input_before, INPUT_HTML.read_bytes())
 
-    def test_inspector_reports_meaningful_pages_layout_and_author_link(self) -> None:
+    def test_inspector_reports_meaningful_pages_layout_without_personal_links(self) -> None:
         result = self._inspect(OUTPUT_PDF)
         self.assertEqual(0, result.returncode, result.stderr)
         inspection = json.loads(result.stdout)
@@ -46,9 +46,7 @@ class PdfToolingTests(unittest.TestCase):
         self.assertEqual([[612.0, 792.0]] * inspection["page_count"], inspection["page_dimensions"])
         self.assertEqual([0] * inspection["page_count"], inspection["page_image_count"])
         self.assertEqual(0, inspection["image_count"])
-        self.assertTrue(
-            any(link["target"].rstrip("/") == "https://github.com/xenstalker02/punchlist" for link in inspection["link_annotations"])
-        )
+        self.assertEqual([], inspection["link_annotations"])
 
     def test_inspector_error_is_location_safe(self) -> None:
         result = self._inspect(REPO_ROOT / "private-candidate.pdf")
