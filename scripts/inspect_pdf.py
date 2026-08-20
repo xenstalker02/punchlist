@@ -104,6 +104,10 @@ def inspect_pdf(input_path: Path) -> dict[str, object]:
         page_text = [_normalized_page_text(page) for page in pages]
         page_text_characters = [len(text) for text in page_text]
         page_text_sha256 = [hashlib.sha256(text.encode("utf-8")).hexdigest() for text in page_text]
+        page_text_inventory_sha256 = [
+            hashlib.sha256("\n".join(sorted(text.split())).encode("utf-8")).hexdigest()
+            for text in page_text
+        ]
         layouts = [_page_layout(page) for page in pages]
         page_layout_sha256 = [
             hashlib.sha256(json.dumps(layout, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -133,6 +137,7 @@ def inspect_pdf(input_path: Path) -> dict[str, object]:
         "page_count": len(page_text_characters),
         "page_text_characters": page_text_characters,
         "page_text_sha256": page_text_sha256,
+        "page_text_inventory_sha256": page_text_inventory_sha256,
         "page_layout_sha256": page_layout_sha256,
         "page_dimensions": page_dimensions,
         "page_text_block_count": page_text_block_count,

@@ -44,6 +44,26 @@ class InspectPdfTests(unittest.TestCase):
         self.assertEqual("Synthetic report", inspection["metadata"]["title"])
         self.assertEqual(["notes.txt"], inspection["attachment_names"])
 
+    def test_page_text_inventory_is_stable_when_extraction_order_changes(self) -> None:
+        try:
+            fitz = _fitz_module()
+        except PdfDependencyError:
+            self.skipTest("PyMuPDF unavailable")
+        with tempfile.TemporaryDirectory() as directory:
+            paths = [Path(directory) / "first.pdf", Path(directory) / "second.pdf"]
+            for path, lines in zip(paths, (("Alpha", "Beta"), ("Beta", "Alpha")), strict=True):
+                document = fitz.open()
+                page = document.new_page(width=612, height=792)
+                for index, line in enumerate(lines):
+                    page.insert_text((72, 72 + index * 24), line, fontsize=12)
+                document.save(path)
+                document.close()
+            first, second = (inspect_pdf(path) for path in paths)
+
+        self.assertNotEqual(first["page_text_sha256"], second["page_text_sha256"])
+        self.assertNotEqual(first["page_layout_sha256"], second["page_layout_sha256"])
+        self.assertEqual(first["page_text_inventory_sha256"], second["page_text_inventory_sha256"])
+
     def test_privacy_inspection_scans_metadata_link_and_attachment_content(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "report.pdf"

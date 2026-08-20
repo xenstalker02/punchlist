@@ -39,6 +39,8 @@ class PdfToolingTests(unittest.TestCase):
         self.assertTrue(all(characters >= 200 for characters in inspection["page_text_characters"]))
         self.assertEqual(inspection["page_count"], len(inspection["page_text_sha256"]))
         self.assertTrue(all(len(digest) == 64 for digest in inspection["page_text_sha256"]))
+        self.assertEqual(inspection["page_count"], len(inspection["page_text_inventory_sha256"]))
+        self.assertTrue(all(len(digest) == 64 for digest in inspection["page_text_inventory_sha256"]))
         self.assertEqual(inspection["page_count"], len(inspection["page_layout_sha256"]))
         self.assertTrue(all(len(digest) == 64 for digest in inspection["page_layout_sha256"]))
         self.assertEqual([[612.0, 792.0]] * inspection["page_count"], inspection["page_dimensions"])

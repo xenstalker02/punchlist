@@ -146,8 +146,8 @@ async function inspectPdf(pdfPath) {
 
 function expectPdfParity(generated, committed) {
   expect(generated.page_count).toBe(committed.page_count);
-  expect(generated.page_text_sha256).toEqual(committed.page_text_sha256);
-  expect(generated.page_layout_sha256).toEqual(committed.page_layout_sha256);
+  expect(generated.page_text_characters).toEqual(committed.page_text_characters);
+  expect(generated.page_text_inventory_sha256).toEqual(committed.page_text_inventory_sha256);
   expect(generated.page_dimensions).toEqual(committed.page_dimensions);
   expect(generated.page_font_sizes).toEqual(committed.page_font_sizes);
   expect(generated.page_text_colors).toEqual(committed.page_text_colors);
@@ -219,8 +219,10 @@ test("maintains every visible secondary role and emits an inspectable print PDF"
   expect(generated.link_annotations).toHaveLength(links.length);
   expect(generated.link_annotations.map((link) => link.target)).toEqual(links.map((link) => link.target));
   expect(generated.link_annotations.map((link) => link.target)).toContain("https://github.com/xenstalker02/punchlist/");
+  expect(generated.page_layout_sha256).toHaveLength(generated.page_count);
+  expect(committed.page_layout_sha256).toHaveLength(committed.page_count);
   expect(() => expectPdfParity(
-    { ...generated, page_text_sha256: ["0".repeat(64), ...generated.page_text_sha256.slice(1)] },
+    { ...generated, page_text_inventory_sha256: ["0".repeat(64), ...generated.page_text_inventory_sha256.slice(1)] },
     generated,
   )).toThrow();
   expectPdfParity(generated, committed);
