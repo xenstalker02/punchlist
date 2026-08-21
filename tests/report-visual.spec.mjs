@@ -97,7 +97,7 @@ async function expectNoClipping(page) {
 async function secondaryContrasts(page) {
   return page.locator(SECONDARY_TEXT_SELECTOR).evaluateAll((elements) => {
     const parseColor = (value) => {
-      const channels = value.match(/\d+(?:\.\d+)?/g)?.map(Number) ?? [];
+      const channels = value.match(/\d+(?:\.\d+)?/g)?.map(Number) ?? []; // privacy-fixture
       return [channels[0] ?? 0, channels[1] ?? 0, channels[2] ?? 0, channels[3] ?? 1];
     };
     const blend = (foreground, background) => {
@@ -163,7 +163,7 @@ test("renders six readable information sections without overflow, empty image se
   for (const summary of await page.locator(".evidence-summary").all()) await expect(summary).not.toBeEmpty();
   const links = await expectSupportedLinksToResolve(page);
   expect(links).toEqual([]);
-  const unresolvedMarkers = await page.content().then((html) => html.match(/{{[^{}]+}}/g) ?? []);
+  const unresolvedMarkers = await page.content().then((html) => html.match(/{{[^{}]+}}/g) ?? []); // privacy-fixture
   expect(unresolvedMarkers).toEqual([]);
   const typography = await page.evaluate(() => ({
     body: Number.parseFloat(getComputedStyle(document.body).fontSize),
@@ -208,7 +208,13 @@ test("maintains every visible secondary role and emits an inspectable print PDF"
   const links = await expectSupportedLinksToResolve(page);
   await page.emulateMedia({ media: "print" });
   const pdfPath = testInfo.outputPath("synthetic-report.pdf");
-  await page.pdf({ format: "Letter", path: pdfPath, preferCSSPageSize: true, printBackground: true });
+  await page.pdf({
+    format: "Letter",
+    path: pdfPath,
+    preferCSSPageSize: true,
+    printBackground: true,
+    tagged: true,
+  });
   const generated = await inspectPdf(pdfPath);
   const committed = await inspectPdf(COMMITTED_PDF);
   expect(generated.page_count).toBeGreaterThanOrEqual(4);

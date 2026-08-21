@@ -42,6 +42,13 @@ A `[user]`, in `[state]` on `[device]`, starts at `[entry point]` and tries to `
 
 `experience` is the default for a product, screen, or flow. Choose `implementation` for accessibility, semantics, code, conformance, or design-system QA. Declare the severity basis before inspection so critics rate the same kind of task impact.
 
+HTML generation uses Python 3.11 and the standard library. The qualified PDF workflow additionally uses Node.js 24.14, npm 11.9, the locked JavaScript dependencies, and Playwright Chromium. From a cloned repository, prepare the PDF runtime once:
+
+```sh
+npm ci
+npx playwright install chromium
+```
+
 To generate both formats from any validated audit and its recipient projection, create the ignored `output/` directory, then use the same data inputs for both commands:
 
 ```sh

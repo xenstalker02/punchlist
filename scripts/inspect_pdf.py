@@ -130,6 +130,11 @@ def inspect_pdf(input_path: Path) -> dict[str, object]:
             for key, value in sorted((document.metadata or {}).items())
             if value not in (None, "")
         }
+        catalog = document.pdf_catalog()
+        structure_type, _ = document.xref_get_key(catalog, "StructTreeRoot")
+        mark_info_type, mark_info_value = document.xref_get_key(catalog, "MarkInfo")
+        tagged = structure_type == "xref" and mark_info_type == "dict" and "/Marked true" in mark_info_value
+        outline_count = len(document.get_toc())
     except (RuntimeError, ValueError):
         raise ValueError("pdf: could not inspect") from None
     finally:
@@ -149,6 +154,8 @@ def inspect_pdf(input_path: Path) -> dict[str, object]:
         "link_annotations": link_annotations,
         "metadata": metadata,
         "attachment_names": attachment_names,
+        "tagged": tagged,
+        "outline_count": outline_count,
     }
 
 

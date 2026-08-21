@@ -69,6 +69,26 @@ class ValidatorSchemaTests(unittest.TestCase):
         self.assertTrue(any("unique" in error for error in errors))
         self.assertTrue(any("unexpected property" in error for error in errors))
 
+    def test_schema_rejects_arrays_longer_than_max_items(self) -> None:
+        errors = validate_schema(
+            ["one", "two", "three"],
+            {"type": "array", "maxItems": 2, "items": {"type": "string"}},
+            "fixture",
+        )
+
+        self.assertEqual(["fixture: expected at most 2 item(s)"], errors)
+
+    def test_schema_validates_dynamic_property_values_without_echoing_keys(self) -> None:
+        private_key = "private-customer-name"
+        errors = validate_schema(
+            {private_key: ""},
+            {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+            "fixture",
+        )
+
+        self.assertEqual(["fixture.*: expected minLength 1"], errors)
+        self.assertNotIn(private_key, "\n".join(errors))
+
     def test_taxonomy_uses_non_evidentiary_illustrations_not_unproven_instances(self) -> None:
         defect_schema = json.loads(
             (REPO_ROOT / "schema" / "defect.schema.json").read_text(encoding="utf-8")
@@ -91,6 +111,31 @@ class ValidatorSchemaTests(unittest.TestCase):
         )
 
         self.assertEqual([], errors)
+
+    def test_theme_schema_patterns_are_valid_ecmascript_and_reject_suffixes(self) -> None:
+        script = """
+const fs = require('node:fs');
+const schema = JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));
+const pattern = schema.oneOf[0].properties.accent.pattern;
+const expression = new RegExp(pattern);
+process.stdout.write(JSON.stringify({
+  valid: expression.test('#123456'),
+  suffixed: expression.test('#123456Z'),
+  newline: expression.test('#123456\\n'),
+}));
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(REPO_ROOT / "schema" / "theme.schema.json")],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(
+            {"valid": True, "suffixed": False, "newline": False},
+            json.loads(result.stdout),
+        )
 
     def test_source_reference_requires_known_source_and_single_matcher(self) -> None:
         catalog = {
@@ -208,7 +253,7 @@ class ValidatorIntegrationTests(unittest.TestCase):
                     "-c",
                     "user.name=Punchlist Test",
                     "-c",
-                    "user.email=punchlist-test@example.invalid",
+                    "user.email=punchlist-test@example.invalid",  # privacy-fixture
                     "commit",
                     "-m",
                     "fixture",
@@ -404,10 +449,10 @@ class ValidatorIntegrationTests(unittest.TestCase):
             fixture_path.write_text(
                 json.dumps(
                     {
-                        "path": "C:\\Users\\me\\private",
-                        "credential": "api_key=topsecret",
-                        "email": "person@example.com",
-                        "url": "http://localhost:3000/private",
+                        "path": "C:\\Users\\me\\private",  # privacy-fixture
+                        "credential": "api_key=topsecret",  # privacy-fixture
+                        "email": "person@example.com",  # privacy-fixture
+                        "url": "http://localhost:3000/private",  # privacy-fixture
                         "evidence": {"type": "screenshot", "source": "fixture"},
                     }
                 ),
@@ -432,7 +477,7 @@ class ValidatorIntegrationTests(unittest.TestCase):
             fixture_path = root / "docs" / "unsafe-public.pdf"
             fixture_path.parent.mkdir(exist_ok=True)
             document = fitz.open()
-            document.new_page().insert_text((72, 72), "api_key=topsecret")
+            document.new_page().insert_text((72, 72), "api_key=topsecret")  # privacy-fixture
             document.save(fixture_path)
             document.close()
 
@@ -497,7 +542,7 @@ class ValidatorIntegrationTests(unittest.TestCase):
             changelog_path = root / "CHANGELOG.md"
             changelog_path.write_text(
                 changelog_path.read_text(encoding="utf-8")
-                + "\nCompass collections audit\n",
+                + "\nCompass collections audit\n",  # privacy-fixture
                 encoding="utf-8",
             )
 
@@ -505,20 +550,20 @@ class ValidatorIntegrationTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("CHANGELOG.md: public forbidden marker", result.stdout)
-        self.assertNotIn("Compass collections audit", result.stdout)
+        self.assertNotIn("Compass collections audit", result.stdout)  # privacy-fixture
 
     def test_named_company_and_pharma_markers_are_rejected_anywhere_public(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = self.copy_repo(Path(temp_dir))
             fixture = root / "eval" / "unsafe.md"
             fixture.parent.mkdir(parents=True, exist_ok=True)
-            fixture.write_text("A Compass workflow in pharma commercial analytics.\n", encoding="utf-8")
+            fixture.write_text("A Compass workflow in pharma commercial analytics.\n", encoding="utf-8")  # privacy-fixture
 
             result = self.run_validator(root)
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("eval/unsafe.md: public forbidden marker", result.stdout)
-        self.assertNotIn("pharma commercial analytics", result.stdout.lower())
+        self.assertNotIn("pharma commercial analytics", result.stdout.lower())  # privacy-fixture
 
     def test_unregistered_public_media_returns_nonzero(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -534,15 +579,15 @@ class ValidatorIntegrationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = self.copy_repo(Path(temp_dir))
             workflow = root / ".github" / "unsafe.yml"
-            workflow.write_text("note: token=topsecret\n", encoding="utf-8")
+            workflow.write_text("note: token=topsecret\n", encoding="utf-8")  # privacy-fixture
             svg = root / "assets" / "social-preview.svg"
-            svg.write_text(svg.read_text(encoding="utf-8") + "<!-- token=topsecret -->", encoding="utf-8")
+            svg.write_text(svg.read_text(encoding="utf-8") + "<!-- token=topsecret -->", encoding="utf-8")  # privacy-fixture
 
             result = self.run_validator(root)
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn(".github/unsafe.yml: credential-shaped assignment", result.stdout)
-        self.assertIn("assets/social-preview.svg: credential-shaped assignment", result.stdout)
+        self.assertIn(".github/unsafe.yml:1: credential-shaped assignment", result.stdout)
+        self.assertIn("assets/social-preview.svg:77: credential-shaped assignment", result.stdout)
         self.assertNotIn("topsecret", result.stdout)
 
     def test_public_media_manifest_hash_mismatch_returns_nonzero(self) -> None:
@@ -561,7 +606,7 @@ class ValidatorIntegrationTests(unittest.TestCase):
             root = self.copy_repo(Path(temp_dir))
             audit_path = root / "examples" / "synthetic" / "audit.json"
             audit = json.loads(audit_path.read_text(encoding="utf-8"))
-            audit["target"]["classification"] = "api_key=topsecret"
+            audit["target"]["classification"] = "api_key=topsecret"  # privacy-fixture
             audit_path.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
 
             result = self.run_validator(root)
@@ -590,12 +635,67 @@ class ValidatorIntegrationTests(unittest.TestCase):
             root = self.copy_repo(Path(temp_dir))
             docs_path = root / "docs" / "public.md"
             docs_path.parent.mkdir(exist_ok=True)
-            docs_path.write_text("token=topsecret\n", encoding="utf-8")
+            docs_path.write_text("token=topsecret\n", encoding="utf-8")  # privacy-fixture
 
             result = self.run_validator(root)
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("docs/public.md: credential-shaped assignment", result.stdout)
+        self.assertIn("docs/public.md:1: credential-shaped assignment", result.stdout)
+        self.assertNotIn("topsecret", result.stdout)
+
+    def test_public_safety_scans_source_styles_text_and_extensionless_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = self.copy_repo(Path(temp_dir))
+            candidates = (
+                root / "unsafe.py",
+                root / "unsafe.mjs",
+                root / "unsafe.css",
+                root / "unsafe.txt",
+                root / "UNSAFE-NOTICE",
+            )
+            for path in candidates:
+                path.write_text("token=topsecret\n", encoding="utf-8")  # privacy-fixture
+
+            result = self.run_validator(root)
+
+        self.assertNotEqual(result.returncode, 0)
+        for path in candidates:
+            self.assertIn(f"{path.name}:1: credential-shaped assignment", result.stdout)
+        self.assertNotIn("topsecret", result.stdout)
+
+    def test_registered_privacy_fixture_only_exempts_marked_lines(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = self.copy_repo(Path(temp_dir))
+            fixture = root / "tests" / "test_report_model.py"
+            fixture.write_text(
+                fixture.read_text(encoding="utf-8") + "\n# token=topsecret\n",  # privacy-fixture
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "tests/test_report_model.py:",
+            result.stdout,
+        )
+        self.assertIn("credential-shaped assignment", result.stdout)
+        self.assertNotIn("topsecret", result.stdout)
+
+    def test_public_safety_detects_credential_assignment_split_across_lines(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = self.copy_repo(Path(temp_dir))
+            fixture = root / "docs" / "split-credential.txt"
+            fixture.parent.mkdir(exist_ok=True)
+            fixture.write_text("token =\ntopsecret\n", encoding="utf-8")  # privacy-fixture
+
+            result = self.run_validator(root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "docs/split-credential.txt:1: credential-shaped assignment",
+            result.stdout,
+        )
         self.assertNotIn("topsecret", result.stdout)
 
     def test_unregistered_synthetic_json_returns_nonzero(self) -> None:

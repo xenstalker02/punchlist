@@ -25,11 +25,11 @@ APPROVED_PLATFORM_ADAPTER_KEYS = {
 APPROVED_PLATFORM_ACCENT_KEYS = APPROVED_PLATFORM_ADAPTER_KEYS | {"source_url"}
 SYNTHETIC_EMAIL_ALLOWLIST = {"sample.user@example.test", "synthetic@example.test"}
 WINDOWS_PATH = re.compile(r"\b[A-Za-z]:\\+")
-POSIX_HOME_PATH = re.compile(r"/(?:Users|home)/")
-UNC_PATH = re.compile(r"(?<![A-Za-z0-9])\\\\[^\\\s]+\\[^\s]+")
-TILDE_PATH = re.compile(r"(?<![A-Za-z0-9])~/(?:[^\s]+)")
+POSIX_HOME_PATH = re.compile(r"/(?:Users|home)/")  # privacy-fixture
+UNC_PATH = re.compile(r"(?<![A-Za-z0-9])\\\\[^\\\s]+\\[^\s]+")  # privacy-fixture
+TILDE_PATH = re.compile(r"(?<![A-Za-z0-9])~/(?:[^\s]+)")  # privacy-fixture
 ABSOLUTE_POSIX_PATH = re.compile(
-    r"(?<![:/A-Za-z0-9~<])/(?!/)(?:[^/\s<>]+/[^\s<>]+|[^/\s<>]+\.[A-Za-z0-9]+)"
+    r"(?<![:/A-Za-z0-9~<])/(?!/)(?:[^/\s<>]+/[^\s<>]+|[^/\s<>]+\.[A-Za-z0-9]+)"  # privacy-fixture
 )
 INVALID_BLOCKER = re.compile(
     r"\b(?:time\s+(?:limit|budget|ran\s+out)|timed?\s+out|deadline|token(?:s)?\s+(?:limit|budget|exhausted|remaining|constraint)|budget|not\s+completed|critic\s+scope)\b",
@@ -63,7 +63,7 @@ CREDENTIAL_ASSIGNMENT = re.compile(
     re.IGNORECASE,
 )
 EMAIL_ADDRESS = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE)
-FILE_URL = re.compile(r"file://", re.IGNORECASE)
+FILE_URL = re.compile(r"file://", re.IGNORECASE)  # privacy-fixture
 HTTP_URL = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 
 
@@ -218,7 +218,9 @@ def _has_private_or_local_url(value: str) -> bool:
     return False
 
 
-def privacy_errors(value: Any, location: str = "document") -> list[str]:
+def privacy_errors(
+    value: Any, location: str = "document", *, require_publication_approval: bool = True
+) -> list[str]:
     """Find recipient-unsafe strings without exposing the matched value."""
     errors: list[str] = []
 
@@ -247,10 +249,10 @@ def privacy_errors(value: Any, location: str = "document") -> list[str]:
                 visit(item, _location_child(current_location, index))
             return
         if isinstance(current, dict):
-            if current.get("type") == "screenshot" or (
+            if require_publication_approval and (current.get("type") == "screenshot" or (
                 current.get("verified_how") == "screenshot"
                 and "publication_approved" in current
-            ):
+            )):
                 if current.get("publication_approved") is not True or not isinstance(current.get("alt"), str) or not current["alt"].strip():
                     errors.append(f"{current_location}: unapproved screenshot evidence")
             for key, item in current.items():
@@ -272,7 +274,7 @@ def _final_findings(audit: dict[str, Any]) -> list[dict[str, Any]]:
         and isinstance(finding.get("severity"), (int, float))
         and not isinstance(finding.get("severity"), bool)
         and finding["severity"] > 0
-        and finding.get("lifecycle") == "open"
+        and finding.get("lifecycle") in {"open", "fixed"}
     ]
     return sorted(final, key=lambda finding: (-finding["severity"], str(finding.get("finding_id", ""))))
 
@@ -344,10 +346,19 @@ def _evidence_capability_errors(
 def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
     """Validate an audit against schemas, taxonomy, lifecycle, and privacy rules."""
     errors = _schema_errors(root, audit, "audit.schema.json", "audit")
+    target = audit.get("target", {})
+    target_classification = target.get("classification") if isinstance(target, dict) else None
+    require_publication_approval = target_classification != "authorized-restricted"
     taxonomy_entries, taxonomy_errors = _taxonomy_entries(root)
     taxonomy_ids = set(taxonomy_entries)
     errors.extend(taxonomy_errors)
-    errors.extend(privacy_errors(audit, "audit"))
+    errors.extend(
+        privacy_errors(
+            audit,
+            "audit",
+            require_publication_approval=require_publication_approval,
+        )
+    )
     errors.extend(_duplicate_stable_id_errors(audit.get("findings"), "finding_id", "audit.findings"))
     errors.extend(_duplicate_stable_id_errors(audit.get("gaps"), "gap_id", "audit.gaps"))
     errors.extend(
@@ -359,17 +370,10 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
     errors.extend(_duplicate_stable_id_errors(audit.get("strengths"), "strength_id", "audit.strengths"))
     errors.extend(_duplicate_stable_id_errors(audit.get("critics"), "critic_id", "audit.critics"))
 
-    target = audit.get("target", {})
-    target_classification = target.get("classification") if isinstance(target, dict) else None
-    authorization = target.get("authorization") if isinstance(target, dict) else None
+    authorization = target.get("authorization") if isinstance(target, dict) else None  # privacy-fixture
     if target_classification == "authorized-restricted":
         if not isinstance(authorization, dict):
             errors.append("audit.target: restricted target requires authorization")
-        elif authorization.get("publication_approved") is not True:
-            errors.append("audit.target.authorization: restricted publication must be approved")
-        redaction = audit.get("redaction")
-        if not isinstance(redaction, dict) or redaction.get("attested") is not True or redaction.get("status") != "complete":
-            errors.append("audit.redaction: restricted audit redaction must be complete and attested")
     authorization_id = authorization.get("authorization_id") if isinstance(authorization, dict) else None
     provenance = audit.get("provenance", [])
     provenance_by_id = {
@@ -380,7 +384,7 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
     for index, record in enumerate(provenance if isinstance(provenance, list) else []):
         if not isinstance(record, dict):
             continue
-        if record.get("publication_approved") is not True:
+        if require_publication_approval and record.get("publication_approved") is not True:
             errors.append(f"audit.provenance[{index}]: publication approval required")
         if record.get("classification") == "authorized-restricted":
             if not authorization_id or record.get("authorization_id") != authorization_id:
@@ -407,6 +411,8 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
 
     findings = audit.get("findings", [])
     if isinstance(findings, list):
+        brief = audit.get("brief", {})
+        declared_severity_basis = brief.get("severity_basis") if isinstance(brief, dict) else None
         critic_ids = {
             critic.get("critic_id")
             for critic in audit.get("critics", [])
@@ -428,6 +434,8 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
                         errors.append(f"{location}.also_matches[{alias_index}]: unknown defect")
             if finding.get("severity") == 0:
                 errors.append(f"{location}.severity: severity must be above zero")
+            if finding.get("severity_basis") != declared_severity_basis:
+                errors.append(f"{location}.severity_basis: must match audit brief severity basis")
             lifecycle = finding.get("lifecycle")
             resweep = finding.get("resweep")
             if lifecycle == "superseded":
@@ -497,7 +505,7 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
                     errors.append(f"{evidence_location}.provenance_id: unknown provenance ID")
                 elif item.get("classification") != provenance_record.get("classification"):
                     errors.append(f"{evidence_location}.classification: must match provenance classification")
-                if item.get("publication_approved") is not True:
+                if require_publication_approval and item.get("publication_approved") is not True:
                     errors.append(f"{evidence_location}: publication approval required")
                 if item.get("classification") == "authorized-restricted":
                     if not authorization_id or item.get("authorization_id") != authorization_id:
@@ -639,8 +647,11 @@ def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
                 errors.append(f"{location}.provenance_id: unknown provenance ID")
             elif item.get("classification") != provenance_record.get("classification"):
                 errors.append(f"{location}.classification: must match provenance classification")
-            if item.get("publication_approved") is not True:
+            if require_publication_approval and item.get("publication_approved") is not True:
                 errors.append(f"{location}: publication approval required")
+            if item.get("classification") == "authorized-restricted":
+                if not authorization_id or item.get("authorization_id") != authorization_id:
+                    errors.append(f"{location}: restricted evidence requires target authorization")
     return errors
 
 
@@ -689,6 +700,23 @@ def validate_report_projection(
     if not isinstance(audit, dict) or not isinstance(report, dict) or not isinstance(theme, dict):
         return errors
 
+    for index, provenance in enumerate(audit.get("provenance", [])):
+        if isinstance(provenance, dict) and provenance.get("publication_approved") is not True:
+            errors.append(f"audit.provenance[{index}]: publication approval required")
+    evidence_groups = (
+        ("findings", audit.get("findings", [])),
+        ("strengths", audit.get("strengths", [])),
+    )
+    for group_name, records in evidence_groups:
+        for record_index, record in enumerate(records if isinstance(records, list) else []):
+            if not isinstance(record, dict):
+                continue
+            for evidence_index, evidence in enumerate(record.get("evidence", [])):
+                if isinstance(evidence, dict) and evidence.get("publication_approved") is not True:
+                    errors.append(
+                        f"audit.{group_name}[{record_index}].evidence[{evidence_index}]: publication approval required"
+                    )
+
     if report.get("audit_id") != audit.get("audit_id"):
         errors.append("report.audit_id: must reference the canonical audit")
     report_redaction = report.get("redaction")
@@ -708,11 +736,14 @@ def validate_report_projection(
     if isinstance(target, dict) and report.get("publication") != target.get("classification"):
         errors.append("report.publication: must match audit target classification")
     if isinstance(target, dict) and target.get("classification") == "authorized-restricted":
-        authorization = target.get("authorization")
+        authorization = target.get("authorization")  # privacy-fixture
         if not isinstance(authorization, dict):
             errors.append("audit.target: restricted target requires authorization")
         elif authorization.get("publication_approved") is not True:
-            errors.append("audit.target.authorization: restricted publication must be approved")
+            errors.append("audit.target.authorization: restricted publication must be approved")  # privacy-fixture
+        audit_redaction = audit.get("redaction")
+        if not isinstance(audit_redaction, dict) or audit_redaction.get("attested") is not True or audit_redaction.get("status") != "complete":
+            errors.append("audit.redaction: restricted audit redaction must be complete and attested before projection")
         if not isinstance(report_redaction, dict) or report_redaction.get("attested") is not True:
             errors.append("report.redaction: restricted report redaction must be attested")
         if not isinstance(report_review, dict) or report_review.get("status") != "approved":

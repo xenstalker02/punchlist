@@ -32,7 +32,7 @@ MARKDOWN_FILES = (
 OPTIONAL_MARKDOWN_FILES: tuple[str, ...] = ()
 PATH_SUFFIXES = (".json", ".md", ".py", ".yml", ".yaml", ".svg", ".png")
 OPTIONAL_PROJECT_FILES = {"conventions.md"}
-PUBLIC_ARTIFACT_SUFFIXES = {".md", ".json", ".html", ".pdf", ".svg", ".yml", ".yaml"}
+PUBLIC_BINARY_SUFFIXES = {".png"}
 PUBLIC_MEDIA_SUFFIXES = {".png", ".svg"}
 PUBLIC_EXCLUDED_DIRECTORIES = {
     ".git",
@@ -47,6 +47,20 @@ PUBLIC_EXCLUDED_DIRECTORIES = {
 }
 PUBLIC_EXCLUDED_FILES = {Path("conventions.md"), Path("themes/theme.local.json")}
 PUBLIC_EXCLUDED_PREFIXES = (Path(".superpowers"), Path("docs/superpowers"))
+PUBLIC_SAFETY_FIXTURE_MARKER = "privacy-fixture"
+PUBLIC_SAFETY_FIXTURE_NEXT_LINE_MARKER = "privacy-fixture-next-line"
+PUBLIC_SAFETY_FIXTURE_FILES = {
+    Path(".gitignore"),
+    Path("scripts/report_model.py"),
+    Path("scripts/render_report.py"),
+    Path("scripts/validate.py"),
+    Path("tests/report-visual.spec.mjs"),
+    Path("tests/test_inspect_pdf.py"),
+    Path("tests/test_print_report.py"),
+    Path("tests/test_render_report.py"),
+    Path("tests/test_report_model.py"),
+    Path("tests/test_validate.py"),
+}
 REGISTERED_SYNTHETIC_JSON = {
     "examples/synthetic/audit.json",
     "examples/synthetic/report.json",
@@ -128,6 +142,8 @@ def validate_schema(value: Any, schema: dict[str, Any], location: str) -> list[s
     if isinstance(value, list):
         if "minItems" in schema and len(value) < schema["minItems"]:
             errors.append(f"{location}: expected at least {schema['minItems']} item(s)")
+        if "maxItems" in schema and len(value) > schema["maxItems"]:
+            errors.append(f"{location}: expected at most {schema['maxItems']} item(s)")
         if schema.get("uniqueItems"):
             encoded_items = [json.dumps(item, ensure_ascii=False, separators=(",", ":"), sort_keys=True) for item in value]
             if len(encoded_items) != len(set(encoded_items)):
@@ -137,14 +153,18 @@ def validate_schema(value: Any, schema: dict[str, Any], location: str) -> list[s
                 errors.extend(validate_schema(item, schema["items"], f"{location}[{index}]"))
 
     if isinstance(value, dict):
+        properties = schema.get("properties", {})
         for required in schema.get("required", []):
             if required not in value:
                 errors.append(f"{location}: missing required property {required!r}")
         if schema.get("additionalProperties") is False:
-            properties = schema.get("properties", {})
             for key in sorted(value.keys() - properties.keys()):
                 errors.append(f"{location}: unexpected property")
-        for key, child_schema in schema.get("properties", {}).items():
+        elif isinstance(schema.get("additionalProperties"), dict):
+            additional_schema = schema["additionalProperties"]
+            for key in sorted(value.keys() - properties.keys()):
+                errors.extend(validate_schema(value[key], additional_schema, f"{location}.*"))
+        for key, child_schema in properties.items():
             if key in value:
                 errors.extend(validate_schema(value[key], child_schema, f"{location}.{key}"))
 
@@ -374,7 +394,7 @@ def public_artifact_paths(root: Path) -> list[Path]:
     """Return public documentation and data files, excluding tool state."""
     paths: list[Path] = []
     for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in PUBLIC_ARTIFACT_SUFFIXES:
+        if not path.is_file() or path.suffix.lower() in PUBLIC_BINARY_SUFFIXES:
             continue
         relative = path.relative_to(root)
         if relative in PUBLIC_EXCLUDED_FILES or any(
@@ -385,13 +405,33 @@ def public_artifact_paths(root: Path) -> list[Path]:
     return sorted(paths)
 
 
+def _public_safety_lines(relative: Path, content: str) -> list[tuple[int, str]]:
+    """Return scan-eligible lines, honoring only reviewed fixture-line markers."""
+    lines = content.splitlines()
+    eligible: list[tuple[int, str]] = []
+    for index, line in enumerate(lines):
+        registered_fixture = relative in PUBLIC_SAFETY_FIXTURE_FILES
+        marked = registered_fixture and (
+            PUBLIC_SAFETY_FIXTURE_MARKER in line or (index == 0 and line.startswith("#!"))
+        )
+        marked_by_previous = (
+            registered_fixture
+            and index > 0
+            and PUBLIC_SAFETY_FIXTURE_NEXT_LINE_MARKER in lines[index - 1]
+        )
+        if not marked and not marked_by_previous:
+            eligible.append((index + 1, line))
+    return eligible
+
+
 def validate_public_safety(root: Path) -> list[str]:
     """Reject recipient-unsafe values without reproducing secret-shaped values."""
-    from scripts.report_model import privacy_errors
+    from scripts.report_model import CREDENTIAL_ASSIGNMENT, privacy_errors
 
     errors: list[str] = []
     for path in public_artifact_paths(root):
-        relative = path.relative_to(root).as_posix()
+        relative_path = path.relative_to(root)
+        relative = relative_path.as_posix()
         if path.suffix.lower() == ".pdf":
             try:
                 from scripts.inspect_pdf import PdfDependencyError, validate_pdf_privacy
@@ -413,7 +453,19 @@ def validate_public_safety(root: Path) -> list[str]:
         except OSError as error:
             errors.append(f"{relative}: {error}")
             continue
-        errors.extend(privacy_errors(content, relative))
+        eligible_lines = _public_safety_lines(relative_path, content)
+        for line_number, line in eligible_lines:
+            errors.extend(privacy_errors(line, f"{relative}:{line_number}"))
+        eligible_by_number = dict(eligible_lines)
+        for line_number, line in eligible_lines:
+            next_line = eligible_by_number.get(line_number + 1)
+            if next_line is None:
+                continue
+            match = CREDENTIAL_ASSIGNMENT.search(f"{line}\n{next_line}")
+            if match is not None and "\n" in match.group(0):
+                error = f"{relative}:{line_number}: credential-shaped assignment"
+                if error not in errors:
+                    errors.append(error)
     return errors
 
 
@@ -492,7 +544,7 @@ def referenced_paths(markdown: str) -> set[str]:
         reference
         for reference in references
         if reference
-        and not reference.startswith(("http://", "https://", "mailto:", "#", "~/"))
+        and not reference.startswith(("http://", "https://", "mailto:", "#", "~/"))  # privacy-fixture
     }
 
 
@@ -539,13 +591,17 @@ def validate_public_forbidden_markers(root: Path) -> list[str]:
     for path in public_artifact_paths(root):
         if path.suffix.lower() == ".pdf":
             continue
-        filename = path.relative_to(root).as_posix()
+        relative_path = path.relative_to(root)
+        filename = relative_path.as_posix()
         try:
             content = path.read_text(encoding="utf-8")
         except OSError as error:
             errors.append(f"{filename}: {error}")
             continue
-        if any(marker.search(content) for marker in PUBLIC_FORBIDDEN_MARKERS):
+        eligible_content = "\n".join(
+            line for _, line in _public_safety_lines(relative_path, content)
+        )
+        if any(marker.search(eligible_content) for marker in PUBLIC_FORBIDDEN_MARKERS):
             errors.append(f"{filename}: public forbidden marker")
     return errors
 

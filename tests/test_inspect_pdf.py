@@ -67,7 +67,7 @@ class InspectPdfTests(unittest.TestCase):
     def test_privacy_inspection_scans_metadata_link_and_attachment_content(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "report.pdf"
-            self._make_pdf(path, metadata_title=r"C:\Users\person\private", attachment=b"secret@example.com")
+            self._make_pdf(path, metadata_title=r"C:\Users\person\private", attachment=b"secret@example.com")  # privacy-fixture
             errors = validate_pdf_privacy(path, "report.pdf")
         self.assertIn("report.pdf.metadata.title: absolute local path", errors)
         self.assertIn("report.pdf.attachment[0].content: email address", errors)
