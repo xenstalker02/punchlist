@@ -1,5 +1,3 @@
-# Punchlist
-
 ![Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review](assets/social-preview.png)
 
 [![Validate](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml/badge.svg)](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml)
