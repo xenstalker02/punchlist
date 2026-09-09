@@ -10,7 +10,7 @@
     "report:pdf": "node scripts/print_report.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "playwright": "1.62.1"
   }
 }
