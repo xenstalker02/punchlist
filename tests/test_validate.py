@@ -587,7 +587,10 @@ class ValidatorIntegrationTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn(".github/unsafe.yml:1: credential-shaped assignment", result.stdout)
-        self.assertIn("assets/social-preview.svg:77: credential-shaped assignment", result.stdout)
+        self.assertRegex(
+            result.stdout,
+            r"assets/social-preview\.svg:\d+: credential-shaped assignment",
+        )
         self.assertNotIn("topsecret", result.stdout)
 
     def test_public_media_manifest_hash_mismatch_returns_nonzero(self) -> None:

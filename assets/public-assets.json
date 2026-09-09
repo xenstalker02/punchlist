@@ -3,18 +3,18 @@
   "assets": [
     {
       "path": "assets/social-preview.png",
-      "sha256": "c62eb6cc985b02fe5bdff14eed3b024d27bff3d23598ca1e55e3cfc76f8de557",
+      "sha256": "ad89a3260a6af5741a79516002bc5d7e7f6f1f746a7a5c23e110fa3a60a6a131",
       "purpose": "Repository social preview",
-      "alt": "Punchlist social preview artwork.",
-      "provenance": "User-approved export from the current public cover frame.",
+      "alt": "Punchlist cover with an editorial wordmark, highlighted tagline, and synthetic evidence card.",
+      "provenance": "User-approved export from Figma node 13835:22521, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     },
     {
       "path": "assets/social-preview.svg",
-      "sha256": "61ca311a3d32987bb461a743ca1621923536b9aa094120012778af33a5e915fb",
+      "sha256": "c853efd0ff4e380aeb77df3c0adbf073dfbb8d6140e860d74dd18f4bfc09b6aa",
       "purpose": "Editable social preview source",
-      "alt": "Punchlist social preview artwork.",
-      "provenance": "User-approved export from the current public cover frame.",
+      "alt": "Punchlist cover with an editorial wordmark, highlighted tagline, and synthetic evidence card.",
+      "provenance": "User-approved export from Figma node 13835:22521, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     }
   ]
