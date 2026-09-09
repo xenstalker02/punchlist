@@ -3,18 +3,18 @@
   "assets": [
     {
       "path": "assets/social-preview.png",
-      "sha256": "ad89a3260a6af5741a79516002bc5d7e7f6f1f746a7a5c23e110fa3a60a6a131",
+      "sha256": "514f83fbd272601c0a3c0697e89d254618d82eab272122d904c5289a48f346fb",
       "purpose": "Repository social preview",
-      "alt": "Punchlist cover with an editorial wordmark, highlighted tagline, and synthetic evidence card.",
-      "provenance": "User-approved export from Figma node 13835:22521, built with the timdili.ch portfolio design system.",
+      "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
+      "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     },
     {
       "path": "assets/social-preview.svg",
-      "sha256": "c853efd0ff4e380aeb77df3c0adbf073dfbb8d6140e860d74dd18f4bfc09b6aa",
-      "purpose": "Editable social preview source",
-      "alt": "Punchlist cover with an editorial wordmark, highlighted tagline, and synthetic evidence card.",
-      "provenance": "User-approved export from Figma node 13835:22521, built with the timdili.ch portfolio design system.",
+      "sha256": "707e7626d790159c0814495a61a7500043828c3712d28685d71f8583b76ced43",
+      "purpose": "SVG social preview wrapper",
+      "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
+      "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     }
   ]

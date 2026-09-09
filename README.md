@@ -1,10 +1,12 @@
 # Punchlist
 
-![Punchlist cover with an editorial wordmark, highlighted tagline, and synthetic evidence card](assets/social-preview.png)
+![Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review](assets/social-preview.png)
 
 [![Validate](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml/badge.svg)](https://github.com/xenstalker02/punchlist/actions/workflows/validate.yml)
 
-Punchlist is an agent skill for evidence-based UX reviews. Give it one user task plus an authorized URL, screenshot, Figma frame, or codebase; it returns supported issues, what worked, and what could not be assessed in a readable HTML or PDF report.
+Punchlist helps designers use AI for a focused UX review. Give it one user task and an authorized URL, screenshot, Figma frame, or codebase. It returns named issues, the evidence behind them, what worked, and what it could not check in a readable HTML or PDF report.
+
+The checks are loosely informed by Nielsen Norman Group usability heuristics and other established UX practices. Punchlist is not a magic score: it keeps each claim tied to something the reviewer could inspect.
 
 > **Status: v0.1 production-ready for the bounded workflow below.** The repository includes the audit schema, validators, synthetic example, and HTML/PDF renderers. See [Known limits](#known-limits). Future incompatible schema changes will be versioned explicitly.
 
@@ -28,7 +30,7 @@ Punchlist does not turn defect counts into a score or a verdict on the whole pro
 
 ## Try your first audit
 
-Install the skill with your preferred agent-skill workflow:
+Install the skill with an AI tool that supports Agent Skills:
 
 ```sh
 npx skills add xenstalker02/punchlist
@@ -40,13 +42,13 @@ Or clone the repository into a local Claude Code skill directory:
 git clone https://github.com/xenstalker02/punchlist.git ~/.claude/skills/punchlist
 ```
 
-After installing, open an agent that supports Agent Skills and send a prompt like this:
+After installing, give your AI tool a prompt like this:
 
 ```text
 Use Punchlist to review [URL or attached screenshot]. A new visitor, signed out on mobile, starts at a product page and tries to compare two options. Use the experience profile. Rate severity by impact on completing the comparison.
 ```
 
-Punchlist produces a structured audit record and a readable report when the agent has the required local tools. File rendering depends on that agent's available Python, Node.js, Playwright, and browser access.
+Punchlist produces a structured review record and a readable report when the AI tool has the required local tools. File rendering depends on that tool's available Python, Node.js, Playwright, and browser access.
 
 Use this neutral template for your own review:
 
@@ -62,13 +64,13 @@ Choose `experience` for a product, screen, or flow. Choose `implementation` for 
 task brief + authorized input -> evidence-based review -> HTML/PDF report
 ```
 
-1. **Frame the task.** Define the user, state, device, entry point, goal, profile, and severity basis.
-2. **Inspect only authorized inputs.** Use the live product, screenshots, Figma, or code that the brief allows.
-3. **Name and review defects.** Match observations to the 50-defect taxonomy, merge duplicates, and keep unsupported checks under **Not assessed**.
-4. **Build the source record.** The structured audit records scope, provenance, evidence, critic decisions, findings, gaps, and limits.
-5. **Render the handoff.** A human-readable report carries stable IDs into self-contained HTML and, when requested, PDF.
+1. **Describe the task.** Say who is using the product, what state they are in, what device they are on, where they start, and what they are trying to do.
+2. **Inspect the allowed material.** Review only the live product, screenshots, Figma work, or code included in the brief.
+3. **Name the issues.** Match observations to Punchlist's 50 named checks, combine duplicates, and put anything the evidence cannot answer under **Not assessed**.
+4. **Keep the evidence attached.** The review record stores the scope, source, screenshots or code references, decisions, gaps, and limits behind each finding.
+5. **Hand off a readable report.** Punchlist turns that record into a self-contained HTML report and, when requested, a PDF.
 
-Under the hood, the canonical audit bundle is the source of truth and the report is its recipient-facing projection. The renderer calculates counts and refuses unresolved IDs, unsafe values, unapproved evidence, or a failed redaction check.
+The report is deliberately cautious: it counts only supported findings and rejects unresolved IDs, unsafe values, unapproved evidence, or failed redaction checks.
 
 ## Capability matrix
 
