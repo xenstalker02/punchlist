@@ -346,6 +346,10 @@ def _evidence_capability_errors(
 def validate_audit_bundle(root: Path, audit: dict[str, Any]) -> list[str]:
     """Validate an audit against schemas, taxonomy, lifecycle, and privacy rules."""
     errors = _schema_errors(root, audit, "audit.schema.json", "audit")
+    # Semantic checks may inspect nested containers only after schema type checks.
+    # Keep collecting useful semantic errors for invalid values of valid types.
+    if any(", got " in error for error in errors):
+        return errors
     target = audit.get("target", {})
     target_classification = target.get("classification") if isinstance(target, dict) else None
     require_publication_approval = target_classification != "authorized-restricted"
@@ -694,6 +698,10 @@ def validate_report_projection(
     errors.extend(_schema_errors(root, theme, "theme.schema.json", "theme"))
     if isinstance(audit, dict):
         errors.extend(validate_audit_bundle(root, audit))
+    else:
+        errors.append("audit: expected an object")
+    if not isinstance(audit, dict) or any(", got " in error for error in errors):
+        return errors
     errors.extend(privacy_errors(audit, "audit"))
     errors.extend(privacy_errors(report, "report"))
 

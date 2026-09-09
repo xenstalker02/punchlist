@@ -11,8 +11,8 @@
     },
     {
       "path": "assets/social-preview.svg",
-      "sha256": "707e7626d790159c0814495a61a7500043828c3712d28685d71f8583b76ced43",
-      "purpose": "SVG social preview wrapper",
+      "sha256": "1450be5f086aa5b03b79db04d37e16e9c7eec1eb1bc8e43993ba0e8e54a381aa",
+      "purpose": "Self-contained Figma SVG export",
       "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
       "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true

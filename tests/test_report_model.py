@@ -29,6 +29,19 @@ class ReportModelTests(unittest.TestCase):
         self.assertEqual([], validate_audit_bundle(REPO_ROOT, self.audit))
         self.assertEqual([], validate_report_projection(self.audit, self.report, self.theme))
 
+    def test_projection_rejects_malformed_collections_without_crashing(self) -> None:
+        for field in ("provenance", "findings", "strengths", "critics", "ledger"):
+            for value in (None, {}, "invalid", [None]):
+                with self.subTest(field=field, value=value):
+                    audit = copy.deepcopy(self.audit)
+                    audit[field] = value
+                    self.assertTrue(validate_report_projection(audit, self.report, self.theme))
+
+    def test_audit_rejects_non_object_without_crashing(self) -> None:
+        for value in (None, [], "invalid"):
+            with self.subTest(value=value):
+                self.assertTrue(validate_audit_bundle(REPO_ROOT, value))
+
     def test_theme_rejects_css_control_syntax_in_color_and_font_tokens(self) -> None:
         theme = copy.deepcopy(self.theme)
         theme["colors"]["canvas"] = "white;} body { display: none"
@@ -392,6 +405,11 @@ class ReportModelTests(unittest.TestCase):
             evidence["publication_approved"] = False
 
         self.assertEqual([], validate_audit_bundle(REPO_ROOT, audit))
+        report = copy.deepcopy(self.report)
+        report["publication"] = "authorized-restricted"
+        report["audience"] = "Named review team"
+        errors = validate_report_projection(audit, report, self.theme)
+        self.assertTrue(any("publication approval required" in error for error in errors))
 
     def test_every_projection_requires_redaction_review_and_publication_approval(self) -> None:
         report = copy.deepcopy(self.report)

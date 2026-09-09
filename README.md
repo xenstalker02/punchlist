@@ -6,9 +6,9 @@
 
 Punchlist helps designers use AI for a focused UX review. Give it one user task and an authorized URL, screenshot, Figma frame, or codebase. It returns named issues, the evidence behind them, what worked, and what it could not check in a readable HTML or PDF report.
 
-The checks are loosely informed by Nielsen Norman Group usability heuristics and other established UX practices. Punchlist is not a magic score: it keeps each claim tied to something the reviewer could inspect.
+The checks are loosely informed by Nielsen Norman Group's usability heuristics and other established UX practices. Each finding must point to something the reviewer inspected.
 
-> **Status: v0.1 production-ready for the bounded workflow below.** The repository includes the audit schema, validators, synthetic example, and HTML/PDF renderers. See [Known limits](#known-limits). Future incompatible schema changes will be versioned explicitly.
+> **Status: v0.1, early release.** The review and report tools have automated checks, but Punchlist has only been tried on a couple of designs so far. Detection accuracy has not been measured. Treat findings as review input and check them before acting. See [Known limits](#known-limits).
 
 ## Start here
 
@@ -31,6 +31,8 @@ Punchlist does not turn defect counts into a score or a verdict on the whole pro
 ## Try your first audit
 
 Install the skill with an AI tool that supports Agent Skills:
+
+A skill is a set of instructions and tools you add to an AI assistant. Punchlist needs an assistant that can read files and run local commands; it is not a standalone website. If you only want to see what it produces, start with the [sample PDF](examples/synthetic/report.pdf).
 
 ```sh
 npx skills add xenstalker02/punchlist
@@ -88,6 +90,8 @@ Multi-critic review is the protocol's intended evaluation method. A single agent
 Preflight defaults to **public and logged-out** surfaces. Authenticated, private, customer, employer, or NDA-bound material needs explicit scope and an `authorized-restricted` classification before inspection. Restricted evidence and output remain restricted unless publication receives separate approval.
 
 Before sharing material with critics, record the authorized surfaces, permitted recipients, whether external or model subagents may receive evidence, allowed evidence types, and retention requirements. Redact local paths, credentials, private URLs, personal emails, customer identifiers, and unapproved screenshots. `.gitignore` keeps generated files out of a normal commit; it does not protect confidential data.
+
+Private review records can be validated before sharing approval. Creating a report for a recipient is a separate step and requires approval for that recipient and the included evidence. A private record passing validation does not grant permission to render or share it.
 
 ## Render HTML and PDF
 

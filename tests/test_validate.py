@@ -1,3 +1,4 @@
+import base64
 import json
 import shutil
 import subprocess
@@ -300,7 +301,6 @@ class ValidatorIntegrationTests(unittest.TestCase):
             "Punchlist · Independent experience review",
             "Capability matrix",
             "public and logged-out",
-            "v0.1 production-ready",
         )
         for surface in required_surfaces:
             self.assertIn(surface, readme)
@@ -574,6 +574,28 @@ class ValidatorIntegrationTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("assets/unregistered.svg: unregistered public media", result.stdout)
+
+    def test_non_utf8_public_file_returns_safe_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = self.copy_repo(Path(temp_dir))
+            (root / "assets" / "unsupported.jpg").write_bytes(b"\xff\xd8\xffprivate-content")
+            result = self.run_validator(root)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("assets/unsupported.jpg: unsupported non-UTF-8 public file", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertNotIn("private-content", result.stdout + result.stderr)
+
+    def test_svg_png_payload_is_binary_but_adjacent_text_is_scanned(self) -> None:
+        payload = base64.b64encode((REPO_ROOT / "assets/social-preview.png").read_bytes()).decode("ascii")
+        svg = f'<svg><image href="data:image/png;base64,{payload}"/></svg>'
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            target = root / "cover.svg"
+            target.write_text(svg, encoding="utf-8")
+            self.assertEqual([], validate_public_safety(root))
+            target.write_text(svg + '<!-- token=topsecret -->', encoding="utf-8")  # privacy-fixture
+            self.assertTrue(any("credential-shaped assignment" in e for e in validate_public_safety(root)))
 
     def test_public_svg_and_yaml_are_privacy_scanned(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

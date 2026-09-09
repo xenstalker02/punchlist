@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import glob
 import hashlib
 import json
@@ -407,6 +409,24 @@ def public_artifact_paths(root: Path) -> list[Path]:
 
 def _public_safety_lines(relative: Path, content: str) -> list[tuple[int, str]]:
     """Return scan-eligible lines, honoring only reviewed fixture-line markers."""
+    if relative.suffix.lower() == ".svg":
+        # Figma embeds PNG bytes as base64. Scan the surrounding SVG text,
+        # not random binary bytes that happen to resemble filesystem paths.
+        # Public media still requires a reviewed, integrity-pinned manifest.
+        def png_payload(match: re.Match[str]) -> str:
+            try:
+                decoded = base64.b64decode(match[2], validate=True)
+            except (ValueError, binascii.Error):
+                return match[0]
+            if not decoded.startswith(b"\x89PNG\r\n\x1a\n"):
+                return match[0]
+            return f'href={match[1]}embedded-png{match[1]}'
+
+        content = re.sub(
+            r'''\bhref=(["'])data:image/png;base64,([A-Za-z0-9+/=]+)\1''',
+            png_payload,
+            content,
+        )
     lines = content.splitlines()
     eligible: list[tuple[int, str]] = []
     for index, line in enumerate(lines):
@@ -450,8 +470,11 @@ def validate_public_safety(root: Path) -> list[str]:
             continue
         try:
             content = path.read_text(encoding="utf-8")
-        except OSError as error:
-            errors.append(f"{relative}: {error}")
+        except UnicodeDecodeError:
+            errors.append(f"{relative}: unsupported non-UTF-8 public file")
+            continue
+        except OSError:
+            errors.append(f"{relative}: could not read public file")
             continue
         eligible_lines = _public_safety_lines(relative_path, content)
         for line_number, line in eligible_lines:
@@ -556,8 +579,11 @@ def validate_internal_references(root: Path) -> list[str]:
             continue
         try:
             markdown = path.read_text(encoding="utf-8")
-        except OSError as error:
-            errors.append(f"{filename}: {error}")
+        except UnicodeDecodeError:
+            errors.append(f"{filename}: unsupported non-UTF-8 public file")
+            continue
+        except OSError:
+            errors.append(f"{filename}: could not read public file")
             continue
         for reference in sorted(referenced_paths(markdown)):
             normalized = reference.rstrip(".,;:")
@@ -595,8 +621,11 @@ def validate_public_forbidden_markers(root: Path) -> list[str]:
         filename = relative_path.as_posix()
         try:
             content = path.read_text(encoding="utf-8")
-        except OSError as error:
-            errors.append(f"{filename}: {error}")
+        except UnicodeDecodeError:
+            errors.append(f"{filename}: unsupported non-UTF-8 public file")
+            continue
+        except OSError:
+            errors.append(f"{filename}: could not read public file")
             continue
         eligible_content = "\n".join(
             line for _, line in _public_safety_lines(relative_path, content)
