@@ -48,7 +48,7 @@ class PrintReportBoundaryTests(unittest.TestCase):
     def test_parser_rejects_mixed_partial_duplicate_and_unknown_modes_without_echoing_values(self) -> None:
         with tempfile.TemporaryDirectory(dir=TEMP_ROOT) as directory:
             output = Path(directory) / "report.pdf"
-            private_value = r"C:\Users\person\private-audit.json"
+            private_value = r"C:\Users\person\private-audit.json"  # privacy-fixture
             cases = (
                 ["--input", str(CANONICAL_INPUT), "--audit", private_value, "--report", str(SYNTHETIC_REPORT), "--output", str(output)],
                 ["--audit", private_value, "--output", str(output)],

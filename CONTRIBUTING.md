@@ -8,7 +8,7 @@ Use Python 3.11. Local verification ran on Node 24.14.0. CI uses its runner-prov
 
 ```sh
 python -m pip install -r requirements-dev.txt
-npm install
+npm ci
 npx playwright install chromium
 python scripts/validate.py
 python -m unittest discover -s tests -v
@@ -51,6 +51,8 @@ npm run test:report
 ```
 
 The validator checks taxonomy schemas, required evidence fields, synthetic report traceability, public-safety rules, and documentation links. Keep generated examples synthetic. Do not include a real organization’s audit, private evidence, local paths, credentials, or customer identifiers.
+
+Public-safety scanning covers every public text/source file. Explicitly registered detector and negative-fixture files may exempt only lines marked as privacy fixtures; all other lines and all new files are scanned by default. Additions to that narrow fixture registry or its marked lines require review.
 
 ## Pull requests
 

@@ -29,6 +29,19 @@ class ReportModelTests(unittest.TestCase):
         self.assertEqual([], validate_audit_bundle(REPO_ROOT, self.audit))
         self.assertEqual([], validate_report_projection(self.audit, self.report, self.theme))
 
+    def test_projection_rejects_malformed_collections_without_crashing(self) -> None:
+        for field in ("provenance", "findings", "strengths", "critics", "ledger"):
+            for value in (None, {}, "invalid", [None]):
+                with self.subTest(field=field, value=value):
+                    audit = copy.deepcopy(self.audit)
+                    audit[field] = value
+                    self.assertTrue(validate_report_projection(audit, self.report, self.theme))
+
+    def test_audit_rejects_non_object_without_crashing(self) -> None:
+        for value in (None, [], "invalid"):
+            with self.subTest(value=value):
+                self.assertTrue(validate_audit_bundle(REPO_ROOT, value))
+
     def test_theme_rejects_css_control_syntax_in_color_and_font_tokens(self) -> None:
         theme = copy.deepcopy(self.theme)
         theme["colors"]["canvas"] = "white;} body { display: none"
@@ -170,7 +183,7 @@ class ReportModelTests(unittest.TestCase):
         self.assertTrue(any("supersession graph must be acyclic" in error for error in cycle_errors))
         self.assertTrue(any("superseded_by: must reference an existing current finding" in error for error in cycle_errors))
 
-    def test_historical_findings_cannot_close_current_ledger_or_projection(self) -> None:
+    def test_verified_fixed_finding_remains_traceable_in_ledger_counts_and_projection(self) -> None:
         audit = copy.deepcopy(self.audit)
         report = copy.deepcopy(self.report)
         historical_id = audit["findings"][0]["finding_id"]
@@ -186,9 +199,9 @@ class ReportModelTests(unittest.TestCase):
         audit_errors = validate_audit_bundle(REPO_ROOT, audit)
         report_errors = validate_report_projection(audit, report, self.theme)
 
-        self.assertTrue(any("found row has no canonical finding" in error for error in audit_errors))
-        self.assertNotIn("vanishing-ink", computed_counts(audit))
-        self.assertTrue(any("unknown canonical finding" in error for error in report_errors))
+        self.assertEqual([], audit_errors)
+        self.assertEqual(1, computed_counts(audit)["vanishing-ink"])
+        self.assertEqual([], report_errors)
         self.assertIn(historical_id, report["lead_findings"])
 
     def test_fixed_finding_requires_structured_resweep_verification(self) -> None:
@@ -310,6 +323,17 @@ class ReportModelTests(unittest.TestCase):
         self.assertTrue(any("duplicate critic vote" in error for error in errors))
         self.assertTrue(any("must equal severity vote mean" in error for error in errors))
 
+    def test_finding_severity_basis_must_match_declared_audit_basis(self) -> None:
+        audit = copy.deepcopy(self.audit)
+        audit["findings"][0]["severity_basis"] = "An unrelated scoring basis"
+
+        errors = validate_audit_bundle(REPO_ROOT, audit)
+
+        self.assertIn(
+            "audit.findings[0].severity_basis: must match audit brief severity basis",
+            errors,
+        )
+
     def test_confirmed_finding_rejects_zero_vote_veto(self) -> None:
         audit = copy.deepcopy(self.audit)
         audit["findings"][0]["severity_votes"][0]["severity"] = 0
@@ -347,6 +371,45 @@ class ReportModelTests(unittest.TestCase):
         self.assertTrue(any("redaction must be attested" in error for error in errors))
         self.assertTrue(any("review must be approved" in error for error in errors))
         self.assertTrue(any("publication must be separately approved" in error for error in errors))
+
+    def test_restricted_canonical_audit_is_valid_before_publication_approval(self) -> None:
+        audit = copy.deepcopy(self.audit)
+        authorization_id = "authorization-internal-review"
+        audit["target"] = {
+            "classification": "authorized-restricted",
+            "authorization": {
+                "authorization_id": authorization_id,
+                "basis": "Owner-authorized private evaluation",
+                "scope": "Internal audit only",
+                "recipients": ["Named review team"],
+                "publication_approved": False,
+            },
+        }
+        audit["redaction"] = {"status": "complete", "reviewer": "Reviewer", "attested": False}
+        for provenance in audit["provenance"]:
+            provenance["classification"] = "authorized-restricted"
+            provenance["authorization_id"] = authorization_id
+            provenance["publication_approved"] = False
+        evidence_records = [
+            evidence
+            for finding in audit["findings"]
+            for evidence in finding["evidence"]
+        ] + [
+            evidence
+            for strength in audit["strengths"]
+            for evidence in strength["evidence"]
+        ]
+        for evidence in evidence_records:
+            evidence["classification"] = "authorized-restricted"
+            evidence["authorization_id"] = authorization_id
+            evidence["publication_approved"] = False
+
+        self.assertEqual([], validate_audit_bundle(REPO_ROOT, audit))
+        report = copy.deepcopy(self.report)
+        report["publication"] = "authorized-restricted"
+        report["audience"] = "Named review team"
+        errors = validate_report_projection(audit, report, self.theme)
+        self.assertTrue(any("publication approval required" in error for error in errors))
 
     def test_every_projection_requires_redaction_review_and_publication_approval(self) -> None:
         report = copy.deepcopy(self.report)
@@ -492,9 +555,9 @@ class ReportModelTests(unittest.TestCase):
     def test_privacy_paths_cover_unc_tilde_and_absolute_posix_but_allow_urls(self) -> None:
         unsafe = privacy_errors(
             {
-                "unc": r"\\server\share\evidence.png",
-                "tilde": "~/private/evidence.png",
-                "posix": "/etc/private.conf",
+                "unc": r"\\server\share\evidence.png",  # privacy-fixture
+                "tilde": "~/private/evidence.png",  # privacy-fixture
+                "posix": "/etc/private.conf",  # privacy-fixture
                 "public": "https://example.com/etc/private.conf",
             }
         )
@@ -510,19 +573,19 @@ class ReportModelTests(unittest.TestCase):
 
     def test_public_projection_rejects_windows_home_path(self) -> None:
         report = copy.deepcopy(self.report)
-        report["cover"]["statement"] = r"Evidence saved at C:\\Users\\person\\private.txt"
+        report["cover"]["statement"] = r"Evidence saved at C:\\Users\\person\\private.txt"  # privacy-fixture
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("absolute local path" in error for error in errors))
 
     def test_public_projection_rejects_posix_home_path(self) -> None:
         report = copy.deepcopy(self.report)
-        report["cover"]["statement"] = "Evidence saved at /home/person/private.txt"
+        report["cover"]["statement"] = "Evidence saved at /home/person/private.txt"  # privacy-fixture
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("absolute local path" in error for error in errors))
 
     def test_public_projection_rejects_secret_shaped_values_and_email_addresses(self) -> None:
         report = copy.deepcopy(self.report)
-        report["cover"]["statement"] = "Use token=abc123456789 and analyst@example.com."
+        report["cover"]["statement"] = "Use token=abc123456789 and analyst@example.com."  # privacy-fixture
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("credential-shaped assignment" in error for error in errors))
         self.assertTrue(any("email address" in error for error in errors))
@@ -531,9 +594,9 @@ class ReportModelTests(unittest.TestCase):
     def test_public_projection_rejects_private_ip_urls(self) -> None:
         report = copy.deepcopy(self.report)
         report["cover"]["statement"] = (
-            "Synthetic links: http://127.0.0.1/x http://10.0.0.1/x "
-            "http://169.254.1.1/x http://0.0.0.0/x http://[::1]/x "
-            "http://localhost/x http://sample.internal/x"
+            "Synthetic links: http://127.0.0.1/x http://10.0.0.1/x "  # privacy-fixture
+            "http://169.254.1.1/x http://0.0.0.0/x http://[::1]/x "  # privacy-fixture
+            "http://localhost/x http://sample.internal/x"  # privacy-fixture
         )
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("private or local URL" in error for error in errors))
@@ -542,7 +605,7 @@ class ReportModelTests(unittest.TestCase):
     def test_public_projection_rejects_normalized_private_hosts(self) -> None:
         report = copy.deepcopy(self.report)
         report["cover"]["statement"] = (
-            "Synthetic links: http://127.1/x http://2130706433/x http://localhost./x"
+            "Synthetic links: http://127.1/x http://2130706433/x http://localhost./x"  # privacy-fixture
         )
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("private or local URL" in error for error in errors))
@@ -558,6 +621,15 @@ class ReportModelTests(unittest.TestCase):
         report["theme"] = None
         errors = validate_report_projection(self.audit, report, self.theme)
         self.assertTrue(any("report.theme: expected object" in error for error in errors))
+
+    def test_malformed_evidence_collection_returns_errors_instead_of_raising(self) -> None:
+        audit = copy.deepcopy(self.audit)
+        audit["findings"][0]["evidence"] = "not-a-list"
+
+        errors = validate_report_projection(audit, self.report, self.theme)
+
+        self.assertTrue(errors)
+        self.assertTrue(any("evidence" in error for error in errors))
 
     def test_platform_accent_merges_to_a_full_valid_theme(self) -> None:
         merged = merge_platform_accent(self.theme, self.accent)

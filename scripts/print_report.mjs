@@ -1,4 +1,3 @@
-import { chromium } from "playwright";
 import { execFile as execFileCallback } from "node:child_process";
 import { access, lstat, mkdir, mkdtemp, realpath, rename, rm, stat } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
@@ -18,6 +17,15 @@ const TEMP_ROOT = path.join(REPOSITORY_ROOT, "tmp");
 function isWithin(parent, candidate) {
   const relative = path.relative(parent, candidate);
   return relative !== "" && !relative.startsWith(`..${path.sep}`) && relative !== ".." && !path.isAbsolute(relative);
+}
+
+async function loadChromium() {
+  try {
+    const { chromium } = await import("playwright");
+    return chromium;
+  } catch {
+    throw new SafeError("pdf: browser dependency is unavailable; run npm ci");
+  }
 }
 
 function parseArguments(argumentsList) {
@@ -161,6 +169,7 @@ async function renderValidatedData({ audit, report, theme }) {
 }
 
 async function exportPdf(inputPath, outputPath) {
+  const chromium = await loadChromium();
   const temporaryPath = path.join(path.dirname(outputPath), `.${path.basename(outputPath)}.${randomUUID()}.tmp`);
   let browser;
   try {
@@ -182,7 +191,13 @@ async function exportPdf(inputPath, outputPath) {
         if (document.fonts) await document.fonts.ready;
       });
       await page.emulateMedia({ media: "print" });
-      await page.pdf({ format: "Letter", path: temporaryPath, preferCSSPageSize: true, printBackground: true });
+      await page.pdf({
+        format: "Letter",
+        path: temporaryPath,
+        preferCSSPageSize: true,
+        printBackground: true,
+        tagged: true,
+      });
     } catch {
       throw new SafeError("pdf: could not export report");
     } finally {

@@ -79,6 +79,25 @@ class RenderReportTests(unittest.TestCase):
         self.assertEqual(3, html.count('<section class="appendix-group">'))
         self.assertIn('.appendix-group { break-inside: avoid-page; }', html)
 
+    def test_verified_fixed_finding_is_labeled_with_resweep_evidence(self) -> None:
+        audit = copy.deepcopy(self.audit)
+        audit["findings"][0]["lifecycle"] = "fixed"
+        audit["findings"][0]["resweep"] = {
+            "status": "verified-fixed",
+            "verified_how": "rendered",
+            "verified_at": "2026-08-20T00:00:00Z",
+            "verified_by": "Synthetic critic",
+            "evidence": "The corrected rendered state no longer exhibits the condition.",
+        }
+
+        html = render_report(audit, self.report, self.theme)
+
+        self.assertIn("Verified fixed", html)
+        self.assertIn("The corrected rendered state no longer exhibits the condition.", html)
+        self.assertIn("<dt>Resweep method</dt><dd>rendered</dd>", html)
+        self.assertIn("<dt>Resweep verified at</dt><dd>2026-08-20T00:00:00Z</dd>", html)
+        self.assertIn("<dt>Resweep verified by</dt><dd>Synthetic critic</dd>", html)
+
     def test_renderer_resolves_canonical_records_and_rejects_unknown_ids(self) -> None:
         report = copy.deepcopy(self.report)
         report["lead_findings"] = ["f-does-not-exist"]
@@ -167,7 +186,7 @@ class RenderReportTests(unittest.TestCase):
 
     def test_renderer_rejects_nonpublic_platform_source_url_without_echoing_it(self) -> None:
         unsafe_theme = copy.deepcopy(self.theme)
-        unsafe_theme["source_url"] = "https://localhost/private-design"
+        unsafe_theme["source_url"] = "https://localhost/private-design"  # privacy-fixture
         with self.assertRaisesRegex(ValueError, r"^theme: platform source must be a public HTTPS URL$"):
             render_report(self.audit, self.report, unsafe_theme)
 
@@ -217,7 +236,7 @@ class RenderReportTests(unittest.TestCase):
             self.assertEqual(0, result.returncode, result.stderr)
             html = output.read_text(encoding="utf-8")
             self.assertIn("Sample Platform", html)
-            self.assertNotIn("C:\\Users\\", html)
+            self.assertNotIn("C:\\Users\\", html)  # privacy-fixture
             self.assertIsNone(re.search(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", html, re.IGNORECASE))
             self.assertNotIn("{{", html)
 
@@ -226,13 +245,13 @@ class RenderReportTests(unittest.TestCase):
             directory_path = Path(directory)
             audit_path, report_path = directory_path / "audit.json", directory_path / "report.json"
             invalid_report = copy.deepcopy(self.report)
-            invalid_report["cover"]["statement"] = r"C:\\Users\\person\\private.txt"
+            invalid_report["cover"]["statement"] = r"C:\\Users\\person\\private.txt"  # privacy-fixture
             audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
             report_path.write_text(json.dumps(invalid_report), encoding="utf-8")
             result = self._cli("--audit", str(audit_path), "--report", str(report_path), "--output", str(directory_path / "report.html"))
             self.assertEqual(1, result.returncode)
             self.assertIn("report.cover.statement: absolute local path", result.stderr)
-            self.assertNotIn("C:\\Users\\person", result.stderr)
+            self.assertNotIn("C:\\Users\\person", result.stderr)  # privacy-fixture
 
     def test_cli_does_not_echo_an_unreadable_input_path(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

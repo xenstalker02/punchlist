@@ -9,9 +9,9 @@
       "additionalProperties": false,
       "properties": {
         "theme_id": {"type": "string", "minLength": 1}, "platform_name": {"type": "string", "minLength": 1}, "source_url": {"type": "string", "pattern": "^https://"},
-        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "supporting": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_label": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"},
-        "colors": {"type": "object", "required": ["ink", "canvas", "muted"], "additionalProperties": false, "properties": {"ink": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "canvas": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "muted": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}}},
-        "typography": {"type": "object", "required": ["display_family", "body_family"], "additionalProperties": false, "properties": {"display_family": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 .-]{0,79}\\Z"}, "body_family": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 .-]{0,79}\\Z"}}},
+        "accent": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "supporting": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "evidence_background": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "evidence_label": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"},
+        "colors": {"type": "object", "required": ["ink", "canvas", "muted"], "additionalProperties": false, "properties": {"ink": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "canvas": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "muted": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}}},
+        "typography": {"type": "object", "required": ["display_family", "body_family"], "additionalProperties": false, "properties": {"display_family": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])[A-Za-z][A-Za-z0-9 .-]{0,79}$"}, "body_family": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])[A-Za-z][A-Za-z0-9 .-]{0,79}$"}}},
         "spacing": {"type": "array", "minItems": 1, "items": {"type": "number", "minimum": 0}},
         "page": {"type": "object", "required": ["size", "margin", "grid"], "additionalProperties": false, "properties": {"size": {"enum": ["letter"]}, "margin": {"type": "number", "minimum": 0}, "grid": {"type": "object", "required": ["columns", "gutter"], "additionalProperties": false, "properties": {"columns": {"type": "integer", "minimum": 1}, "gutter": {"type": "number", "minimum": 0}}}}},
         "attribution": {"type": "object", "required": ["label"], "additionalProperties": false, "properties": {"label": {"type": "string", "minLength": 1}}}
@@ -23,7 +23,7 @@
       "additionalProperties": false,
       "properties": {
         "platform_name": {"type": "string", "minLength": 1}, "source_url": {"type": "string", "pattern": "^https://"},
-        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "supporting": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_background": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}, "evidence_label": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}\\Z"}
+        "accent": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "supporting": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "evidence_background": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}, "evidence_label": {"type": "string", "pattern": "^(?![\\s\\S]*[\\r\\n])#[0-9A-Fa-f]{6}$"}
       }
     }
   ]

@@ -3,18 +3,18 @@
   "assets": [
     {
       "path": "assets/social-preview.png",
-      "sha256": "c62eb6cc985b02fe5bdff14eed3b024d27bff3d23598ca1e55e3cfc76f8de557",
+      "sha256": "514f83fbd272601c0a3c0697e89d254618d82eab272122d904c5289a48f346fb",
       "purpose": "Repository social preview",
-      "alt": "Punchlist social preview artwork.",
-      "provenance": "User-approved export from the current public cover frame.",
+      "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
+      "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     },
     {
       "path": "assets/social-preview.svg",
-      "sha256": "61ca311a3d32987bb461a743ca1621923536b9aa094120012778af33a5e915fb",
-      "purpose": "Editable social preview source",
-      "alt": "Punchlist social preview artwork.",
-      "provenance": "User-approved export from the current public cover frame.",
+      "sha256": "1450be5f086aa5b03b79db04d37e16e9c7eec1eb1bc8e43993ba0e8e54a381aa",
+      "purpose": "Self-contained Figma SVG export",
+      "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
+      "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true
     }
   ]

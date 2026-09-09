@@ -74,7 +74,7 @@ def _public_https_url(value: Any) -> str:
         parsed.port
     except ValueError:
         raise ValueError("theme: platform source must be a public HTTPS URL") from None
-    if parsed.scheme.lower() != "https" or not hostname or parsed.username or parsed.password:
+    if parsed.scheme.lower() != "https" or not hostname or parsed.username or parsed.password:  # privacy-fixture
         raise ValueError("theme: platform source must be a public HTTPS URL")
     host = hostname.rstrip(".").lower()
     if host == "localhost" or host.endswith((".local", ".internal")):
@@ -216,12 +216,16 @@ def _render_evidence(finding: dict[str, Any]) -> str:
     return "".join(fragments)
 
 
+def _finding_status(finding: dict[str, Any]) -> str:
+    return "Verified fixed" if finding.get("lifecycle") == "fixed" else "Open"
+
+
 def _render_lead_findings(audit: dict[str, Any], report: dict[str, Any], findings: dict[str, dict[str, Any]]) -> str:
     headlines = report["lead_headlines"]
     cards = "".join(
         f'<li class="finding-card"><div class="finding-heading"><h3>{_text(headlines[finding["finding_id"]])}</h3>'
         f'<span class="finding-id">{_text(finding["finding_id"])}</span></div>'
-        f'<p>{_text(finding["symptom"])}</p><p><strong>{_text(finding["defect"])}</strong> · {_text(finding["surface"] if isinstance(finding["surface"], str) else "{} → {}".format(finding["surface"]["a"], finding["surface"]["b"]))}</p>'
+        f'<p>{_text(finding["symptom"])}</p><p><strong>{_text(finding["defect"])}</strong> · {_text(finding["surface"] if isinstance(finding["surface"], str) else "{} → {}".format(finding["surface"]["a"], finding["surface"]["b"]))} · {_text(_finding_status(finding))}</p>'
         f"{_render_evidence(finding)}</li>"
         for finding in _ids(findings, report["lead_findings"])
     )
@@ -302,14 +306,25 @@ def _appendix_finding(finding: dict[str, Any], taxonomy: dict[str, Any]) -> str:
         for item in finding.get("evidence", [])
         if isinstance(item, dict)
     )
+    resweep = finding.get("resweep")
+    resweep_evidence = (
+        f'<p class="evidence-label">Resweep</p><dl class="trace-list">'
+        f'<div><dt>Resweep method</dt><dd>{_text(resweep.get("verified_how", ""))}</dd></div>'
+        f'<div><dt>Resweep verified at</dt><dd>{_text(resweep.get("verified_at", ""))}</dd></div>'
+        f'<div><dt>Resweep verified by</dt><dd>{_text(resweep.get("verified_by", ""))}</dd></div>'
+        f'</dl><p>{_text(resweep.get("evidence", ""))}</p>'
+        if finding.get("lifecycle") == "fixed" and isinstance(resweep, dict)
+        else ""
+    )
     return (
         f'<li class="appendix-item"><div class="finding-heading"><h3>{_text(finding["defect"])}</h3>'
         f'<span class="finding-id">{_text(finding["finding_id"])}</span></div>'
         f'<dl class="trace-list"><div><dt>Symptom</dt><dd>{_text(finding["symptom"])}</dd></div>'
         f'<div><dt>Surface</dt><dd>{_text(surface)}</dd></div><div><dt>Locator</dt><dd>{_text(finding["locator"])}</dd></div>'
         f'<div><dt>Verified</dt><dd>{_text(finding.get("verified_how", "declared"))}</dd></div>'
+        f'<div><dt>Status</dt><dd>{_text(_finding_status(finding))}</dd></div>'
         f'<div><dt>Standard</dt><dd>{_text(standard)}</dd></div><div><dt>References</dt><dd>{_text(reference_text)}</dd></div></dl>'
-        f'<p class="evidence-label">Evidence</p><ul class="evidence-list">{evidence}</ul></li>'
+        f'<p class="evidence-label">Evidence</p><ul class="evidence-list">{evidence}</ul>{resweep_evidence}</li>'
     )
 
 

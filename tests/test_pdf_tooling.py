@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 
 
@@ -47,6 +48,8 @@ class PdfToolingTests(unittest.TestCase):
         self.assertEqual([0] * inspection["page_count"], inspection["page_image_count"])
         self.assertEqual(0, inspection["image_count"])
         self.assertEqual([], inspection["link_annotations"])
+        self.assertIs(True, inspection.get("tagged"))
+        self.assertEqual(0, inspection.get("outline_count"))
 
     def test_inspector_error_is_location_safe(self) -> None:
         result = self._inspect(REPO_ROOT / "private-candidate.pdf")
@@ -85,6 +88,31 @@ class PdfToolingTests(unittest.TestCase):
         self.assertEqual("pdf: could not export report\n", result.stderr)
         self.assertTrue(output.is_dir())
         self.assertEqual([], list(SYNTHETIC_ROOT.glob(".task5-blocked.pdf.*.tmp")))
+
+    def test_helper_reports_missing_browser_dependency_without_leaking_checkout_path(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            helper = root / "scripts" / "print_report.mjs"
+            input_html = root / "examples" / "synthetic" / "report.html"
+            output = root / "output" / "report.pdf"
+            helper.parent.mkdir(parents=True)
+            input_html.parent.mkdir(parents=True)
+            output.parent.mkdir()
+            shutil.copy2(PDF_HELPER, helper)
+            shutil.copy2(INPUT_HTML, input_html)
+
+            result = subprocess.run(
+                ["node", str(helper), "--input", str(input_html), "--output", str(output)],
+                cwd=root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(1, result.returncode)
+        self.assertEqual("pdf: browser dependency is unavailable; run npm ci\n", result.stderr)
+        self.assertNotIn(str(root), result.stderr)
+        self.assertFalse(output.exists())
 
     @staticmethod
     def _export(output: Path) -> subprocess.CompletedProcess[str]:
