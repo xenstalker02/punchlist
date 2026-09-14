@@ -40,10 +40,10 @@ Where a cheap deterministic check exists, run it instead of judging by eye:
 Classify the target before opening it or collecting evidence:
 
 - **Public** is the default. Work from public, logged-out access unless the brief explicitly says otherwise.
-- **Authorized-restricted** requires the requester's explicit, current authorization to inspect that target. Keep evidence and outputs restricted by default; do not copy, attach, publish, or render it for a recipient until the requester separately approves publication.
+- **Authorized-restricted** requires the requester's explicit, current authorization to inspect that target. Keep evidence and outputs restricted by default; do not copy, attach, publish, or render it for a recipient until the requester separately approves publication. Delivery to a named authorized recipient is not publication: it needs the recorded authorization, a complete redaction attestation, and an approved review, but not separate publication approval.
 - **Synthetic** is invented or reproducible fixture evidence. Label it synthetic; never present it as an observation from a real product.
 
-Record the target classification, source provenance, and what each available surface can prove. Before a recipient-facing projection, remove or redact local paths, credentials, private URLs, personal emails, customer identifiers, and screenshots without explicit publication approval and useful alt text. A redaction review is a required attestation, not a claim that the target itself is public.
+Record the target classification, source provenance, and what each available surface can prove. Before a recipient-facing projection, remove or redact local paths, credentials, private URLs, personal emails, customer identifiers, and screenshots without explicit publication approval and useful alt text. A redaction review is a required attestation, not a claim that the target itself is public. Never substitute invented or synthetic evidence for a real finding to make a projection validate or render: a refused report is fixed by authorization, redaction scope, or recipient scope, never by changing the provenance.
 
 ## Before the sweep
 

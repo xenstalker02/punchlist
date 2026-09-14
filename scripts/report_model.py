@@ -689,6 +689,22 @@ def _report_references(report: dict[str, Any]) -> list[tuple[str, Any]]:
     return references
 
 
+def _delivery_records(audit: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return every provenance and evidence record a projection could display."""
+    records: list[dict[str, Any]] = []
+    provenance = audit.get("provenance")
+    if isinstance(provenance, list):
+        records.extend(item for item in provenance if isinstance(item, dict))
+    for group in ("findings", "strengths"):
+        for record in audit.get(group, []) if isinstance(audit.get(group), list) else []:
+            if not isinstance(record, dict):
+                continue
+            evidence = record.get("evidence")
+            if isinstance(evidence, list):
+                records.extend(item for item in evidence if isinstance(item, dict))
+    return records
+
+
 def validate_report_projection(
     audit: dict[str, Any], report: dict[str, Any], theme: dict[str, Any], root: Path | None = None
 ) -> list[str]:
@@ -702,28 +718,62 @@ def validate_report_projection(
         errors.append("audit: expected an object")
     if not isinstance(audit, dict) or any(", got " in error for error in errors):
         return errors
-    errors.extend(privacy_errors(audit, "audit"))
+    # An authorized private delivery to an already-authorized recipient is not a
+    # publication. Distinguish the two before any publication gate is applied.
+    target = audit.get("target") if isinstance(audit.get("target"), dict) else {}
+    authorization_record = target.get("authorization")  # privacy-fixture
+    authorization_record = (
+        authorization_record if isinstance(authorization_record, dict) else {}
+    )
+    authorized_recipients = (
+        authorization_record["recipients"]
+        if isinstance(authorization_record.get("recipients"), list)
+        else []
+    )
+    audience = report.get("audience") if isinstance(report, dict) else None
+    delivery_authorization = (
+        report.get("delivery_authorization") if isinstance(report, dict) else None
+    )
+    delivery_authorization = (
+        delivery_authorization if isinstance(delivery_authorization, dict) else {}
+    )
+    restricted_records_only = bool(_delivery_records(audit)) and all(
+        record.get("classification") == "authorized-restricted"
+        for record in _delivery_records(audit)
+    )
+    private_delivery = (
+        target.get("classification") == "authorized-restricted"
+        and bool(authorization_record)
+        and audience in authorized_recipients
+        and delivery_authorization.get("authorization_id")
+        == authorization_record.get("authorization_id")
+        and restricted_records_only
+    )
+    errors.extend(
+        privacy_errors(audit, "audit", require_publication_approval=not private_delivery)
+    )
     errors.extend(privacy_errors(report, "report"))
 
     if not isinstance(audit, dict) or not isinstance(report, dict) or not isinstance(theme, dict):
         return errors
 
-    for index, provenance in enumerate(audit.get("provenance", [])):
-        if isinstance(provenance, dict) and provenance.get("publication_approved") is not True:
-            errors.append(f"audit.provenance[{index}]: publication approval required")
-    evidence_groups = (
-        ("findings", audit.get("findings", [])),
-        ("strengths", audit.get("strengths", [])),
-    )
-    for group_name, records in evidence_groups:
-        for record_index, record in enumerate(records if isinstance(records, list) else []):
-            if not isinstance(record, dict):
-                continue
-            for evidence_index, evidence in enumerate(record.get("evidence", [])):
-                if isinstance(evidence, dict) and evidence.get("publication_approved") is not True:
-                    errors.append(
-                        f"audit.{group_name}[{record_index}].evidence[{evidence_index}]: publication approval required"
-                    )
+    if not private_delivery:
+        for index, provenance in enumerate(audit.get("provenance", [])):
+            if isinstance(provenance, dict) and provenance.get("publication_approved") is not True:
+                errors.append(f"audit.provenance[{index}]: publication approval required")
+        evidence_groups = (
+            ("findings", audit.get("findings", [])),
+            ("strengths", audit.get("strengths", [])),
+        )
+        for group_name, records in evidence_groups:
+            for record_index, record in enumerate(records if isinstance(records, list) else []):
+                if not isinstance(record, dict):
+                    continue
+                for evidence_index, evidence in enumerate(record.get("evidence", [])):
+                    if isinstance(evidence, dict) and evidence.get("publication_approved") is not True:
+                        errors.append(
+                            f"audit.{group_name}[{record_index}].evidence[{evidence_index}]: publication approval required"
+                        )
 
     if report.get("audit_id") != audit.get("audit_id"):
         errors.append("report.audit_id: must reference the canonical audit")
@@ -734,20 +784,20 @@ def validate_report_projection(
         errors.append("report.redaction: report redaction must be attested")
     if not isinstance(report_review, dict) or report_review.get("status") != "approved":
         errors.append("report.review: report review must be approved")
-    if not isinstance(report_approval, dict) or report_approval.get("approved") is not True:
-        errors.append("report.publication_approval: report publication must be approved")
-    if not isinstance(report_approval, dict) or not isinstance(report_approval.get("approved_by"), str) or not report_approval["approved_by"].strip():
-        errors.append("report.publication_approval.approved_by: publication approver is required")
-    if not isinstance(report_approval, dict) or not isinstance(report_approval.get("scope"), str) or not report_approval["scope"].strip():
-        errors.append("report.publication_approval.scope: publication scope is required")
-    target = audit.get("target", {})
+    if not private_delivery:
+        if not isinstance(report_approval, dict) or report_approval.get("approved") is not True:
+            errors.append("report.publication_approval: report publication must be approved")
+        if not isinstance(report_approval, dict) or not isinstance(report_approval.get("approved_by"), str) or not report_approval["approved_by"].strip():
+            errors.append("report.publication_approval.approved_by: publication approver is required")
+        if not isinstance(report_approval, dict) or not isinstance(report_approval.get("scope"), str) or not report_approval["scope"].strip():
+            errors.append("report.publication_approval.scope: publication scope is required")
     if isinstance(target, dict) and report.get("publication") != target.get("classification"):
         errors.append("report.publication: must match audit target classification")
     if isinstance(target, dict) and target.get("classification") == "authorized-restricted":
         authorization = target.get("authorization")  # privacy-fixture
         if not isinstance(authorization, dict):
             errors.append("audit.target: restricted target requires authorization")
-        elif authorization.get("publication_approved") is not True:
+        elif not private_delivery and authorization.get("publication_approved") is not True:
             errors.append("audit.target.authorization: restricted publication must be approved")  # privacy-fixture
         audit_redaction = audit.get("redaction")
         if not isinstance(audit_redaction, dict) or audit_redaction.get("attested") is not True or audit_redaction.get("status") != "complete":
@@ -756,14 +806,32 @@ def validate_report_projection(
             errors.append("report.redaction: restricted report redaction must be attested")
         if not isinstance(report_review, dict) or report_review.get("status") != "approved":
             errors.append("report.review: restricted report review must be approved")
-        if not isinstance(report_approval, dict) or report_approval.get("approved") is not True:
+        if not private_delivery and (
+            not isinstance(report_approval, dict) or report_approval.get("approved") is not True
+        ):
             errors.append("report.publication_approval: restricted publication must be separately approved")
         if isinstance(authorization, dict):
             recipients = authorization.get("recipients")
             if not isinstance(recipients, list) or report.get("audience") not in recipients:
                 errors.append("report.audience: audience must be an authorized recipient")
-            if report_approval is None or not isinstance(report_approval, dict) or report_approval.get("scope") != authorization.get("scope"):
-                errors.append("report.publication_approval.scope: scope must match audit authorization")
+            if private_delivery:
+                delivery_scope = delivery_authorization.get("scope")
+                if not isinstance(delivery_scope, str) or delivery_scope != authorization.get("scope"):
+                    errors.append(
+                        "report.delivery_authorization.scope: delivery scope must match audit authorization"
+                    )
+                delivery_recipients = delivery_authorization.get("recipients")
+                if not isinstance(delivery_recipients, list) or report.get("audience") not in delivery_recipients:
+                    errors.append(
+                        "report.delivery_authorization.recipients: audience must be a named delivery recipient"
+                    )
+            else:
+                if report_approval is None or not isinstance(report_approval, dict) or report_approval.get("scope") != authorization.get("scope"):
+                    errors.append("report.publication_approval.scope: scope must match audit authorization")
+                if isinstance(report.get("delivery_authorization"), dict) and not restricted_records_only:
+                    errors.append(
+                        "report.delivery_authorization: restricted delivery requires restricted provenance and evidence"
+                    )
     report_theme = report.get("theme") if isinstance(report.get("theme"), dict) else {}
     if report_theme.get("theme_id") != theme.get("theme_id"):
         errors.append("report.theme.theme_id: must match supplied theme")

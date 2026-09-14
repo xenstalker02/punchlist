@@ -2,6 +2,7 @@ import copy
 from pathlib import Path
 import unittest
 
+from scripts.render_report import render_report
 from scripts.report_model import (
     canonical_surface,
     computed_counts,
@@ -703,6 +704,162 @@ class ReportModelTests(unittest.TestCase):
         errors = validate_audit_bundle(REPO_ROOT, audit)
 
         self.assertIn("audit.findings[2].finding_id: duplicate finding_id", errors)
+
+
+class AuthorizedPrivateDeliveryTests(unittest.TestCase):
+    """Authorized private delivery to the owner is not public publication (AC-1..AC-5)."""
+
+    AUTHORIZATION_ID = "authorization-owner-private-review"
+    RECIPIENT = "Site owner (authorized recipient)"
+    SCOPE = "Private delivery to the owner only"
+
+    def setUp(self) -> None:
+        self.audit = load_document(SYNTHETIC_ROOT / "audit.json")
+        self.report = load_document(SYNTHETIC_ROOT / "report.json")
+        self.theme = load_document(REPO_ROOT / "themes" / "punchlist-default.json")
+
+    def restricted_audit(
+        self, *, attested: bool = True, redaction_status: str = "complete"
+    ) -> dict:
+        audit = copy.deepcopy(self.audit)
+        audit["target"] = {
+            "classification": "authorized-restricted",
+            "authorization": {
+                "authorization_id": self.AUTHORIZATION_ID,
+                "basis": "Owner-authorized private evaluation of the owner's own site",
+                "scope": self.SCOPE,
+                "recipients": [self.RECIPIENT],
+                "publication_approved": False,
+            },
+        }
+        audit["redaction"] = {
+            "status": redaction_status,
+            "reviewer": "Protocol reviewer",
+            "attested": attested,
+        }
+        for provenance in audit["provenance"]:
+            provenance["classification"] = "authorized-restricted"
+            provenance["authorization_id"] = self.AUTHORIZATION_ID
+            provenance["publication_approved"] = False
+        for record in self.evidence_records(audit):
+            record["classification"] = "authorized-restricted"
+            record["authorization_id"] = self.AUTHORIZATION_ID
+            record["publication_approved"] = False
+        return audit
+
+    @staticmethod
+    def evidence_records(audit: dict) -> list[dict]:
+        return [
+            evidence for finding in audit["findings"] for evidence in finding["evidence"]
+        ] + [
+            evidence for strength in audit["strengths"] for evidence in strength["evidence"]
+        ]
+
+    def private_report(
+        self,
+        *,
+        audience: str | None = None,
+        publication_approval: dict | None = None,
+        delivery_authorization: dict | None = None,
+        review_status: str = "approved",
+        redaction_attested: bool = True,
+    ) -> dict:
+        report = copy.deepcopy(self.report)
+        report["audience"] = audience or self.RECIPIENT
+        report["publication"] = "authorized-restricted"
+        report["redaction"] = {"attested": redaction_attested}
+        report["review"] = {"status": review_status, "reviewer": "Protocol reviewer"}
+        if delivery_authorization is None:
+            delivery_authorization = {
+                "authorization_id": self.AUTHORIZATION_ID,
+                "scope": self.SCOPE,
+                "recipients": [self.RECIPIENT],
+            }
+        if delivery_authorization:
+            report["delivery_authorization"] = delivery_authorization
+        if publication_approval is not None:
+            report["publication_approval"] = publication_approval
+        else:
+            report.pop("publication_approval", None)
+        return report
+
+    def test_ac1_authorized_private_delivery_renders_without_publication_approval(self) -> None:
+        audit = self.restricted_audit()
+        report = self.private_report()
+
+        self.assertEqual([], validate_audit_bundle(REPO_ROOT, copy.deepcopy(audit)))
+        self.assertEqual([], validate_report_projection(audit, report, self.theme))
+
+        html = render_report(
+            copy.deepcopy(audit), copy.deepcopy(report), self.theme, REPO_ROOT
+        )
+        for finding in audit["findings"]:
+            self.assertIn(finding["finding_id"], html)
+
+    def test_ac2_unauthorized_audience_is_refused(self) -> None:
+        audit = self.restricted_audit()
+        report = self.private_report(audience="Someone outside the authorization")
+
+        errors = validate_report_projection(audit, report, self.theme)
+
+        self.assertTrue(any("audience must be an authorized recipient" in e for e in errors))
+        self.assertTrue(any("publication" in e for e in errors))
+
+    def test_ac3_public_publication_still_requires_its_own_approval(self) -> None:
+        report = copy.deepcopy(self.report)
+        report.pop("publication_approval", None)
+        report["publication"] = "public"
+
+        errors = validate_report_projection(self.audit, report, self.theme)
+
+        self.assertTrue(any("publication_approval" in e for e in errors))
+
+    def test_ac4_synthetic_evidence_cannot_substitute_for_a_restricted_delivery(self) -> None:
+        audit = copy.deepcopy(self.restricted_audit())
+        for provenance in audit["provenance"]:
+            provenance["classification"] = "synthetic"
+        for record in self.evidence_records(audit):
+            record["classification"] = "synthetic"
+        report = self.private_report()
+
+        errors = validate_report_projection(audit, report, self.theme)
+
+        self.assertTrue(
+            any("restricted delivery requires restricted provenance" in e for e in errors),
+            errors,
+        )
+
+    def test_ac5_incomplete_authorization_fails_closed(self) -> None:
+        audit = self.restricted_audit()
+        cases = {
+            "mismatched authorization_id": self.private_report(
+                delivery_authorization={
+                    "authorization_id": "authorization-someone-else",
+                    "scope": self.SCOPE,
+                    "recipients": [self.RECIPIENT],
+                }
+            ),
+            "wrong delivery scope": self.private_report(
+                delivery_authorization={
+                    "authorization_id": self.AUTHORIZATION_ID,
+                    "scope": "Some other scope",
+                    "recipients": [self.RECIPIENT],
+                }
+            ),
+            "review not approved": self.private_report(review_status="pending"),
+            "redaction not attested": self.private_report(redaction_attested=False),
+        }
+        for label, report in cases.items():
+            with self.subTest(case=label):
+                self.assertTrue(validate_report_projection(audit, report, self.theme), label)
+
+    def test_ac5_audit_redaction_must_be_complete_for_a_private_delivery(self) -> None:
+        audit = self.restricted_audit(attested=False, redaction_status="not-required")
+        report = self.private_report()
+
+        errors = validate_report_projection(audit, report, self.theme)
+
+        self.assertTrue(any("redaction" in e for e in errors), errors)
 
 
 if __name__ == "__main__":

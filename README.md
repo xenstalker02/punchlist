@@ -89,7 +89,7 @@ Preflight defaults to **public and logged-out** surfaces. Authenticated, private
 
 Before sharing material with critics, record the authorized surfaces, permitted recipients, whether external or model subagents may receive evidence, allowed evidence types, and retention requirements. Redact local paths, credentials, private URLs, personal emails, customer identifiers, and unapproved screenshots. `.gitignore` keeps generated files out of a normal commit; it does not protect confidential data.
 
-Private review records can be validated before sharing approval. Creating a report for a recipient is a separate step and requires approval for that recipient and the included evidence. A private record passing validation does not grant permission to render or share it.
+Private review records can be validated before sharing approval. Creating a report for the owner or another named authorized recipient is a private delivery: it requires the recorded authorization, a complete redaction attestation, an approved review, and an audience inside the authorization's recipient list — but not separate publication approval. Publishing the same material to any wider audience still requires its own publication approval. Never substitute synthetic evidence for a real finding to make a delivery validate or render; a refused report is fixed by authorization, redaction, or recipient scope.
 
 ## Render HTML and PDF
 

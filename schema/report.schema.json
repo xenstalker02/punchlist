@@ -3,7 +3,7 @@
   "$id": "https://github.com/xenstalker02/punchlist/schema/report.schema.json",
   "title": "Punchlist recipient-facing report projection",
   "type": "object",
-  "required": ["report_id", "audit_id", "audience", "author", "publication", "publication_approval", "theme", "cover", "journey", "lead_findings", "lead_headlines", "strengths", "recommendations", "next_test", "appendix", "redaction", "review"],
+  "required": ["report_id", "audit_id", "audience", "author", "publication", "theme", "cover", "journey", "lead_findings", "lead_headlines", "strengths", "recommendations", "next_test", "appendix", "redaction", "review"],
   "additionalProperties": false,
   "properties": {
     "report_id": { "type": "string", "minLength": 1 },
@@ -12,6 +12,7 @@
     "author": { "type": "string", "minLength": 1 },
     "publication": { "enum": ["public", "authorized-restricted", "synthetic"] },
     "publication_approval": { "type": "object", "required": ["approved", "approved_by", "scope"], "additionalProperties": false, "properties": { "approved": { "type": "boolean" }, "approved_by": { "type": "string", "minLength": 1 }, "scope": { "type": "string", "minLength": 1 } } },
+    "delivery_authorization": { "type": "object", "required": ["authorization_id", "scope", "recipients"], "additionalProperties": false, "properties": { "authorization_id": { "type": "string", "minLength": 1 }, "scope": { "type": "string", "minLength": 1 }, "recipients": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } } } },
     "theme": { "type": "object", "required": ["theme_id"], "additionalProperties": false, "properties": { "theme_id": { "type": "string", "minLength": 1 } } },
     "cover": { "type": "object", "required": ["statement", "task"], "properties": { "statement": { "type": "string", "minLength": 1 }, "task": { "type": "string", "minLength": 1 } } },
     "journey": { "type": "array", "minItems": 3, "maxItems": 5, "items": { "type": "object", "required": ["moment_id", "summary"], "properties": { "moment_id": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 } } } },

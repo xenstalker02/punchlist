@@ -15,6 +15,7 @@ All notable changes to Punchlist will be recorded here.
 
 ### Changed
 
+- Distinguished authorized private delivery to a named recipient from public publication in the report contract, so a real authorized audit can produce a report for its own recipient without publication approval while wider publication stays gated.
 - Expanded privacy validation to public source, style, text, and extensionless files, with reviewed fixture-only exclusions and line-level locations.
 - Generated tagged PDFs and exposed their accessibility state through the PDF inspector.
 - Pinned the supported Node and npm toolchain in package metadata and CI, and added Python dependency updates to Dependabot.
