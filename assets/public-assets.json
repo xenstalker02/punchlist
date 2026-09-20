@@ -16,6 +16,14 @@
       "alt": "Punchlist cover with an orange background, the Punchlist wordmark, and three illustrated steps for an evidence-based UX review.",
       "provenance": "User-approved export from Figma node 13925:702, built with the timdili.ch portfolio design system.",
       "publication_approved": true
+    },
+    {
+      "path": "assets/field-reports/queen-worm-findings.svg",
+      "sha256": "898f6bd426cb6771fae156186a226223956aca54b37928495ac8205bb4b466f5",
+      "purpose": "Owner-approved Queen Worm field-report findings graph",
+      "alt": "Browsing-journey graph separating seven original named findings from three taxonomy gaps; full text and stable IDs appear in the adjacent field report.",
+      "provenance": "Original editable vector summary of the owner-approved Queen Worm field report. Publication of the report and graph was explicitly requested on 10 September 2026. No product screenshot, source imagery, or private link is embedded.",
+      "publication_approved": true
     }
   ]
 }

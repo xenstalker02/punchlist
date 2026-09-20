@@ -17,7 +17,7 @@ class PdfDependencyError(RuntimeError):
 
 def _fitz_module() -> Any:
     try:
-        import fitz
+        import pymupdf as fitz
     except ModuleNotFoundError as error:
         raise PdfDependencyError("PyMuPDF is unavailable") from error
     return fitz
