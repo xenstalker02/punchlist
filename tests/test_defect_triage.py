@@ -10,8 +10,11 @@ import unittest
 from scripts.defect_triage import (
     REPOSITORY_ROOT,
     Candidate,
+    UnparseableAnswer,
     load_taxonomy,
+    parse_choice,
     rank_candidates,
+    text_judge,
     triage,
 )
 
@@ -55,6 +58,68 @@ class RankingTests(unittest.TestCase):
         for row in rank_candidates(SYMPTOM, self.entries):
             self.assertLessEqual(len(row.presence_test), 240)
             self.assertTrue(row.presence_test)
+
+
+    def test_equal_scores_are_ordered_by_id_not_by_input_order(self) -> None:
+        shared = {
+            "category": "interface",
+            "standard": "Coherent",
+            "definition": "Present when the same words repeat in the same place.",
+            "symptom": "the same words repeat",
+        }
+        entries = [
+            {"id": "zeta-trap", "name": "Zeta Trap", **shared},
+            {"id": "alpha-trap", "name": "Alpha Trap", **shared},
+            {
+                "id": "unrelated-entry",
+                "name": "Unrelated Entry",
+                "category": "content",
+                "standard": "Clear",
+                "definition": "Present when a heading describes something else entirely.",
+                "symptom": "the heading describes a different subject",
+            },
+        ]
+        table = rank_candidates("the same words repeat in the same place", entries)
+        self.assertEqual([table[0].score] * len(table), [row.score for row in table])
+        self.assertEqual(["alpha-trap", "zeta-trap"], [row.id for row in table])
+
+
+class AnswerParsingTests(unittest.TestCase):
+    """A judge returns text in the real world; only a bare index may become a choice."""
+
+    def test_a_bare_index_is_accepted(self) -> None:
+        for raw, expected in (("3", 3), ("  3  ", 3), ("3.", 3), ("12", 12)):
+            with self.subTest(raw=raw):
+                self.assertEqual(expected, parse_choice(raw))
+
+    def test_explicit_none_words_mean_no_applicable_entry(self) -> None:
+        for raw in ("none", "NONE", " n/a ", "unknown", "nothing"):
+            with self.subTest(raw=raw):
+                self.assertIsNone(parse_choice(raw))
+
+    def test_prose_is_refused_rather_than_mined_for_a_number(self) -> None:
+        refused = ("keyboard-dead-zone", "index 3", "3 or 4", "choose 2 please", "0x3", "", "   ", "3\nActually none")
+        for raw in refused:
+            with self.subTest(raw=raw):
+                with self.assertRaises(UnparseableAnswer):
+                    parse_choice(raw)
+
+    def test_a_text_judge_returning_a_defect_id_resolves_to_invalid(self) -> None:
+        entries = load_taxonomy()
+        result = triage(SYMPTOM, entries=entries, judge=text_judge(lambda _table: "amnesiac-relaunch"))
+        self.assertEqual("invalid", result.outcome)
+        self.assertIsNone(result.suggestion)
+
+    def test_a_text_judge_returning_a_bare_index_resolves_to_that_row(self) -> None:
+        entries = load_taxonomy()
+        result = triage(SYMPTOM, entries=entries, judge=text_judge(lambda table: f" {table[1].index} "))
+        self.assertEqual("matched", result.outcome)
+        self.assertEqual(result.candidates[1].id, result.suggestion)
+
+    def test_a_text_judge_returning_a_none_word_resolves_to_none(self) -> None:
+        entries = load_taxonomy()
+        result = triage(SYMPTOM, entries=entries, judge=text_judge(lambda _table: "None"))
+        self.assertEqual("none", result.outcome)
 
 
 class TypedChoiceTests(unittest.TestCase):
@@ -141,6 +206,16 @@ class CommandLineTests(unittest.TestCase):
 
     def test_an_out_of_range_choice_is_reported_not_crashed(self) -> None:
         result = self.run_triage("--symptom", SYMPTOM, "--choose", "99")
+        self.assertEqual(0, result.returncode)
+        self.assertEqual("invalid", json.loads(result.stdout)["outcome"])
+
+    def test_a_bare_text_index_is_accepted(self) -> None:
+        payload = json.loads(self.run_triage("--symptom", SYMPTOM, "--answer", "1").stdout)
+        self.assertEqual("matched", payload["outcome"])
+        self.assertEqual(payload["candidates"][0]["id"], payload["suggestion"])
+
+    def test_a_prose_answer_is_reported_as_invalid(self) -> None:
+        result = self.run_triage("--symptom", SYMPTOM, "--answer", "amnesiac-relaunch")
         self.assertEqual(0, result.returncode)
         self.assertEqual("invalid", json.loads(result.stdout)["outcome"])
 

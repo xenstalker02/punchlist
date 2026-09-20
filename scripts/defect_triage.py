@@ -13,6 +13,8 @@ never emits a selector. The rules borrowed here:
 * index the options instead of describing them in prose;
 * one typed choice per cycle over a bounded set;
 * the answer is an index into the table the judge was shown, never an id or code;
+* raw judge text is parsed strictly — a bare index or an explicit none, never mined
+  for a number, so prose cannot smuggle an identity past the boundary;
 * code validates that answer against that same table;
 * a hopeless input resolves to ``unknown`` without spending a request.
 
@@ -48,6 +50,16 @@ OUTCOMES = ("matched", "none", "unknown", "invalid", "unjudged")
 
 class TriageError(RuntimeError):
     """Raised when the taxonomy cannot be read."""
+
+
+class UnparseableAnswer(ValueError):
+    """Raised when a judge's raw text is neither a bare index nor an explicit none."""
+
+
+# The only words accepted as "no applicable entry". Everything else that is not digits is
+# refused, so a returned defect id or sentence cannot be mistaken for a choice.
+NONE_WORDS = frozenset({"none", "no", "nothing", "n/a", "na", "unknown"})
+BARE_INDEX = re.compile(r"\d+")
 
 
 @dataclass(frozen=True)
@@ -185,7 +197,10 @@ def triage(
     if judge is None:
         return Triage("unjudged", symptom, table, None, "candidate table only; no judge supplied")
 
-    answer = judge(table)
+    try:
+        answer = judge(table)
+    except UnparseableAnswer:
+        return Triage("invalid", symptom, table, None, "judge text was not a bare index; an id, path or free text is never accepted")
     if answer is None:
         return Triage("none", symptom, table, None, "judge reported no applicable entry")
     if isinstance(answer, bool) or not isinstance(answer, int):
@@ -193,6 +208,32 @@ def triage(
     if not 1 <= answer <= len(table):
         return Triage("invalid", symptom, table, None, "judge returned an index outside the offered table")
     return Triage("matched", symptom, table, table[answer - 1], "index validated against the offered table")
+
+
+def parse_choice(raw: str) -> int | None:
+    """Map a judge's raw text to an index, or to None for "no applicable entry".
+
+    Only a bare integer qualifies. A defect id, a path, a sentence or a code fragment is
+    refused rather than searched for a number, so a judge cannot smuggle an identity
+    through prose, and an empty answer is refused rather than read as a choice.
+    """
+    text = raw.strip()
+    if text.endswith("."):
+        text = text[:-1].strip()
+    if text.lower() in NONE_WORDS:
+        return None
+    if BARE_INDEX.fullmatch(text):
+        return int(text)
+    raise UnparseableAnswer("judge text was not a bare index")
+
+
+def text_judge(respond: Callable[[Sequence[Candidate]], str]) -> Judge:
+    """Wrap a model call that returns text into a judge that returns an index or None."""
+
+    def judge(table: Sequence[Candidate]) -> object:
+        return parse_choice(respond(table))
+
+    return judge
 
 
 def _static_judge(choice: int | None) -> Judge:
@@ -204,6 +245,15 @@ def _static_judge(choice: int | None) -> Judge:
     return judge
 
 
+def _select_judge(choice: int | None, answer: str | None) -> Judge | None:
+    """A judge for the CLI: a typed index, or raw text parsed strictly, or none at all."""
+    if choice is not None:
+        return _static_judge(choice)
+    if answer is not None:
+        return text_judge(lambda _table: answer)
+    return None
+
+
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Rank taxonomy entries for one observation and take one typed choice."
@@ -211,7 +261,9 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--symptom", required=True)
     parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
     parser.add_argument("--floor", type=float, default=0.0)
-    parser.add_argument("--choose", type=int, default=None, help="typed index a judge would return")
+    choices = parser.add_mutually_exclusive_group()
+    choices.add_argument("--choose", type=int, default=None, help="typed index a judge would return")
+    choices.add_argument("--answer", default=None, help="raw text a judge would return; parsed strictly")
     parser.add_argument("--taxonomy-root", type=Path, default=REPOSITORY_ROOT)
     return parser.parse_args(argv)
 
@@ -226,7 +278,7 @@ def main(argv: list[str] | None = None) -> int:
     resolution = triage(
         arguments.symptom,
         entries=entries,
-        judge=_static_judge(arguments.choose) if arguments.choose is not None else None,
+        judge=_select_judge(arguments.choose, arguments.answer),
         limit=arguments.limit,
         floor=arguments.floor,
     )

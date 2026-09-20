@@ -38,7 +38,7 @@ ANGELS_REST_ROW = re.compile(
 
 def read_rows(path: Path, pattern: re.Pattern[str]) -> list[tuple[str, str]]:
     text = path.read_text(encoding="utf-8")
-    rows = [(match.group("id"), " ".join(match.group("symptom").split())) for match in pattern.finditer(text, re.M)]
+    rows = [(match.group("id"), " ".join(match.group("symptom").split())) for match in pattern.finditer(text)]
     return rows
 
 
@@ -75,6 +75,11 @@ def main() -> int:
             "defect_name_in_symptom": name_hits,
             "most_common_label": {"id": majority, "hits": majority_count},
         },
+        "caveats": [
+            "ten findings from two single-agent heuristic reviews whose own reports state they measured no detection accuracy",
+            "measures retrieval of the recorded id, not whether the audit should have recorded it",
+            "labels are curated prose written after the run, so they may sit closer to taxonomy wording than a raw observation would",
+        ],
     }
     print(json.dumps(summary, sort_keys=True, indent=2))
     print("\nper finding:")
