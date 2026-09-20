@@ -4,6 +4,10 @@ All notable changes to Punchlist will be recorded here.
 
 ## Unreleased
 
+### Added
+
+- `scripts/defect_triage.py` ranks the plausible taxonomy entries for one observation and accepts a single index back, so a judge never emits a defect id, path or code; `scripts/eval_defect_triage.py` reproduces the retrieval measurement on the two published field reports.
+
 ### Fixed
 
 - Return safe validation errors for non-UTF-8 public files and malformed audit collections instead of crashing.
