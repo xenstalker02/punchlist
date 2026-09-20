@@ -18,6 +18,13 @@ never emits a selector. The rules borrowed here:
 * code validates that answer against that same table;
 * a hopeless input resolves to ``unknown`` without spending a request.
 
+Two bounds to keep when a judge is wired in. ``floor`` is an instrument-specific spend
+gate, not a confidence: a threshold measured against one retriever, one prompt format or
+one provider does not travel to another, so re-measure it against the instrument you will
+actually run — and never lower it until a test passes, because a guard that can be tuned
+into meaninglessness is not a guard. And keep the table at nine rows or fewer, where a
+single-character answer is unambiguous; a wider table needs letters rather than digits.
+
 This module decides nothing. A ``matched`` outcome is a suggestion for a human, the
 taxonomy's own conformance rules stay with ``scripts/validate.py``, and a wrong answer
 costs one rejected index rather than a wrong entry in a record.
