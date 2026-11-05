@@ -10,9 +10,12 @@ conversation is invisible to him. Anything you flag, decide, or are blocked on b
 the board, and it belongs there **in the same turn you flag it** — not batched later, not
 summarised at the end of a session.
 
-- Read state: `http://127.0.0.1:43129/api/task-board/state`
-- Write: `POST http://127.0.0.1:43129/api/task-board/action`
-- **The header `Origin: http://127.0.0.1:43129` is required** — without it the route returns
+Use the task-board origin supplied by the operator's local configuration. Resolve
+these relative URL paths against that origin:
+
+- Read state: `api/task-board/state` via GET
+- Write: `api/task-board/action` via POST
+- **The `Origin` header must match that configured origin** — without it the route returns
   403. That is a browser-trust fence, not a credential.
 
 **Every row you file must carry four things**, or it is a row Tim cannot act on: the source
